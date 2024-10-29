@@ -51,7 +51,8 @@ CIRCMAN5.0 combines advanced industry 4.0 technologies with human-centric design
   * Digital Product Passport
   * Resource optimization
 
-## Project StructureCIRCMAN5.0/
+## Project Structure
+CIRCMAN5.0/
 ├── src/              # Source code
 │   ├── core/         # Core functionality
 │   ├── analysis/     # Analysis modules
@@ -59,7 +60,9 @@ CIRCMAN5.0 combines advanced industry 4.0 technologies with human-centric design
 ├── tests/            # Test cases
 ├── docs/             # Documentation
 ├── notebooks/        # Jupyter notebooks
-└── data/            # Data files## Technology Stack
+└── data/            # Data files
+
+## Technology Stack
 - Python 3.11+
 - Pandas for data processing
 - Matplotlib/Plotly for visualization
