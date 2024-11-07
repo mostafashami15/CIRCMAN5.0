@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
+from typing import Dict, Optional, List
 
 class AdvancedPVManufacturing:
     def __init__(self):
@@ -63,16 +64,36 @@ class AdvancedPVManufacturing:
             }
         }
 
-    def start_batch(self, batch_id, stage, input_amount):
+    def start_batch(self, batch_id: str, stage: str, input_amount: float) -> None:
+        """
+        Start a new production batch.
+
+        Args:
+            batch_id: Unique identifier for the batch
+            stage: Manufacturing stage (must be one of the defined stages)
+            input_amount: Amount of input material in kg
+
+        Raises:
+            ValueError: If batch_id already exists or stage is invalid
+            ValueError: If input_amount is negative or zero
+        """
+
         """Start a new production batch"""
+        
+        # Validate batch_id
         if batch_id in self.batches['batch_id'].values:
-            print(f"Error: Batch {batch_id} already exists!")
-            return
+            raise ValueError(f"Batch {batch_id} already exists")
 
+        # Validate stage
         if stage not in self.stages:
-            print(f"Error: Invalid stage. Valid stages are: {list(self.stages.keys())}")
-            return
+            valid_stages = list(self.stages.keys())
+            raise ValueError(f"Invalid stage. Valid stages are: {valid_stages}")
 
+        # Validate input amount
+        if input_amount <= 0:
+            raise ValueError("Input amount must be positive")
+
+        # Create new batch (keep your existing dictionary structure for now)
         new_batch = {
             'batch_id': batch_id,
             'start_time': datetime.now(),
@@ -86,7 +107,9 @@ class AdvancedPVManufacturing:
             'completion_time': pd.NaT
         }
 
-        self.batches = pd.concat([self.batches, pd.DataFrame([new_batch])], ignore_index=True)
+        # Add to batches DataFrame
+        self.batches = pd.concat([self.batches, pd.DataFrame([new_batch])], 
+                                ignore_index=True)
         
         print(f"\nStarted Batch: {batch_id}")
         print(f"Stage: {stage}")
