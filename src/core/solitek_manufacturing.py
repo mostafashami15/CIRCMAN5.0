@@ -154,9 +154,94 @@ class SoliTekManufacturingAnalysis:
         elif metric_type == "sustainability":
             self._visualize_sustainability_indicators()
         
+        plt.tight_layout()
         if save_path:
-            plt.savefig(save_path)
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
         plt.close()
+
+    def _visualize_production_trends(self):
+        """Visualize production efficiency and output trends"""
+        if self.production_data.empty:
+            return
+        
+        daily_output = self.production_data.groupby(
+            pd.Grouper(key='timestamp', freq='D')
+        )['output_quantity'].sum()
+        
+        plt.subplot(2, 1, 1)
+        daily_output.plot(style='.-')
+        plt.title('Daily Production Output')
+        plt.ylabel('Output Quantity')
+        
+        plt.subplot(2, 1, 2)
+        self.production_data['yield_rate'].plot(kind='hist', bins=20)
+        plt.title('Yield Rate Distribution')
+        plt.xlabel('Yield Rate')
+        plt.ylabel('Frequency')
+
+    def _visualize_energy_patterns(self):
+        """Visualize energy consumption patterns"""
+        if self.energy_data.empty:
+            return
+        
+        energy_by_source = self.energy_data.groupby('energy_source')['energy_consumption'].sum()
+        plt.subplot(2, 1, 1)
+        energy_by_source.plot(kind='pie', autopct='%1.1f%%')
+        plt.title('Energy Consumption by Source')
+        
+        hourly_consumption = self.energy_data.groupby(
+            self.energy_data['timestamp'].dt.hour
+        )['energy_consumption'].mean()
+        plt.subplot(2, 1, 2)
+        hourly_consumption.plot(style='.-')
+        plt.title('Average Hourly Energy Consumption')
+        plt.xlabel('Hour of Day')
+        plt.ylabel('Energy Consumption')
+
+    def _visualize_quality_metrics(self):
+        """Visualize quality control metrics"""
+        if self.quality_data.empty:
+            return
+        
+        plt.subplot(2, 1, 1)
+        self.quality_data['efficiency'].plot(kind='hist', bins=20)
+        plt.title('Cell Efficiency Distribution')
+        plt.xlabel('Efficiency (%)')
+        
+        plt.subplot(2, 1, 2)
+        defect_rates = self.quality_data.groupby(
+            pd.Grouper(key='test_timestamp', freq='D')
+        )['defect_rate'].mean()
+        defect_rates.plot(style='.-')
+        plt.title('Daily Average Defect Rate')
+        plt.ylabel('Defect Rate (%)')
+
+    def _visualize_sustainability_indicators(self):
+        """Visualize sustainability metrics"""
+        if self.material_flow.empty:
+            return
+        
+        waste_by_type = self.material_flow.groupby('material_type')['waste_generated'].sum()
+        plt.subplot(2, 1, 1)
+        waste_by_type.plot(kind='bar')
+        plt.title('Total Waste Generation by Material Type')
+        plt.xticks(rotation=45)
+        
+        recycling_rates = (
+            self.material_flow.groupby('material_type').agg({
+                'recycled_amount': 'sum',
+                'waste_generated': 'sum'
+            })
+        )
+        recycling_rates['rate'] = (
+            recycling_rates['recycled_amount'] / recycling_rates['waste_generated'] * 100
+        )
+        
+        plt.subplot(2, 1, 2)
+        recycling_rates['rate'].plot(kind='bar')
+        plt.title('Recycling Rate by Material Type')
+        plt.ylabel('Recycling Rate (%)')
+        plt.xticks(rotation=45)
 
     def _calculate_energy_efficiency(self) -> float:
         """Calculate energy efficiency metrics"""
