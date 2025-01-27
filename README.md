@@ -19,17 +19,17 @@ CIRCMAN5.0 combines advanced industry 4.0 technologies with human-centric design
   * Batch processing and monitoring
   * Resource utilization tracking
   * Production efficiency analysis
-  
+
 - Quality Control System
   * Real-time quality monitoring
   * Defect detection and analysis
   * Performance metrics calculation
-  
+
 - Circularity Metrics
   * Material efficiency tracking
   * Water reuse monitoring
   * Waste reduction analysis
-  
+
 - Advanced Analytics
   * Performance visualization
   * Trend analysis
@@ -40,12 +40,12 @@ CIRCMAN5.0 combines advanced industry 4.0 technologies with human-centric design
   * Predictive analytics
   * Process optimization
   * Automated decision support
-  
+
 - Digital Twin Development
   * Real-time simulation
   * Process modeling
   * What-if analysis
-  
+
 - Enhanced Circularity
   * Life Cycle Assessment (LCA)
   * Digital Product Passport

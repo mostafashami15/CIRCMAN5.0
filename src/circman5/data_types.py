@@ -4,9 +4,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Dict, Any
 
+
 @dataclass
 class BatchData:
     """Manufacturing batch information."""
+
     batch_id: str
     start_time: datetime
     stage: str
@@ -18,9 +20,11 @@ class BatchData:
     energy_used: float = 0.0
     completion_time: Optional[datetime] = None
 
+
 @dataclass
 class QualityData:
     """Quality control measurements."""
+
     batch_id: str
     test_time: datetime
     efficiency: float
@@ -28,9 +32,11 @@ class QualityData:
     thickness_uniformity: float
     contamination_level: float
 
+
 @dataclass
 class CircularMetrics:
     """Circular economy metrics."""
+
     batch_id: str
     recycled_content: float
     recyclable_output: float
