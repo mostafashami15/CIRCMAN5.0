@@ -6,6 +6,12 @@ import seaborn as sns
 from typing import Dict, Optional, List
 
 
+class ValidationError(Exception):
+    """Custom exception for data validation errors"""
+
+    pass
+
+
 class SoliTekManufacturingAnalysis:
     """
     A comprehensive framework for analyzing SoliTek's PV manufacturing data.
@@ -57,6 +63,50 @@ class SoliTekManufacturingAnalysis:
             "recycled_amount": float,
             "batch_id": str,
         }
+
+    def validate_production_data(self, data: pd.DataFrame) -> bool:
+        """
+        Validates production data against required schema and business rules.
+
+        Args:
+            data: DataFrame containing production data
+
+        Returns:
+            bool: True if data is valid, raises ValidationError otherwise
+        """
+        required_columns = {
+            "batch_id": str,
+            "timestamp": "datetime64[ns]",
+            "stage": str,
+            "input_amount": float,
+            "output_amount": float,
+            "energy_used": float,
+        }
+
+        # Check required columns exist
+        missing_cols = [col for col in required_columns if col not in data.columns]
+        if missing_cols:
+            raise ValidationError(f"Missing required columns: {missing_cols}")
+
+        # Validate data types
+        for col, dtype in required_columns.items():
+            if not pd.api.types.is_dtype_equal(data[col].dtype, dtype):
+                try:
+                    data[col] = data[col].astype(dtype)
+                except Exception as e:
+                    raise ValidationError(f"Invalid data type for {col}: {str(e)}")
+
+        # Business rules validation
+        if (data["input_amount"] < 0).any():
+            raise ValidationError("Input amounts cannot be negative")
+
+        if (data["output_amount"] < 0).any():
+            raise ValidationError("Output amounts cannot be negative")
+
+        if (data["output_amount"] > data["input_amount"]).any():
+            raise ValidationError("Output amount cannot exceed input amount")
+
+        return True
 
     def load_production_data(self, file_path: str) -> None:
         """
