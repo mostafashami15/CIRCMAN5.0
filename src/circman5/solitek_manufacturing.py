@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -111,20 +112,46 @@ class SoliTekManufacturingAnalysis:
     def load_production_data(self, file_path: str) -> None:
         """
         Load and validate production data from CSV files.
-        Implements error checking and data validation.
+        Implements enhanced error checking and data validation with logging.
+
+        Args:
+            file_path: Path to the CSV file containing production data
+
+        Raises:
+            FileNotFoundError: If the specified file doesn't exist
+            ValidationError: If data fails validation checks
+            pandas.errors.EmptyDataError: If file is empty
+            pandas.errors.ParserError: If file cannot be parsed as CSV
         """
         try:
-            data = pd.read_csv(file_path)
-            # Validate against schema
-            for column, dtype in self.production_schema.items():
-                if column not in data.columns:
-                    raise ValueError(f"Missing required column: {column}")
-                data[column] = data[column].astype(dtype)
+            # Check if file exists
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"Production data file not found: {file_path}")
 
-            self.production_data = data
-            print("Production data loaded successfully")
+            # Load data
+            data = pd.read_csv(file_path)
+
+            # Check if data is empty
+            if data.empty:
+                raise pd.errors.EmptyDataError("Production data file is empty")
+
+            # Validate data
+            if self.validate_production_data(data):
+                self.production_data = data
+                print(
+                    f"Successfully loaded and validated production data from {file_path}"
+                )
+                print(f"Loaded {len(data)} records")
+
+        except ValidationError as ve:
+            print(f"Data validation error: {str(ve)}")
+            raise
+        except pd.errors.ParserError as pe:
+            print(f"Error parsing CSV file: {str(pe)}")
+            raise
         except Exception as e:
-            print(f"Error loading production data: {str(e)}")
+            print(f"Unexpected error loading production data: {str(e)}")
+            raise
 
     def analyze_efficiency(self) -> Dict:
         """
