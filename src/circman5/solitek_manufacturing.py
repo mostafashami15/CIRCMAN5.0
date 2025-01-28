@@ -9,6 +9,8 @@ from typing import Dict, Optional, List
 from .logging_config import setup_logger
 from .errors import ValidationError, ProcessError, DataError, ResourceError
 from .errors import ValidationError, DataError, ProcessError
+from .monitoring import ManufacturingMonitor
+from .visualization import ManufacturingVisualizer
 
 
 # class ValidationError(Exception):
@@ -34,6 +36,11 @@ class SoliTekManufacturingAnalysis:
         self.quality_data = pd.DataFrame()
         self.material_flow = pd.DataFrame()
         self.sustainability_metrics = pd.DataFrame()
+
+        # Add monitor initialization
+        self.monitor = ManufacturingMonitor()
+        # Add Visualization initialization
+        self.visualizer = ManufacturingVisualizer()
 
         # Define expected data schemas
         self.production_schema = {
@@ -427,6 +434,17 @@ class SoliTekManufacturingAnalysis:
                     key == "error" for key in data.keys()
                 ):
                     pd.DataFrame(data).to_excel(writer, sheet_name=metric)
+
+    def generate_performance_report(self, save_path: str) -> None:
+        """Generate visual performance report."""
+        metrics = {
+            "efficiency": self.calculate_efficiency(),
+            "quality_score": self.calculate_quality_score(),
+            "resource_efficiency": self.calculate_resource_efficiency(),
+            "energy_efficiency": self.calculate_energy_efficiency(),
+        }
+
+        self.visualizer.create_kpi_dashboard(metrics, save_path)
 
 
 def main():
