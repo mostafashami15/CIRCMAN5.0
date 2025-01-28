@@ -2,8 +2,10 @@
 
 ## System Architecture
 
-### Manufacturing Tracking System
-#### Core Components
+### Core Components
+
+#### 1. Manufacturing Tracking System
+##### Core Components
 - Batch Processing System
   * Batch initialization and tracking
   * Process parameter monitoring
@@ -19,13 +21,7 @@
   * Material efficiency tracking
   * Water reuse monitoring
   * Waste reduction analysis
-  * Lifecycle assessment for sustainable production
-
-- Performance Analytics
-  * Process optimization
-  * Trend analysis
-  * Recommendation generation
-  * AI-powered efficiency improvements
+  * Lifecycle assessment
 
 ### Data Structures
 
@@ -43,16 +39,9 @@
   * Defect rates
   * Thickness uniformity
   * Contamination levels
-  * AI-driven defect classification
-
-- Circularity Indicators
-  * Material efficiency
-  * Water reuse rates
-  * Recycling metrics
-  * Resource utilization
-  * Carbon footprint estimation
 
 ### Current Features
+
 1. Manufacturing Process Control
    - Batch tracking and monitoring
    - Resource utilization tracking
@@ -71,88 +60,89 @@
    - Waste management metrics
    - AI-assisted lifecycle analysis
 
-4. Analysis Tools
+4. Visualization Tools
    - Performance visualization
    - Statistical analysis
    - Trend monitoring
    - Optimization suggestions
-   - AI-driven sustainability forecasting
+   - KPI dashboards
 
-### Planned Extensions
+### Implementation Details
 
-#### AI Integration
-- Predictive Analytics
-  * Yield prediction
-  * Quality forecasting
-  * Resource optimization
-  * AI-driven maintenance prediction
+1. Core System
+   - Python-based implementation
+   - Modular architecture
+   - Extensible design
+   - Real-time capability
 
-- Machine Learning Pipeline
-  * Data preprocessing
-  * Model development
-  * Performance optimization
-  * AI validation against real-world production data
+2. Data Management
+   - Structured data storage
+   - Real-time processing
+   - Historical analysis
+   - Performance tracking
 
-#### Digital Twin Development
-- Real-time Monitoring
-  * Process simulation
-  * Parameter tracking
-  * Performance analysis
-  * AI-based dynamic adjustments
+3. Integration Capabilities
+   - AI/ML integration ready
+   - Digital Twin compatible
+   - External system connectivity
+   - Data export/import functionality
 
-- Optimization Engine
-  * Process parameter optimization
-  * Resource allocation
-  * Energy efficiency
-  * AI-based production flow optimization
+## Error Handling System
 
-#### Enhanced Circularity
-- Life Cycle Assessment
-  * Environmental impact analysis
-  * Resource efficiency
-  * Sustainability metrics
-  * Carbon emissions tracking
+### Custom Error Types
+1. ManufacturingError (Base class)
+2. ValidationError
+3. ProcessError
+4. DataError
+5. ResourceError
 
-- Digital Product Passport
-  * Material tracking
-  * Process history
-  * Environmental impact data
-  * Compliance automation using AI
+### Validation Framework
+- Data type checking
+- Range validation
+- Business rule enforcement
+- Error logging and tracking
 
-## Implementation Details
+## Monitoring System
 
-### Core System
-- Python-based implementation
-- Modular architecture
-- Extensible design
-- Real-time capability with AI-enhanced analytics
+### Real-time Monitoring
+- Process efficiency tracking
+- Quality metrics monitoring
+- Resource utilization tracking
+- Performance analytics
 
-### Data Management
-- Structured data storage
-- Real-time processing
-- Historical analysis
-- Performance tracking with predictive models
+### KPI Tracking
+- Production efficiency
+- Quality scores
+- Resource optimization
+- Energy efficiency
 
-### Integration Capabilities
-- AI/ML integration ready
-- Digital Twin compatible
-- External system connectivity
-- Data export/import functionality
-- Blockchain-enabled material tracking (planned)
+## Visualization System
+
+### Available Visualizations
+1. Efficiency Trends
+2. Quality Metrics
+3. Resource Usage
+4. KPI Dashboards
+
+### Export Capabilities
+- PNG format support
+- Data export functionality
+- Report generation
 
 ## Future Development
 
-### Short-term Goals
-- [x] Enhanced data collection
-- [x] Improved analytics
-- [x] Extended monitoring capabilities
+### Planned Enhancements
+1. AI Integration
+   - Machine learning pipeline
+   - Predictive analytics
+   - Process optimization
 
-### Medium-term Goals
-- [ ] AI integration for predictive manufacturing
-- [ ] Digital Twin implementation
-- [ ] Advanced optimization of production flow
+2. Digital Twin
+   - Real-time simulation
+   - Process modeling
+   - What-if analysis
 
-### Long-term Goals
-- [ ] Full circularity implementation
-- [ ] Complete automation of defect detection and prediction
-- [ ] Advanced decision support with AI and Digital Twin collaboration
+3. Advanced Analytics
+   - Predictive maintenance
+   - Resource optimization
+   - Performance forecasting
