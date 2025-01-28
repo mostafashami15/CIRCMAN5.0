@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from pathlib import Path
 from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis, ValidationError
+from circman5.errors import DataError, ValidationError
 
 
 @pytest.fixture
@@ -34,8 +35,9 @@ def test_valid_production_data_loading(test_data_path):
 def test_invalid_file_path():
     """Test loading from non-existent file"""
     analyzer = SoliTekManufacturingAnalysis()
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(DataError) as exc_info:
         analyzer.load_production_data("nonexistent_file.csv")
+    assert "Production data file not found" in str(exc_info.value)
 
 
 def test_invalid_data_validation():

@@ -6,11 +6,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Dict, Optional, List
 
+from .logging_config import setup_logger
+from .errors import ValidationError, ProcessError, DataError, ResourceError
+from .errors import ValidationError, DataError, ProcessError
 
-class ValidationError(Exception):
-    """Custom exception for data validation errors"""
 
-    pass
+# class ValidationError(Exception):
+#    """Custom exception for data validation errors"""
+
+#    pass
 
 
 class SoliTekManufacturingAnalysis:
@@ -21,6 +25,9 @@ class SoliTekManufacturingAnalysis:
     """
 
     def __init__(self):
+        # Add logger initialization
+        self.logger = setup_logger("solitek_manufacturing")
+
         # Initialize core data structures for different metric categories
         self.production_data = pd.DataFrame()
         self.energy_data = pd.DataFrame()
@@ -87,7 +94,10 @@ class SoliTekManufacturingAnalysis:
         # Check required columns exist
         missing_cols = [col for col in required_columns if col not in data.columns]
         if missing_cols:
-            raise ValidationError(f"Missing required columns: {missing_cols}")
+            raise ValidationError(
+                f"Missing required columns: {missing_cols}",
+                invalid_data={"missing_columns": missing_cols},
+            )
 
         # Validate data types
         for col, dtype in required_columns.items():
@@ -95,17 +105,29 @@ class SoliTekManufacturingAnalysis:
                 try:
                     data[col] = data[col].astype(dtype)
                 except Exception as e:
-                    raise ValidationError(f"Invalid data type for {col}: {str(e)}")
+                    raise ValidationError(
+                        f"Invalid data type for {col}: {str(e)}",
+                        invalid_data={"column": col, "error": str(e)},
+                    )
 
         # Business rules validation
         if (data["input_amount"] < 0).any():
-            raise ValidationError("Input amounts cannot be negative")
+            raise ValidationError(
+                "Input amounts cannot be negative",
+                invalid_data={"field": "input_amount"},
+            )
 
         if (data["output_amount"] < 0).any():
-            raise ValidationError("Output amounts cannot be negative")
+            raise ValidationError(
+                "Output amounts cannot be negative",
+                invalid_data={"field": "output_amount"},
+            )
 
         if (data["output_amount"] > data["input_amount"]).any():
-            raise ValidationError("Output amount cannot exceed input amount")
+            raise ValidationError(
+                "Output amount cannot exceed input amount",
+                invalid_data={"field": "output_amount"},
+            )
 
         return True
 
@@ -118,40 +140,48 @@ class SoliTekManufacturingAnalysis:
             file_path: Path to the CSV file containing production data
 
         Raises:
-            FileNotFoundError: If the specified file doesn't exist
+            DataError: If file doesn't exist or is empty
             ValidationError: If data fails validation checks
-            pandas.errors.EmptyDataError: If file is empty
-            pandas.errors.ParserError: If file cannot be parsed as CSV
+            ProcessError: If file cannot be parsed or processed
         """
         try:
+            self.logger.info(f"Loading production data from {file_path}")
+
             # Check if file exists
             if not os.path.exists(file_path):
-                raise FileNotFoundError(f"Production data file not found: {file_path}")
+                raise DataError(
+                    f"Production data file not found: {file_path}",
+                    data_source=file_path,
+                )
 
             # Load data
-            data = pd.read_csv(file_path)
+            try:
+                data = pd.read_csv(file_path)
+            except pd.errors.ParserError as pe:
+                raise ProcessError(
+                    f"Error parsing CSV file: {str(pe)}", process_name="data_loading"
+                )
 
             # Check if data is empty
             if data.empty:
-                raise pd.errors.EmptyDataError("Production data file is empty")
+                raise DataError("Production data file is empty", data_source=file_path)
 
             # Validate data
             if self.validate_production_data(data):
                 self.production_data = data
-                print(
-                    f"Successfully loaded and validated production data from {file_path}"
+                self.logger.info(
+                    f"Successfully loaded and validated {len(data)} records from {file_path}"
                 )
-                print(f"Loaded {len(data)} records")
 
-        except ValidationError as ve:
-            print(f"Data validation error: {str(ve)}")
-            raise
-        except pd.errors.ParserError as pe:
-            print(f"Error parsing CSV file: {str(pe)}")
+        except (DataError, ValidationError, ProcessError) as e:
+            self.logger.error(f"{e.__class__.__name__}: {str(e)}")
             raise
         except Exception as e:
-            print(f"Unexpected error loading production data: {str(e)}")
-            raise
+            self.logger.error(f"Unexpected error loading production data: {str(e)}")
+            raise ProcessError(
+                f"Unexpected error during data loading: {str(e)}",
+                process_name="data_loading",
+            )
 
     def analyze_efficiency(self) -> Dict:
         """
