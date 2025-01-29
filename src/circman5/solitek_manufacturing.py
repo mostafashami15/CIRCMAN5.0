@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Dict, Optional, List
 
+from .ai.optimization import ManufacturingOptimizer, MetricsDict, PredictionDict
 from .logging_config import setup_logger
 from .errors import ValidationError, ProcessError, DataError, ResourceError
 from .errors import ValidationError, DataError, ProcessError
@@ -36,6 +37,10 @@ class SoliTekManufacturingAnalysis:
         self.quality_data = pd.DataFrame()
         self.material_flow = pd.DataFrame()
         self.sustainability_metrics = pd.DataFrame()
+
+        # Add AI optimizer
+        self.optimizer = ManufacturingOptimizer()
+        self.is_optimizer_trained = False
 
         # Add monitor initialization
         self.monitor = ManufacturingMonitor()
@@ -78,6 +83,98 @@ class SoliTekManufacturingAnalysis:
             "recycled_amount": float,
             "batch_id": str,
         }
+
+    def train_optimization_model(self) -> MetricsDict:
+        """Train the AI optimization model with current manufacturing data."""
+        if self.production_data.empty or self.quality_data.empty:
+            raise ValueError("No data available for training optimization model")
+
+        # Prepare data for training
+        X_scaled, y_scaled = self.optimizer.prepare_manufacturing_data(
+            self.production_data, self.quality_data
+        )
+
+        # Train the model
+        metrics = self.optimizer.train_optimization_models(X_scaled, y_scaled)
+        self.is_optimizer_trained = True
+
+        self.logger.info(f"AI optimization model trained. Metrics: {metrics}")
+        return metrics
+
+    def optimize_process_parameters(
+        self,
+        current_params: Dict[str, float],
+        constraints: Optional[Dict[str, tuple[float, float]]] = None,
+    ) -> Dict[str, float]:
+        """
+        Optimize manufacturing process parameters using AI.
+        """
+        if not self.is_optimizer_trained:
+            self.train_optimization_model()
+
+        optimized_params = self.optimizer.optimize_process_parameters(
+            current_params, constraints
+        )
+
+        self.logger.info(
+            f"Optimized parameters generated:\n"
+            + "\n".join(f"{k}: {v:.2f}" for k, v in optimized_params.items())
+        )
+
+        return optimized_params
+
+    def predict_batch_outcomes(
+        self, process_params: Dict[str, float]
+    ) -> PredictionDict:
+        """Predict manufacturing outcomes for given parameters."""
+
+        if not self.is_optimizer_trained:
+            self.train_optimization_model()
+
+        predictions = self.optimizer.predict_manufacturing_outcomes(process_params)
+
+        self.logger.info(
+            f"Manufacturing predictions:\n"
+            + f"Predicted Output: {predictions['predicted_output']:.2f}\n"
+            + f"Predicted Quality: {predictions['predicted_quality']:.2f}"
+        )
+
+        return predictions
+
+    def analyze_optimization_potential(self) -> Dict[str, float]:
+        """Analyze potential optimizations based on historical data."""
+        if not self.is_optimizer_trained:
+            self.train_optimization_model()
+
+        # Get average current parameters
+        current_params = {
+            "input_amount": self.production_data["input_amount"].mean(),
+            "energy_used": self.production_data["energy_used"].mean(),
+            "cycle_time": self.production_data["cycle_time"].mean(),
+            "efficiency": self.quality_data["efficiency"].mean(),
+            "defect_rate": self.quality_data["defect_rate"].mean(),
+            "thickness_uniformity": self.quality_data["thickness_uniformity"].mean(),
+        }
+
+        # Get optimized parameters
+        optimized_params = self.optimize_process_parameters(current_params)
+
+        # Calculate potential improvements
+        improvements = {
+            param: (
+                (optimized_params[param] - current_params[param])
+                / current_params[param]
+                * 100
+            )
+            for param in current_params
+        }
+
+        self.logger.info(
+            "Optimization potential analysis:\n"
+            + "\n".join(f"{k}: {v:.1f}%" for k, v in improvements.items())
+        )
+
+        return improvements
 
     def validate_production_data(self, data: pd.DataFrame) -> bool:
         """
@@ -445,6 +542,28 @@ class SoliTekManufacturingAnalysis:
         }
 
         self.visualizer.create_kpi_dashboard(metrics, save_path)
+
+    def calculate_efficiency(self) -> float:
+        """Calculate overall manufacturing efficiency."""
+        if self.production_data.empty:
+            return 0.0
+        return (
+            self.production_data["output_amount"] / self.production_data["input_amount"]
+        ).mean() * 100
+
+    def calculate_quality_score(self) -> float:
+        """Calculate overall quality score."""
+        if self.quality_data.empty:
+            return 0.0
+        return 100 - self.quality_data["defect_rate"].mean()
+
+    def calculate_resource_efficiency(self) -> float:
+        """Calculate resource utilization efficiency."""
+        return self._calculate_material_utilization()
+
+    def calculate_energy_efficiency(self) -> float:
+        """Calculate energy efficiency score."""
+        return self._calculate_energy_efficiency()
 
 
 def main():

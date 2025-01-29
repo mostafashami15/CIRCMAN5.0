@@ -1,243 +1,195 @@
 """
-AI optimization engine for PV manufacturing processes.
-Provides process optimization, predictive maintenance, and quality prediction.
+AI-driven optimization engine for PV manufacturing processes.
+Implements predictive modeling and process optimization using scikit-learn.
 """
 
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, Optional
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+from typing import Dict, List, Tuple, Optional, Union, TypedDict
+import numpy.typing as npt
 
 
-class AIOptimizationEngine:
-    """AI-powered optimization engine for PV manufacturing processes."""
+class PredictionDict(TypedDict):
+    predicted_output: float
+    predicted_quality: float
+
+
+class MetricsDict(TypedDict):
+    mse: float
+    r2: float
+
+
+class ManufacturingOptimizer:
+    """Implements AI-driven optimization for PV manufacturing processes."""
 
     def __init__(self):
-        """Initialize ML models and scalers."""
-        try:
-            self.process_optimizer = RandomForestRegressor(
-                n_estimators=100, random_state=42
-            )
-            self.quality_predictor = GradientBoostingClassifier(
-                n_estimators=100, random_state=42
-            )
-            self.scaler = StandardScaler()
-            self.is_trained = False
-            self.quality_predictor_trained = False
-        except Exception as e:
-            print("Error initializing ML models:", str(e))
-            raise
+        """Initialize optimization models and scalers."""
+        self.efficiency_model = RandomForestRegressor(n_estimators=100, random_state=42)
+        self.quality_model = GradientBoostingRegressor(
+            n_estimators=100, random_state=42
+        )
+        self.feature_scaler = StandardScaler()
+        self.target_scaler = StandardScaler()
+        self.is_trained = False
+
+    def prepare_manufacturing_data(
+        self, production_data: pd.DataFrame, quality_data: pd.DataFrame
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Prepare and combine manufacturing data for training.
+
+        Args:
+            production_data: DataFrame containing production metrics
+            quality_data: DataFrame containing quality metrics
+
+        Returns:
+            Tuple containing features array and targets array
+        """
+        # Combine relevant features
+        features = pd.merge(
+            production_data, quality_data, on="batch_id", suffixes=("_prod", "_qual")
+        )
+
+        # Select feature columns
+        feature_columns = [
+            "input_amount",
+            "energy_used",
+            "cycle_time",
+            "efficiency",
+            "defect_rate",
+            "thickness_uniformity",
+        ]
+        target_column = "output_amount"
+
+        # Convert to numpy arrays explicitly
+        X = features[feature_columns].to_numpy()
+        y = features[target_column].to_numpy()
+        y = y[:, np.newaxis]  # Reshape using numpy's alternative
+
+        # Scale features and targets
+        X_scaled = self.feature_scaler.fit_transform(X)
+        y_scaled = self.target_scaler.fit_transform(y)
+
+        return X_scaled, y_scaled
+
+    def train_optimization_models(
+        self, X: np.ndarray, y: np.ndarray, test_size: float = 0.2
+    ) -> MetricsDict:
+        """
+        Train optimization models on prepared manufacturing data.
+
+        Args:
+            X: Scaled feature array
+            y: Scaled target array
+            test_size: Proportion of data to use for testing
+
+        Returns:
+            Dict containing model performance metrics
+        """
+        # Split data
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=42
+        )
+
+        # Train models
+        self.efficiency_model.fit(X_train, y_train.ravel())
+        self.quality_model.fit(X_train, y_train.ravel())
+
+        # Evaluate performance
+        y_pred = self.efficiency_model.predict(X_test)
+
+        metrics: MetricsDict = {
+            "mse": float(mean_squared_error(y_test, y_pred)),
+            "r2": float(r2_score(y_test, y_pred)),
+        }
+
+        self.is_trained = True
+        return metrics
 
     def optimize_process_parameters(
-        self, production_data: pd.DataFrame, quality_data: pd.DataFrame
-    ) -> Dict:
-        """Optimize manufacturing process parameters."""
-        try:
-            # Merge production and quality data
-            features = pd.merge(
-                production_data, quality_data, on="batch_id", how="inner"
-            )
+        self,
+        current_params: Dict[str, float],
+        constraints: Optional[Dict[str, Tuple[float, float]]] = None,
+    ) -> Dict[str, float]:
+        """
+        Optimize manufacturing process parameters.
 
-            # Select features for optimization
-            optimization_features = features[
-                ["cycle_time", "output_quantity", "yield_rate"]
-            ].values
+        Args:
+            current_params: Current manufacturing parameters
+            constraints: Optional parameter constraints as (min, max) tuples
 
-            # Scale features
-            scaled_features = self.scaler.fit_transform(optimization_features)
+        Returns:
+            Dict containing optimized parameters
+        """
+        if not self.is_trained:
+            raise ValueError("Models must be trained before optimization")
 
-            # Train if not trained
-            if not self.is_trained:
-                self._train_optimizer(scaled_features, features["yield_rate"].values)
+        # Convert parameters to feature array
+        param_array = np.array([list(current_params.values())])
+        scaled_params = self.feature_scaler.transform(param_array)
 
-            # Generate optimization suggestions
-            predictions = self.process_optimizer.predict(scaled_features)
+        # Generate parameter variations
+        n_variations = 1000
+        param_variations = np.random.normal(
+            loc=scaled_params, scale=0.1, size=(n_variations, scaled_params.shape[1])
+        )
 
-            return {
-                "cycle_time": float(np.mean(predictions)),
-                "temperature": 180.0,  # Default optimal temperature
-                "pressure": 1.0,  # Default optimal pressure
-                "confidence_score": float(self._calculate_confidence(predictions)),
-            }
-        except Exception as e:
-            print("Error in optimize_process_parameters:", str(e))
-            raise
+        # Apply constraints if provided
+        if constraints:
+            for i, (param_name, (min_val, max_val)) in enumerate(constraints.items()):
+                param_variations[:, i] = np.clip(
+                    param_variations[:, i], min_val, max_val
+                )
 
-    def predict_maintenance_needs(
-        self, production_data: pd.DataFrame, energy_data: pd.DataFrame
-    ) -> Dict:
-        """Predict maintenance requirements."""
-        try:
-            features = self._extract_maintenance_features(production_data, energy_data)
-            failure_prob = self._predict_failure_probability(features)
+        # Predict outcomes
+        predicted_outputs = self.efficiency_model.predict(param_variations)
 
-            return {
-                "next_maintenance": self._calculate_maintenance_timing(failure_prob),
-                "failure_probability": float(failure_prob),
-                "critical_components": self._identify_critical_components(features),
-            }
-        except Exception as e:
-            print("Error in predict_maintenance_needs:", str(e))
-            raise
+        # Select best parameters
+        best_idx = np.argmax(predicted_outputs)
+        optimized_params = self.feature_scaler.inverse_transform(
+            param_variations[best_idx].reshape(1, -1)
+        )[0]
 
-    def predict_quality_metrics(
-        self, production_data: pd.DataFrame, material_data: pd.DataFrame
-    ) -> Dict:
-        """Predict quality metrics."""
-        try:
-            # Prepare features for quality prediction
-            features = self._prepare_quality_features(production_data, material_data)
+        # Convert numpy values to Python floats
+        return {k: float(v) for k, v in zip(current_params.keys(), optimized_params)}
 
-            # Create binary quality labels (using yield_rate as proxy for quality)
-            quality_labels = (
-                production_data["yield_rate"].iloc[: len(features)] > 0.95
-            ).astype(int)
+    def predict_manufacturing_outcomes(
+        self, process_params: Dict[str, float]
+    ) -> PredictionDict:
+        """
+        Predict manufacturing outcomes for given parameters.
 
-            # Train quality predictor if not trained
-            if not self.quality_predictor_trained:
-                self.quality_predictor.fit(features, quality_labels)
-                self.quality_predictor_trained = True
+        Args:
+            process_params: Manufacturing process parameters
 
-            # Generate predictions
-            predictions = self.quality_predictor.predict_proba(features)
+        Returns:
+            Dict containing predicted outcomes
+        """
+        if not self.is_trained:
+            raise ValueError("Models must be trained before prediction")
 
-            return {
-                "predicted_defect_rate": float(
-                    np.mean(predictions[:, 0])
-                ),  # Class 0 probability
-                "confidence_interval": self._calculate_prediction_confidence(
-                    predictions
-                ),
-                "quality_factors": self._identify_quality_factors(features),
-            }
-        except Exception as e:
-            print("Error in predict_quality_metrics:", str(e))
-            raise
+        # Prepare input
+        param_array = np.array([list(process_params.values())])
+        scaled_params = self.feature_scaler.transform(param_array)
 
-    def _extract_maintenance_features(
-        self, production_data: pd.DataFrame, energy_data: pd.DataFrame
-    ) -> np.ndarray:
-        """Extract features for maintenance prediction."""
-        try:
-            merged_data = pd.merge(
-                production_data,
-                energy_data,
-                on=["timestamp", "production_line"],
-                how="inner",
-            )
+        # Make predictions
+        efficiency_pred = self.efficiency_model.predict(scaled_params)
+        quality_pred = self.quality_model.predict(scaled_params)
 
-            features = pd.DataFrame(
-                {
-                    "output_efficiency": merged_data["output_quantity"]
-                    / merged_data["energy_consumption"],
-                    "production_rate": merged_data["output_quantity"]
-                    / merged_data["cycle_time"],
-                }
-            )
+        # Scale predictions back
+        efficiency_actual = self.target_scaler.inverse_transform(
+            efficiency_pred.reshape(-1, 1)
+        )[0][0]
+        quality_actual = self.target_scaler.inverse_transform(
+            quality_pred.reshape(-1, 1)
+        )[0][0]
 
-            return self.scaler.fit_transform(features)
-        except Exception as e:
-            print("Error in _extract_maintenance_features:", str(e))
-            raise
-
-    def _prepare_quality_features(
-        self, production_data: pd.DataFrame, material_data: pd.DataFrame
-    ) -> np.ndarray:
-        """Prepare features for quality prediction."""
-        try:
-            # Merge data and remove duplicates
-            merged_data = pd.merge(
-                production_data, material_data, on="batch_id", how="inner"
-            ).drop_duplicates()
-
-            # Select relevant features
-            features = merged_data[
-                [
-                    "output_quantity",
-                    "cycle_time",
-                    "yield_rate",
-                    "quantity_used",
-                    "waste_generated",
-                ]
-            ].values
-
-            return self.scaler.fit_transform(features)
-        except Exception as e:
-            print("Error in _prepare_quality_features:", str(e))
-            raise
-
-    def _predict_failure_probability(self, features: np.ndarray) -> float:
-        """Calculate probability of equipment failure."""
-        try:
-            # Simple heuristic based on feature patterns
-            return float(np.mean(np.abs(features)))
-        except Exception as e:
-            print("Error in _predict_failure_probability:", str(e))
-            raise
-
-    def _calculate_maintenance_timing(self, failure_prob: float) -> pd.Timestamp:
-        """Determine optimal maintenance timing."""
-        try:
-            days_until_maintenance = int(30 * (1 - failure_prob))
-            return pd.Timestamp.now() + pd.Timedelta(days=days_until_maintenance)
-        except Exception as e:
-            print("Error in _calculate_maintenance_timing:", str(e))
-            raise
-
-    def _identify_critical_components(self, features: np.ndarray) -> Dict:
-        """Identify components needing attention."""
-        try:
-            return {
-                "component_1": {"risk_score": 0.8, "priority": "high"},
-                "component_2": {"risk_score": 0.5, "priority": "medium"},
-            }
-        except Exception as e:
-            print("Error in _identify_critical_components:", str(e))
-            raise
-
-    def _calculate_prediction_confidence(self, predictions: np.ndarray) -> Dict:
-        """Calculate confidence intervals for predictions."""
-        try:
-            return {
-                "lower_bound": float(np.percentile(predictions, 25)),
-                "upper_bound": float(np.percentile(predictions, 75)),
-            }
-        except Exception as e:
-            print("Error in _calculate_prediction_confidence:", str(e))
-            raise
-
-    def _identify_quality_factors(self, features: np.ndarray) -> Dict:
-        """Identify key factors affecting quality."""
-        try:
-            return {
-                "material_quality": 0.8,
-                "process_stability": 0.7,
-                "environmental_factors": 0.6,
-            }
-        except Exception as e:
-            print("Error in _identify_quality_factors:", str(e))
-            raise
-
-    def _calculate_confidence(self, predictions: np.ndarray) -> float:
-        """Calculate confidence score for predictions."""
-        try:
-            return float(1 - np.std(predictions) / np.mean(predictions))
-        except Exception as e:
-            print("Error in _calculate_confidence:", str(e))
-            raise
-
-    def _train_optimizer(self, X: np.ndarray, y: np.ndarray) -> None:
-        """Train the optimization model."""
-        try:
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.2, random_state=42
-            )
-            self.process_optimizer.fit(X_train, y_train)
-            self.is_trained = True
-        except Exception as e:
-            print("Error in _train_optimizer:", str(e))
-            raise
+        predictions: PredictionDict = {
+            "predicted_output": float(efficiency_actual),
+            "predicted_quality": float(quality_actual),
+        }
+        return predictions

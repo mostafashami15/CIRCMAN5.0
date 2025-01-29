@@ -1,8 +1,10 @@
 {
-    "venv": ".venv",
-    "venvPath": ".",
-    "extraPaths": ["src"],
-    "analysis": {
-      "autoImportCompletions": true
-    }
+  "venv": ".venv",
+  "venvPath": ".",
+  "extraPaths": ["src"],
+  "analysis": {
+      "autoImportCompletions": true,
+      "useLibraryCodeForTypes": true,
+      "typeCheckingMode": "strict"
   }
+}
