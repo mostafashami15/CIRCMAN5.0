@@ -30,11 +30,13 @@ def test_process_optimization(ai_engine, test_data):
         test_data["production"], test_data["quality"]
     )
 
+    # Check expected keys
     assert "cycle_time" in result
     assert "temperature" in result
     assert "pressure" in result
     assert "confidence_score" in result
 
+    # Validate values
     assert 0 <= result["confidence_score"] <= 1
     assert result["cycle_time"] > 0
     assert isinstance(result["temperature"], float)

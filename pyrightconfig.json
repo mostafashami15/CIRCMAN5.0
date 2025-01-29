@@ -1,0 +1,8 @@
+{
+    "venv": ".venv",
+    "venvPath": ".",
+    "extraPaths": ["src"],
+    "analysis": {
+      "autoImportCompletions": true
+    }
+  }
