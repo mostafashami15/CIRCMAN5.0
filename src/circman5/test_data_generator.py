@@ -17,25 +17,32 @@ class TestDataGenerator:
         self.product_types = ["Mono_PERC_60", "Mono_PERC_72", "Bifacial_72"]
 
     def generate_production_data(self) -> pd.DataFrame:
-        """Generate production metrics data."""
+        """Generate production data with all required columns."""
         data = []
         current_date = self.start_date
-        batch_id = 0
 
         for _ in range(self.days):
-            for hour in range(8, 16):  # 8-hour production day
+            for hour in range(8, 16):  # 8 AM to 4 PM shift
                 for line in self.production_lines:
-                    batch_id = (batch_id + 1) % len(self.batch_ids)
+                    timestamp = current_date + timedelta(hours=hour)
+
+                    # Create base outputs with realistic variations
+                    input_amount = random.uniform(90, 110)
+                    output_amount = input_amount * random.uniform(
+                        0.85, 0.98
+                    )  # 85-98% efficiency
 
                     data.append(
                         {
-                            "timestamp": current_date + timedelta(hours=hour),
-                            "batch_id": self.batch_ids[batch_id],
+                            "timestamp": timestamp,
+                            "batch_id": random.choice(self.batch_ids),
                             "product_type": random.choice(self.product_types),
                             "production_line": line,
-                            "output_quantity": random.uniform(85, 95),
+                            "input_amount": input_amount,
+                            "output_amount": output_amount,
+                            "energy_used": random.uniform(140, 160),
                             "cycle_time": random.uniform(45, 55),
-                            "yield_rate": random.uniform(0.92, 0.98),
+                            "yield_rate": (output_amount / input_amount) * 100,
                         }
                     )
             current_date += timedelta(days=1)
@@ -43,21 +50,26 @@ class TestDataGenerator:
         return pd.DataFrame(data)
 
     def generate_quality_data(self) -> pd.DataFrame:
-        """Generate quality control data."""
-        production_data = self.generate_production_data()
+        """Generate quality data with updated column names."""
         data = []
+        current_date = self.start_date
 
-        for _, production_row in production_data.iterrows():
-            data.append(
-                {
-                    "batch_id": production_row["batch_id"],
-                    "test_time": production_row["timestamp"],
-                    "efficiency": random.uniform(20, 22),
-                    "defect_rate": random.uniform(1, 3),
-                    "thickness_uniformity": random.uniform(95, 99),
-                    "contamination_level": random.uniform(0.1, 0.5),
-                }
-            )
+        for _ in range(self.days):
+            for hour in range(8, 16):
+                timestamp = current_date + timedelta(hours=hour)
+
+                for _ in range(3):  # 3 quality checks per hour
+                    data.append(
+                        {
+                            "batch_id": random.choice(self.batch_ids),
+                            "test_timestamp": timestamp,  # Changed from test_time to test_timestamp
+                            "efficiency": random.uniform(20, 22),
+                            "defect_rate": random.uniform(1, 3),
+                            "thickness_uniformity": random.uniform(94, 96),
+                            "contamination_level": random.uniform(0.1, 0.5),
+                        }
+                    )
+            current_date += timedelta(days=1)
 
         return pd.DataFrame(data)
 
