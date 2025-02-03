@@ -473,11 +473,12 @@ class SoliTekManufacturingAnalysis:
         )
 
         plt.subplot(2, 2, 1)
+        # Changed from output_quantity to output_amount
         daily_output = self.production_data.groupby(
             pd.Grouper(key="timestamp", freq="D")
-        )["output_quantity"].sum()
+        )["output_amount"].sum()
         daily_output.plot(style=".-", title="Daily Production Output")
-        plt.ylabel("Output Quantity")
+        plt.ylabel("Output Amount")
 
         plt.subplot(2, 2, 2)
         sns.histplot(data=self.production_data, x="yield_rate", bins=20)

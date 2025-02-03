@@ -22,15 +22,12 @@ class TestDataGenerator:
         current_date = self.start_date
 
         for _ in range(self.days):
-            for hour in range(8, 16):  # 8 AM to 4 PM shift
+            for hour in range(8, 16):
                 for line in self.production_lines:
                     timestamp = current_date + timedelta(hours=hour)
 
-                    # Create base outputs with realistic variations
                     input_amount = random.uniform(90, 110)
-                    output_amount = input_amount * random.uniform(
-                        0.85, 0.98
-                    )  # 85-98% efficiency
+                    output_amount = input_amount * random.uniform(0.85, 0.98)
 
                     data.append(
                         {
@@ -39,7 +36,7 @@ class TestDataGenerator:
                             "product_type": random.choice(self.product_types),
                             "production_line": line,
                             "input_amount": input_amount,
-                            "output_amount": output_amount,
+                            "output_amount": output_amount,  # Changed from output_quantity
                             "energy_used": random.uniform(140, 160),
                             "cycle_time": random.uniform(45, 55),
                             "yield_rate": (output_amount / input_amount) * 100,

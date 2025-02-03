@@ -135,6 +135,10 @@ def test_visualization_integration(analyzer, test_data, tmp_path):
     """
     Test integration of visualization components.
     """
+
+    # Debug: Print available columns
+    print("Production data columns:", test_data["production"].columns.tolist())
+
     # Load test data
     analyzer.production_data = test_data["production"]
     analyzer.quality_data = test_data["quality"]
