@@ -4,7 +4,7 @@ Sustainability analysis for PV manufacturing.
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Optional
+from typing import Mapping, Optional
 
 
 class SustainabilityAnalyzer:
@@ -31,7 +31,7 @@ class SustainabilityAnalyzer:
 
     def analyze_material_efficiency(
         self, material_data: pd.DataFrame
-    ) -> Dict[str, float]:
+    ) -> Mapping[str, float]:
         """Analyze material utilization and recycling efficiency."""
         if material_data.empty:
             return {}
