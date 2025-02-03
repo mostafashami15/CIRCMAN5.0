@@ -12,12 +12,9 @@ from .errors import ValidationError, ProcessError, DataError, ResourceError
 from .errors import ValidationError, DataError, ProcessError
 from .monitoring import ManufacturingMonitor
 from .visualization import ManufacturingVisualizer
-
-
-# class ValidationError(Exception):
-#    """Custom exception for data validation errors"""
-
-#    pass
+from .analysis.efficiency import EfficiencyAnalyzer
+from .analysis.quality import QualityAnalyzer
+from .analysis.sustainability import SustainabilityAnalyzer
 
 
 class SoliTekManufacturingAnalysis:
@@ -28,7 +25,7 @@ class SoliTekManufacturingAnalysis:
     """
 
     def __init__(self):
-        # Add logger initialization
+        # logger initialization
         self.logger = setup_logger("solitek_manufacturing")
 
         # Initialize core data structures for different metric categories
@@ -38,13 +35,17 @@ class SoliTekManufacturingAnalysis:
         self.material_flow = pd.DataFrame()
         self.sustainability_metrics = pd.DataFrame()
 
-        # Add AI optimizer
+        # Analysis tools
+        self.efficiency_analyzer = EfficiencyAnalyzer()
+        self.quality_analyzer = QualityAnalyzer()
+        self.sustainability_analyzer = SustainabilityAnalyzer()
+
+        # AI optimizer
         self.optimizer = ManufacturingOptimizer()
         self.is_optimizer_trained = False
 
-        # Add monitor initialization
+        # Data monitoring
         self.monitor = ManufacturingMonitor()
-        # Add Visualization initialization
         self.visualizer = ManufacturingVisualizer()
 
         # Define expected data schemas
@@ -289,63 +290,142 @@ class SoliTekManufacturingAnalysis:
 
     def analyze_efficiency(self) -> Dict:
         """
-        Analyze manufacturing efficiency metrics including:
-        - Production yield rates
-        - Cycle time optimization
-        - Resource utilization
+        Enhanced efficiency analysis using dedicated analyzer.
         """
         if self.production_data.empty:
+            self.logger.warning("No production data available for efficiency analysis")
             return {"error": "No production data available"}
 
-        analysis = {
-            "average_yield": self.production_data["yield_rate"].mean(),
-            "cycle_time_stats": self.production_data["cycle_time"].describe(),
-            "daily_output": self.production_data.groupby(
-                pd.Grouper(key="timestamp", freq="D")
-            )["output_quantity"].sum(),
-        }
+        try:
+            efficiency_metrics = self.efficiency_analyzer.analyze_batch_efficiency(
+                self.production_data
+            )
 
-        return analysis
+            # Calculate additional metrics
+            analysis = {
+                **efficiency_metrics,
+                "daily_output": self.production_data.groupby(
+                    pd.Grouper(key="timestamp", freq="D")
+                )["output_quantity"].sum(),
+            }
+
+            self.logger.info(f"Efficiency analysis completed: {efficiency_metrics}")
+            return analysis
+
+        except Exception as e:
+            self.logger.error(f"Error in efficiency analysis: {str(e)}")
+            return {"error": str(e)}
 
     def calculate_sustainability_metrics(self) -> Dict:
         """
-        Calculate key sustainability indicators including:
-        - Energy efficiency
-        - Material utilization
-        - Waste reduction
-        - Carbon footprint
+        Enhanced sustainability analysis using dedicated analyzer.
         """
         if any([self.energy_data.empty, self.material_flow.empty]):
+            self.logger.warning("Insufficient data for sustainability calculation")
             return {"error": "Insufficient data for sustainability calculation"}
 
-        metrics = {
-            "energy_efficiency": self._calculate_energy_efficiency(),
-            "material_utilization": self._calculate_material_utilization(),
-            "waste_reduction": self._calculate_waste_metrics(),
-            "carbon_footprint": self._estimate_carbon_footprint(),
-        }
+        try:
+            # Calculate carbon footprint
+            carbon_footprint = self.sustainability_analyzer.calculate_carbon_footprint(
+                self.energy_data
+            )
 
-        return metrics
+            # Analyze material efficiency
+            material_metrics = self.sustainability_analyzer.analyze_material_efficiency(
+                self.material_flow
+            )
+
+            # Calculate overall sustainability score
+            sustainability_score = (
+                self.sustainability_analyzer.calculate_sustainability_score(
+                    material_metrics.get("material_efficiency", 0),
+                    material_metrics.get("recycling_rate", 0),
+                    material_metrics.get(
+                        "material_efficiency", 0
+                    ),  # Using material efficiency as energy efficiency proxy
+                )
+            )
+
+            metrics = {
+                "carbon_footprint": carbon_footprint,
+                "sustainability_score": sustainability_score,
+                **material_metrics,
+            }
+
+            self.logger.info(f"Sustainability analysis completed: {metrics}")
+            return metrics
+
+        except Exception as e:
+            self.logger.error(f"Error in sustainability analysis: {str(e)}")
+            return {"error": str(e)}
 
     def analyze_quality_metrics(self) -> Dict:
         """
-        Analyze quality control data to identify:
-        - Defect patterns
-        - Quality trends
-        - Process optimization opportunities
+        Enhanced quality analysis using dedicated analyzer.
         """
         if self.quality_data.empty:
+            self.logger.warning("No quality data available for analysis")
             return {"error": "No quality data available"}
 
-        analysis = {
-            "average_efficiency": self.quality_data["efficiency"].mean(),
-            "defect_rate_trend": self.quality_data.groupby(
-                pd.Grouper(key="test_timestamp", freq="D")
-            )["defect_rate"].mean(),
-            "uniformity_stats": self.quality_data["thickness_uniformity"].describe(),
-        }
+        try:
+            # Basic quality metrics
+            quality_metrics = self.quality_analyzer.analyze_defect_rates(
+                self.quality_data
+            )
 
-        return analysis
+            # Quality trends
+            trends = self.quality_analyzer.identify_quality_trends(self.quality_data)
+
+            analysis = {**quality_metrics, "trends": trends}
+
+            self.logger.info(f"Quality analysis completed: {quality_metrics}")
+            return analysis
+
+        except Exception as e:
+            self.logger.error(f"Error in quality analysis: {str(e)}")
+            return {"error": str(e)}
+
+    def generate_comprehensive_report(self, output_path: str) -> None:
+        """
+        Generate a comprehensive analysis report including all metrics.
+        """
+        try:
+            # Collect all metrics
+            report_data = {
+                "efficiency_metrics": self.analyze_efficiency(),
+                "quality_metrics": self.analyze_quality_metrics(),
+                "sustainability_metrics": self.calculate_sustainability_metrics(),
+            }
+
+            # Export to Excel with multiple sheets
+            with pd.ExcelWriter(output_path) as writer:
+                for metric_type, data in report_data.items():
+                    if isinstance(data, dict) and not any(
+                        key == "error" for key in data.keys()
+                    ):
+                        # Convert data to DataFrame for export
+                        if metric_type == "quality_metrics" and "trends" in data:
+                            # Handle nested trend data separately
+                            trends_df = pd.DataFrame(data["trends"])
+                            trends_df.to_excel(
+                                writer, sheet_name=f"{metric_type}_trends"
+                            )
+                            # Remove trends from main metrics
+                            data_copy = data.copy()
+                            data_copy.pop("trends")
+                            pd.DataFrame([data_copy]).to_excel(
+                                writer, sheet_name=metric_type
+                            )
+                        else:
+                            pd.DataFrame([data]).to_excel(
+                                writer, sheet_name=metric_type
+                            )
+
+            self.logger.info(f"Comprehensive report generated at: {output_path}")
+
+        except Exception as e:
+            self.logger.error(f"Error generating comprehensive report: {str(e)}")
+            raise ProcessError(f"Report generation failed: {str(e)}")
 
     def generate_visualization(
         self, metric_type: str, save_path: Optional[str] = None
