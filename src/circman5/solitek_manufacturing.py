@@ -437,94 +437,121 @@ class SoliTekManufacturingAnalysis:
         - Quality metrics
         - Sustainability indicators
         """
-        plt.figure(figsize=(12, 6))
+        plt.figure(figsize=(12, 8))
 
-        if metric_type == "production":
-            self._visualize_production_trends()
-        elif metric_type == "energy":
-            self._visualize_energy_patterns()
-        elif metric_type == "quality":
-            self._visualize_quality_metrics()
-        elif metric_type == "sustainability":
-            self._visualize_sustainability_indicators()
+        try:
+            if metric_type == "production":
+                self._visualize_production_trends()
+            elif metric_type == "energy":
+                self._visualize_energy_patterns()
+            elif metric_type == "quality":
+                self._visualize_quality_metrics()
+            elif metric_type == "sustainability":
+                self._visualize_sustainability_indicators()
+            else:
+                raise ValueError(f"Unknown metric type: {metric_type}")
 
-        plt.tight_layout()
-        if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches="tight")
-        plt.close()
+            plt.tight_layout()
+            if save_path:
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
+                self.logger.info(f"Visualization saved to {save_path}")
+            plt.close()
+
+        except Exception as e:
+            self.logger.error(f"Error generating visualization: {str(e)}")
+            plt.close()
+            raise ProcessError(f"Visualization generation failed: {str(e)}")
 
     def _visualize_production_trends(self):
-        """Visualize production efficiency and output trends"""
+        """Enhanced production efficiency and output trends visualization"""
         if self.production_data.empty:
-            return
+            raise DataError("No production data available for visualization")
 
+        # Get efficiency metrics from analyzer
+        efficiency_metrics = self.efficiency_analyzer.analyze_batch_efficiency(
+            self.production_data
+        )
+
+        plt.subplot(2, 2, 1)
         daily_output = self.production_data.groupby(
             pd.Grouper(key="timestamp", freq="D")
         )["output_quantity"].sum()
-
-        plt.subplot(2, 1, 1)
-        daily_output.plot(style=".-")
-        plt.title("Daily Production Output")
+        daily_output.plot(style=".-", title="Daily Production Output")
         plt.ylabel("Output Quantity")
 
-        plt.subplot(2, 1, 2)
-        self.production_data["yield_rate"].plot(kind="hist", bins=20)
+        plt.subplot(2, 2, 2)
+        sns.histplot(data=self.production_data, x="yield_rate", bins=20)
         plt.title("Yield Rate Distribution")
-        plt.xlabel("Yield Rate")
-        plt.ylabel("Frequency")
+        plt.xlabel("Yield Rate (%)")
 
-    def _visualize_energy_patterns(self):
-        """Visualize energy consumption patterns"""
-        if self.energy_data.empty:
-            return
+        plt.subplot(2, 2, 3)
+        efficiency_trend = (
+            self.production_data.set_index("timestamp")["yield_rate"]
+            .rolling("7D")
+            .mean()
+        )
+        efficiency_trend.plot(title="7-Day Rolling Average Efficiency")
+        plt.ylabel("Efficiency (%)")
 
-        energy_by_source = self.energy_data.groupby("energy_source")[
-            "energy_consumption"
-        ].sum()
-        plt.subplot(2, 1, 1)
-        energy_by_source.plot(kind="pie", autopct="%1.1f%%")
-        plt.title("Energy Consumption by Source")
-
-        hourly_consumption = self.energy_data.groupby(
-            self.energy_data["timestamp"].dt.hour
-        )["energy_consumption"].mean()
-        plt.subplot(2, 1, 2)
-        hourly_consumption.plot(style=".-")
-        plt.title("Average Hourly Energy Consumption")
-        plt.xlabel("Hour of Day")
-        plt.ylabel("Energy Consumption")
+        plt.subplot(2, 2, 4)
+        cycle_times = self.production_data.boxplot(
+            column="cycle_time", by="production_line"
+        )
+        plt.title("Cycle Times by Production Line")
+        plt.suptitle("")  # Remove automatic suptitle
 
     def _visualize_quality_metrics(self):
-        """Visualize quality control metrics"""
+        """Enhanced quality control metrics visualization"""
         if self.quality_data.empty:
-            return
+            raise DataError("No quality data available for visualization")
 
-        plt.subplot(2, 1, 1)
-        self.quality_data["efficiency"].plot(kind="hist", bins=20)
+        # Get quality metrics from analyzer
+        quality_metrics = self.quality_analyzer.analyze_defect_rates(self.quality_data)
+
+        plt.subplot(2, 2, 1)
+        sns.histplot(data=self.quality_data, x="efficiency", bins=20)
         plt.title("Cell Efficiency Distribution")
         plt.xlabel("Efficiency (%)")
 
-        plt.subplot(2, 1, 2)
-        defect_rates = self.quality_data.groupby(
+        plt.subplot(2, 2, 2)
+        daily_defects = self.quality_data.groupby(
             pd.Grouper(key="test_timestamp", freq="D")
         )["defect_rate"].mean()
-        defect_rates.plot(style=".-")
-        plt.title("Daily Average Defect Rate")
+        daily_defects.plot(style=".-", title="Daily Average Defect Rate")
         plt.ylabel("Defect Rate (%)")
 
-    def _visualize_sustainability_indicators(self):
-        """Visualize sustainability metrics"""
-        if self.material_flow.empty:
-            return
+        plt.subplot(2, 2, 3)
+        sns.boxplot(data=self.quality_data, y="thickness_uniformity")
+        plt.title("Thickness Uniformity Distribution")
 
+        plt.subplot(2, 2, 4)
+        quality_trends = self.quality_analyzer.identify_quality_trends(
+            self.quality_data
+        )
+        if quality_trends:
+            pd.DataFrame(quality_trends)["efficiency_trend"].plot(
+                title="Efficiency Trend Analysis"
+            )
+
+    def _visualize_sustainability_indicators(self):
+        """Enhanced sustainability metrics visualization"""
+        if self.material_flow.empty:
+            raise DataError("No material flow data available for visualization")
+
+        # Get sustainability metrics from analyzer
+        material_metrics = self.sustainability_analyzer.analyze_material_efficiency(
+            self.material_flow
+        )
+
+        plt.subplot(2, 2, 1)
         waste_by_type = self.material_flow.groupby("material_type")[
             "waste_generated"
         ].sum()
-        plt.subplot(2, 1, 1)
-        waste_by_type.plot(kind="bar")
-        plt.title("Total Waste Generation by Material Type")
+        waste_by_type.plot(kind="bar", title="Waste Generation by Material Type")
         plt.xticks(rotation=45)
+        plt.ylabel("Waste Amount")
 
+        plt.subplot(2, 2, 2)
         recycling_rates = self.material_flow.groupby("material_type").agg(
             {"recycled_amount": "sum", "waste_generated": "sum"}
         )
@@ -533,84 +560,171 @@ class SoliTekManufacturingAnalysis:
             / recycling_rates["waste_generated"]
             * 100
         )
-
-        plt.subplot(2, 1, 2)
-        recycling_rates["rate"].plot(kind="bar")
-        plt.title("Recycling Rate by Material Type")
+        recycling_rates["rate"].plot(
+            kind="bar", title="Recycling Rate by Material Type"
+        )
         plt.ylabel("Recycling Rate (%)")
         plt.xticks(rotation=45)
 
-    def _calculate_energy_efficiency(self) -> float:
-        """Calculate energy efficiency metrics"""
+        plt.subplot(2, 2, 3)
+        material_efficiency_trend = self.material_flow.groupby(
+            pd.Grouper(key="timestamp", freq="W")
+        ).apply(
+            lambda x: (x["recycled_amount"].sum() / x["waste_generated"].sum() * 100)
+        )
+        material_efficiency_trend.plot(title="Weekly Material Efficiency Trend")
+        plt.ylabel("Efficiency (%)")
+
+        plt.subplot(2, 2, 4)
+        if not self.energy_data.empty:
+            energy_mix = self.energy_data.groupby("energy_source")[
+                "energy_consumption"
+            ].sum()
+            energy_mix.plot(
+                kind="pie", autopct="%1.1f%%", title="Energy Source Distribution"
+            )
+
+    def _visualize_energy_patterns(self):
+        """Enhanced energy consumption pattern visualization"""
         if self.energy_data.empty:
-            return 0.0
-        return (
-            self.energy_data["efficiency_rate"] * self.energy_data["energy_consumption"]
-        ).mean()
+            raise DataError("No energy data available for visualization")
+
+        plt.subplot(2, 2, 1)
+        energy_by_source = self.energy_data.groupby("energy_source")[
+            "energy_consumption"
+        ].sum()
+        energy_by_source.plot(
+            kind="pie", autopct="%1.1f%%", title="Energy Consumption by Source"
+        )
+
+        plt.subplot(2, 2, 2)
+        hourly_consumption = self.energy_data.groupby(
+            self.energy_data["timestamp"].dt.hour
+        )["energy_consumption"].mean()
+        hourly_consumption.plot(style=".-", title="Average Hourly Energy Consumption")
+        plt.xlabel("Hour of Day")
+        plt.ylabel("Energy Consumption")
+
+        plt.subplot(2, 2, 3)
+        daily_efficiency = self.energy_data.groupby(
+            pd.Grouper(key="timestamp", freq="D")
+        )["efficiency_rate"].mean()
+        daily_efficiency.plot(title="Daily Energy Efficiency Rate")
+        plt.ylabel("Efficiency Rate")
+
+        plt.subplot(2, 2, 4)
+        weekly_consumption = self.energy_data.groupby(
+            pd.Grouper(key="timestamp", freq="W")
+        )["energy_consumption"].sum()
+        weekly_consumption.plot(kind="bar", title="Weekly Energy Consumption")
+        plt.xticks(rotation=45)
+        plt.ylabel("Energy Consumption")
 
     def _calculate_material_utilization(self) -> float:
-        """Calculate material utilization rate"""
+        """
+        Calculate material utilization rate using enhanced sustainability analyzer.
+        Returns:
+            float: Material utilization rate as a percentage.
+        """
         if self.material_flow.empty:
             return 0.0
-        total_used = self.material_flow["quantity_used"].sum()
-        total_waste = self.material_flow["waste_generated"].sum()
-        return (1 - (total_waste / total_used)) * 100 if total_used > 0 else 0.0
+
+        # Use sustainability analyzer for consistent calculations
+        material_metrics = self.sustainability_analyzer.analyze_material_efficiency(
+            self.material_flow
+        )
+        return material_metrics.get("material_efficiency", 0.0)
 
     def _calculate_waste_metrics(self) -> Dict:
-        """Calculate waste-related metrics"""
+        """
+        Calculate comprehensive waste-related metrics using sustainability analyzer.
+        Returns:
+            Dict: Contains total waste, recycling rate, and waste by material type.
+        """
         if self.material_flow.empty:
             return {}
 
-        return {
-            "total_waste": self.material_flow["waste_generated"].sum(),
-            "recycling_rate": (
-                self.material_flow["recycled_amount"].sum()
-                / self.material_flow["waste_generated"].sum()
-                * 100
-            ),
-            "waste_by_type": self.material_flow.groupby("material_type")[
-                "waste_generated"
-            ].sum(),
-        }
+        try:
+            material_metrics = self.sustainability_analyzer.analyze_material_efficiency(
+                self.material_flow
+            )
 
-    def _estimate_carbon_footprint(self) -> float:
-        """Estimate carbon footprint based on energy consumption"""
+            waste_metrics = {
+                "total_waste": self.material_flow["waste_generated"].sum(),
+                "recycling_rate": material_metrics.get("recycling_rate", 0.0),
+                "waste_by_type": self.material_flow.groupby("material_type")[
+                    "waste_generated"
+                ].sum(),
+                "recovery_efficiency": material_metrics.get("material_efficiency", 0.0),
+            }
+
+            self.logger.info(f"Waste metrics calculated successfully: {waste_metrics}")
+            return waste_metrics
+
+        except Exception as e:
+            self.logger.error(f"Error calculating waste metrics: {str(e)}")
+            return {}
+
+    def _calculate_energy_efficiency(self) -> float:
+        """
+        Calculate comprehensive energy efficiency score incorporating carbon footprint.
+        Returns:
+            float: Energy efficiency score considering both consumption and carbon impact.
+        """
         if self.energy_data.empty:
             return 0.0
 
-        # Example carbon intensity factors (kg CO2/kWh)
-        carbon_factors = {"grid": 0.5, "solar": 0.0, "wind": 0.0}
+        try:
+            # Calculate base energy efficiency
+            base_efficiency = (
+                self.energy_data["efficiency_rate"].mean() * 100
+                if "efficiency_rate" in self.energy_data.columns
+                else 0.0
+            )
 
-        carbon_footprint = 0.0
-        for source in self.energy_data["energy_source"].unique():
-            source_consumption = self.energy_data[
-                self.energy_data["energy_source"] == source
-            ]["energy_consumption"].sum()
-            carbon_footprint += source_consumption * carbon_factors.get(source, 0.5)
+            # Calculate carbon footprint using sustainability analyzer
+            carbon_footprint = self.sustainability_analyzer.calculate_carbon_footprint(
+                self.energy_data
+            )
 
-        return carbon_footprint
+            # Adjust efficiency score based on carbon footprint
+            carbon_impact_factor = 1.0
+            if carbon_footprint > 0:
+                # Reduce efficiency score for higher carbon footprint
+                carbon_impact_factor = max(
+                    0.5, 1 - (carbon_footprint / 10000)
+                )  # Example scaling
 
-    def export_analysis_report(self, output_path: str) -> None:
+            adjusted_efficiency = base_efficiency * carbon_impact_factor
+
+            self.logger.info(
+                f"Energy efficiency calculated: {adjusted_efficiency:.2f}% "
+                f"(Base: {base_efficiency:.2f}%, Carbon Impact: {carbon_impact_factor:.2f})"
+            )
+
+            return adjusted_efficiency
+
+        except Exception as e:
+            self.logger.error(f"Error calculating energy efficiency: {str(e)}")
+            return 0.0
+
+    def _estimate_carbon_footprint(self) -> float:
         """
-        Generate a comprehensive analysis report including:
-        - Production efficiency analysis
-        - Quality metrics
-        - Sustainability indicators
-        - Recommendations for optimization
+        Estimate carbon footprint using sustainability analyzer.
+        Returns:
+            float: Estimated carbon footprint in kg CO2.
         """
-        report_data = {
-            "production_metrics": self.analyze_efficiency(),
-            "quality_analysis": self.analyze_quality_metrics(),
-            "sustainability_metrics": self.calculate_sustainability_metrics(),
-        }
+        if self.energy_data.empty:
+            return 0.0
 
-        # Export to Excel with multiple sheets
-        with pd.ExcelWriter(output_path) as writer:
-            for metric, data in report_data.items():
-                if isinstance(data, dict) and not any(
-                    key == "error" for key in data.keys()
-                ):
-                    pd.DataFrame(data).to_excel(writer, sheet_name=metric)
+        try:
+            return self.sustainability_analyzer.calculate_carbon_footprint(
+                self.energy_data
+            )
+
+        except Exception as e:
+            self.logger.error(f"Error estimating carbon footprint: {str(e)}")
+            return 0.0
 
     def generate_performance_report(self, save_path: str) -> None:
         """Generate visual performance report."""
@@ -622,6 +736,35 @@ class SoliTekManufacturingAnalysis:
         }
 
         self.visualizer.create_kpi_dashboard(metrics, save_path)
+
+    def export_analysis_report(self, output_path: str) -> None:
+        """
+        Generate a comprehensive analysis report and export to Excel.
+
+        Args:
+            output_path: Path where the Excel report should be saved
+        """
+        try:
+            # Collect all metrics
+            report_data = {
+                "production_metrics": self.analyze_efficiency(),
+                "quality_analysis": self.analyze_quality_metrics(),
+                "sustainability_metrics": self.calculate_sustainability_metrics(),
+            }
+
+            # Export to Excel with multiple sheets
+            with pd.ExcelWriter(output_path) as writer:
+                for metric_type, data in report_data.items():
+                    if isinstance(data, dict) and not any(
+                        key == "error" for key in data.keys()
+                    ):
+                        pd.DataFrame([data]).to_excel(writer, sheet_name=metric_type)
+
+            self.logger.info(f"Analysis report exported to: {output_path}")
+
+        except Exception as e:
+            self.logger.error(f"Error exporting analysis report: {str(e)}")
+            raise ProcessError(f"Report export failed: {str(e)}")
 
     def calculate_efficiency(self) -> float:
         """Calculate overall manufacturing efficiency."""
