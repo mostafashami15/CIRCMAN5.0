@@ -467,13 +467,7 @@ class SoliTekManufacturingAnalysis:
         if self.production_data.empty:
             raise DataError("No production data available for visualization")
 
-        # Get efficiency metrics from analyzer
-        efficiency_metrics = self.efficiency_analyzer.analyze_batch_efficiency(
-            self.production_data
-        )
-
         plt.subplot(2, 2, 1)
-        # Changed from output_quantity to output_amount
         daily_output = self.production_data.groupby(
             pd.Grouper(key="timestamp", freq="D")
         )["output_amount"].sum()
@@ -481,25 +475,32 @@ class SoliTekManufacturingAnalysis:
         plt.ylabel("Output Amount")
 
         plt.subplot(2, 2, 2)
-        sns.histplot(data=self.production_data, x="yield_rate", bins=20)
+        # Updated seaborn plot without categorical warning
+        sns.histplot(
+            data=self.production_data,
+            x="yield_rate",
+            bins=20,
+            stat="count",
+            common_norm=False,
+        )
         plt.title("Yield Rate Distribution")
         plt.xlabel("Yield Rate (%)")
 
         plt.subplot(2, 2, 3)
         efficiency_trend = (
             self.production_data.set_index("timestamp")["yield_rate"]
-            .rolling("7D")
+            .rolling("7D", min_periods=1)
             .mean()
         )
         efficiency_trend.plot(title="7-Day Rolling Average Efficiency")
         plt.ylabel("Efficiency (%)")
 
         plt.subplot(2, 2, 4)
-        cycle_times = self.production_data.boxplot(
-            column="cycle_time", by="production_line"
+        # Updated boxplot without deprecation warning
+        sns.boxplot(
+            data=self.production_data, y="cycle_time", x="production_line", orient="v"
         )
         plt.title("Cycle Times by Production Line")
-        plt.suptitle("")  # Remove automatic suptitle
 
     def _visualize_quality_metrics(self):
         """Enhanced quality control metrics visualization"""
@@ -510,19 +511,21 @@ class SoliTekManufacturingAnalysis:
         quality_metrics = self.quality_analyzer.analyze_defect_rates(self.quality_data)
 
         plt.subplot(2, 2, 1)
-        sns.histplot(data=self.quality_data, x="efficiency", bins=20)
+        sns.histplot(data=self.quality_data, x="efficiency", bins=20, stat="count")
         plt.title("Cell Efficiency Distribution")
         plt.xlabel("Efficiency (%)")
 
         plt.subplot(2, 2, 2)
         daily_defects = self.quality_data.groupby(
-            pd.Grouper(key="test_timestamp", freq="D")
+            pd.Grouper(key="test_timestamp", freq="D"), observed=True
         )["defect_rate"].mean()
         daily_defects.plot(style=".-", title="Daily Average Defect Rate")
         plt.ylabel("Defect Rate (%)")
 
         plt.subplot(2, 2, 3)
-        sns.boxplot(data=self.quality_data, y="thickness_uniformity")
+        sns.boxplot(
+            data=self.quality_data, y="thickness_uniformity", orientation="vertical"
+        )
         plt.title("Thickness Uniformity Distribution")
 
         plt.subplot(2, 2, 4)
@@ -539,13 +542,12 @@ class SoliTekManufacturingAnalysis:
         if self.material_flow.empty:
             raise DataError("No material flow data available for visualization")
 
-        # Get sustainability metrics from analyzer
         material_metrics = self.sustainability_analyzer.analyze_material_efficiency(
             self.material_flow
         )
 
         plt.subplot(2, 2, 1)
-        waste_by_type = self.material_flow.groupby("material_type")[
+        waste_by_type = self.material_flow.groupby("material_type", observed=True)[
             "waste_generated"
         ].sum()
         waste_by_type.plot(kind="bar", title="Waste Generation by Material Type")
@@ -553,9 +555,10 @@ class SoliTekManufacturingAnalysis:
         plt.ylabel("Waste Amount")
 
         plt.subplot(2, 2, 2)
-        recycling_rates = self.material_flow.groupby("material_type").agg(
-            {"recycled_amount": "sum", "waste_generated": "sum"}
-        )
+        # Updated groupby operation to avoid warning
+        recycling_rates = self.material_flow.groupby(
+            "material_type", observed=True
+        ).agg({"recycled_amount": "sum", "waste_generated": "sum"})
         recycling_rates["rate"] = (
             recycling_rates["recycled_amount"]
             / recycling_rates["waste_generated"]
@@ -568,17 +571,22 @@ class SoliTekManufacturingAnalysis:
         plt.xticks(rotation=45)
 
         plt.subplot(2, 2, 3)
-        material_efficiency_trend = self.material_flow.groupby(
-            pd.Grouper(key="timestamp", freq="W")
-        ).apply(
-            lambda x: (x["recycled_amount"].sum() / x["waste_generated"].sum() * 100)
+        # Updated groupby and apply operation
+        material_efficiency_trend = (
+            self.material_flow.groupby(
+                pd.Grouper(key="timestamp", freq="W"), observed=True
+            )
+            .agg({"recycled_amount": "sum", "waste_generated": "sum"})
+            .assign(
+                efficiency=lambda x: (x["recycled_amount"] / x["waste_generated"] * 100)
+            )["efficiency"]
         )
         material_efficiency_trend.plot(title="Weekly Material Efficiency Trend")
         plt.ylabel("Efficiency (%)")
 
         plt.subplot(2, 2, 4)
         if not self.energy_data.empty:
-            energy_mix = self.energy_data.groupby("energy_source")[
+            energy_mix = self.energy_data.groupby("energy_source", observed=True)[
                 "energy_consumption"
             ].sum()
             energy_mix.plot(

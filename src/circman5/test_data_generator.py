@@ -1,13 +1,18 @@
-"""Test data generator for AI optimization testing."""
+"""Test data generator for manufacturing analysis system."""
 
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import random
 
+# Explicitly tell pytest not to collect this module for tests
+__test__ = False
 
-class TestDataGenerator:
-    """Generates synthetic manufacturing data for testing."""
+
+class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
+    """Generates synthetic manufacturing data for testing.
+    This is a utility class for generating test data, not a test class.
+    """
 
     def __init__(self, start_date: str = "2024-01-01", days: int = 30):
         self.start_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -15,6 +20,8 @@ class TestDataGenerator:
         self.batch_ids = [f"BATCH_{i:04d}" for i in range(1, 101)]
         self.production_lines = ["LINE_A", "LINE_B", "LINE_C"]
         self.product_types = ["Mono_PERC_60", "Mono_PERC_72", "Bifacial_72"]
+        self.material_types = ["Silicon_Wafer", "Glass", "EVA", "Backsheet", "Frame"]
+        self.energy_sources = ["grid", "solar", "wind"]
 
     def generate_production_data(self) -> pd.DataFrame:
         """Generate production data with all required columns."""
@@ -36,7 +43,7 @@ class TestDataGenerator:
                             "product_type": random.choice(self.product_types),
                             "production_line": line,
                             "input_amount": input_amount,
-                            "output_amount": output_amount,  # Changed from output_quantity
+                            "output_amount": output_amount,
                             "energy_used": random.uniform(140, 160),
                             "cycle_time": random.uniform(45, 55),
                             "yield_rate": (output_amount / input_amount) * 100,
@@ -59,7 +66,7 @@ class TestDataGenerator:
                     data.append(
                         {
                             "batch_id": random.choice(self.batch_ids),
-                            "test_timestamp": timestamp,  # Changed from test_time to test_timestamp
+                            "test_timestamp": timestamp,
                             "efficiency": random.uniform(20, 22),
                             "defect_rate": random.uniform(1, 3),
                             "thickness_uniformity": random.uniform(94, 96),
@@ -81,7 +88,7 @@ class TestDataGenerator:
                     "timestamp": production_row["timestamp"],
                     "production_line": production_row["production_line"],
                     "energy_consumption": random.uniform(40, 60),
-                    "energy_source": random.choice(["grid", "solar", "wind"]),
+                    "energy_source": random.choice(self.energy_sources),
                     "efficiency_rate": random.uniform(0.85, 0.95),
                 }
             )
@@ -98,9 +105,7 @@ class TestDataGenerator:
                 {
                     "timestamp": production_row["timestamp"],
                     "batch_id": production_row["batch_id"],
-                    "material_type": random.choice(
-                        ["Silicon", "Glass", "EVA", "Frame"]
-                    ),
+                    "material_type": random.choice(self.material_types),
                     "quantity_used": random.uniform(900, 1100),
                     "waste_generated": random.uniform(10, 50),
                     "recycled_amount": random.uniform(5, 40),
@@ -108,3 +113,7 @@ class TestDataGenerator:
             )
 
         return pd.DataFrame(data)
+
+
+# For backwards compatibility
+TestDataGenerator = ManufacturingDataGenerator  # Alias for existing code

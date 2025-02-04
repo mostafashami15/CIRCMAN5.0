@@ -5,21 +5,26 @@ Tests system performance with various data sizes and processing scenarios.
 
 import pytest
 import time
+import psutil
+import os
+import warnings
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Tuple, Any, Optional
 from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
-from circman5.test_data_generator import TestDataGenerator
-import psutil
-import os
+from circman5.test_data_generator import ManufacturingDataGenerator  # Updated import
+
+# Filter warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def generate_large_dataset(num_days: int = 30) -> dict:
     """Generate a large dataset for performance testing."""
     try:
-        generator = TestDataGenerator(start_date="2024-01-01", days=num_days)
+        generator = ManufacturingDataGenerator(start_date="2024-01-01", days=num_days)
 
         return {
             "production": generator.generate_production_data(),
