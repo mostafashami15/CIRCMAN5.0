@@ -29,7 +29,7 @@ class EfficiencyAnalyzer:
             return {}
 
         try:
-            # Validate required columns
+            # Use output_amount consistently
             required_columns = ["input_amount", "output_amount"]
             if not all(col in production_data.columns for col in required_columns):
                 return {}

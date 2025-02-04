@@ -290,27 +290,31 @@ class SoliTekManufacturingAnalysis:
 
     def analyze_efficiency(self) -> Dict:
         """
-        Enhanced efficiency analysis using dedicated analyzer.
+        Analyze manufacturing efficiency metrics.
+        Returns:
+            Dict containing efficiency metrics
         """
         if self.production_data.empty:
             self.logger.warning("No production data available for efficiency analysis")
             return {"error": "No production data available"}
 
         try:
-            efficiency_metrics = self.efficiency_analyzer.analyze_batch_efficiency(
+            # Calculate base efficiency metrics using the efficiency analyzer
+            base_metrics = self.efficiency_analyzer.analyze_batch_efficiency(
                 self.production_data
             )
 
             # Calculate additional metrics
-            analysis = {
-                **efficiency_metrics,
-                "daily_output": self.production_data.groupby(
-                    pd.Grouper(key="timestamp", freq="D")
-                )["output_quantity"].sum(),
+            efficiency_metrics = {
+                "yield_rate": base_metrics.get("yield_rate", 0.0),
+                "cycle_time_efficiency": base_metrics.get("cycle_time_efficiency", 0.0),
+                "energy_efficiency": base_metrics.get("energy_efficiency", 0.0),
+                "output_amount": self.production_data["output_amount"].mean(),
+                "input_amount": self.production_data["input_amount"].mean(),
             }
 
             self.logger.info(f"Efficiency analysis completed: {efficiency_metrics}")
-            return analysis
+            return efficiency_metrics
 
         except Exception as e:
             self.logger.error(f"Error in efficiency analysis: {str(e)}")
