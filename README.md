@@ -2,7 +2,7 @@
 **Human-Centered AI-aided Framework for the Photovoltaic (PV) Manufacturing Industry**
 
 ## Overview
-CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing principles** to optimize **PV production**, reduce waste, and enhance sustainability.
+CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing principles** to optimize **PV production**, reduce waste, and enhance sustainability through comprehensive lifecycle assessment.
 
 ## Project Goals
 - **AI-driven modeling** for circular manufacturing.
@@ -10,6 +10,7 @@ CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing prin
 - **Real-time monitoring** and **control systems**.
 - **Circular economy** principles for **waste reduction**.
 - **Digital Product/Material Passport** implementation.
+- **Life Cycle Assessment (LCA)** for environmental impact.
 
 ## Features
 
@@ -18,35 +19,47 @@ CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing prin
 - Batch processing and monitoring.
 - Resource utilization tracking.
 - Production efficiency analysis.
+- Real-time data processing (r2: 0.99).
 
 ✅ **Quality Control System**
 - Real-time quality monitoring.
 - Defect detection and analysis.
 - Performance metrics calculation.
+- AI-driven quality assessment.
 
 ✅ **Circularity Metrics**
 - Material efficiency tracking.
 - Water reuse monitoring.
 - Waste reduction analysis.
+- Environmental impact tracking.
 
 ✅ **Advanced Analytics**
 - Performance visualization.
 - Trend analysis.
 - Optimization recommendations.
+- AI-powered predictions.
+
+### **In Progress**
+🔄 **AI/ML Integration**
+- Basic predictive analytics implemented.
+- Initial process optimization framework.
+- Synthetic data validation complete.
+- Real data integration pending.
+
+🔄 **LCA Development**
+- Environmental impact assessment.
+- Resource impact calculations.
+- Lifecycle phase tracking.
+- Carbon footprint analysis.
 
 ### **Planned Features**
-🚀 **AI/ML Integration**
-- Predictive analytics for manufacturing processes.
-- Process optimization using reinforcement learning.
-- Automated decision support.
-
 🚀 **Digital Twin Development**
 - Real-time simulation for PV manufacturing.
 - Process modeling for optimization.
 - Scenario-based **What-if analysis**.
 
 🚀 **Enhanced Circularity**
-- Life Cycle Assessment (LCA).
+- Advanced Life Cycle Assessment (LCA).
 - Digital Product Passport implementation.
 - Optimized resource management.
 
@@ -106,13 +119,14 @@ CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing prin
     └── unit
         └── test_visualization.py
 ```
-
 ## Technology Stack
 - **Python 3.11+**
-- **Pandas** for data processing.
-- **Matplotlib & Seaborn** for visualization.
-- **Scikit-learn** for machine learning.
-- **Poetry** for package management.
+- **Pandas** for data processing
+- **Matplotlib & Seaborn** for visualization
+- **Scikit-learn** for machine learning
+- **Poetry** for package management
+- **Pytest** for testing framework
+- **Openpyxl** for report generation
 
 ## Installation & Setup
 
@@ -121,24 +135,31 @@ CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing prin
 git clone https://github.com/mostafashami15/CIRCMAN5.0.git
 cd CIRCMAN5.0
 ```
- ### **2️⃣ Install Dependencies Using Poetry**
+
+### **2️⃣ Install Dependencies Using Poetry**
 ```bash
 poetry install
 ```
+
 ### **3️⃣ Activate the Virtual Environment**
 ```bash
 poetry shell
 ```
+
 ### **4️⃣ Run Tests**
 ```bash
 poetry run pytest tests/
 ```
+
 ### **5️⃣ Start Using the System**
 ```python
-from circman5.manufacturing import AdvancedPVManufacturing
+from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
 
-factory = AdvancedPVManufacturing()
-factory.start_batch("TEST_001", "silicon_purification", 100)
+# Initialize analyzer
+analyzer = SoliTekManufacturingAnalysis()
+
+# Generate analysis with synthetic data
+analyzer.generate_comprehensive_report("analysis_report.xlsx")
 ```
 
 ## Documentation**
