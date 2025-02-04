@@ -51,8 +51,61 @@ CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing prin
 - Optimized resource management.
 
 ## Project Structure
-CIRCMAN5.0/ ├── LICENSE ├── README.md ├── data/ │ ├── processed/ │ └── raw/ ├── docs/ │ ├── development_roadmap.md │ ├── system_analysis.md │ └── system_documentation.md ├── notebooks/ │ └── requirements.txt ├── poetry.lock ├── pyproject.toml ├── pytest.ini ├── src/ │ ├── init.py │ ├── analysis/ │ │ └── init.py │ ├── circman5/ │ │ ├── init.py │ │ ├── constants.py │ │ ├── data_types.py │ │ ├── manufacturing.py │ │ ├── solitek_manufacturing.py │ │ ├── test_data_generator.py │ │ └── test_framework.py │ ├── documentation/ │ │ ├── init.py │ │ ├── conclusions.py │ │ ├── gap_analysis.py │ │ ├── literature_review.py │ │ └── spi_framework.py │ └── utils/ │ └── init.py ├── tests/ │ ├── README.md │ ├── init.py │ ├── integration/ │ ├── results/ │ │ ├── data/ │ │ ├── reports/ │ │ ├── run_20241127_172331/ │ │ ├── test_results/ │ │ └── visualizations/ │ └── unit/ │ └── test_manufacturing.py
-
+```plaintext
+.
+├── LICENSE
+├── README.md
+├── data
+│   ├── processed
+│   ├── raw
+│   └── synthetic
+│       ├── test_energy_data.csv
+│       ├── test_material_data.csv
+│       ├── test_production_data.csv
+│       └── test_quality_data.csv
+├── demo_script.py
+├── docs
+│   ├── api
+│   │   └── README.md
+│   ├── diagrams
+│   │   └── architecture.md
+│   └── guides
+│       ├── development_roadmap.md
+│       ├── implementation_details.md
+│       ├── system_analysis.md
+│       └── system_documentation.md
+├── logs
+│   ├── manufacturing_20250128_103459.log
+│   ├── manufacturing_20250128_103735.log
+│   ├── ...
+├── notebooks
+│   └── requirements.txt
+├── poetry.lock
+├── pyproject.toml
+├── pyrightconfig.json
+├── pytest.ini
+├── setup.py
+├── src
+│   ├── __init__.py
+│   ├── circman5
+│   │   ├── __init__.py
+│   │   ├── ...
+│   │   └── visualization.py
+│   └── utils
+│       └── __init__.py
+└── tests
+    ├── README.md
+    ├── __init__.py
+    ├── ai
+    │   ├── __init__.py
+    │   └── test_optimization.py
+    ├── integration
+    │   ├── ...
+    ├── performance
+    │   └── test_performance.py
+    └── unit
+        └── test_visualization.py
+```
 
 ## Technology Stack
 - **Python 3.11+**
