@@ -1,5 +1,5 @@
-from solitek_manufacturing import SoliTekManufacturingAnalysis
-from test_data_generator import TestDataGenerator
+from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+from circman5.test_data_generator import ManufacturingDataGenerator  # Updated import
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
@@ -56,7 +56,7 @@ def test_framework():
 
         # Generate test data
         log_print("\nGenerating test data...")
-        generator = TestDataGenerator(start_date="2024-01-01", days=30)
+        generator = ManufacturingDataGenerator(start_date="2024-01-01", days=30)
 
         production_data = generator.generate_production_data()
         energy_data = generator.generate_energy_data()
