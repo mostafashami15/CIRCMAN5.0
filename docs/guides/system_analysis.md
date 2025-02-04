@@ -34,6 +34,25 @@
   - Monitors resource utilization
   - Generates efficiency metrics
 
+### Life Cycle Assessment
+- **Environmental Impact Analysis**
+  - Manufacturing phase impact calculation
+  - Use phase assessment
+  - End-of-life impact evaluation
+  - Carbon footprint tracking
+
+- **Resource Impact Assessment**
+  - Material impact calculations
+  - Energy consumption analysis
+  - Water usage evaluation
+  - Transport impact assessment
+
+- **Circularity Metrics**
+  - Material circularity tracking
+  - Resource efficiency calculation
+  - Recycling benefit assessment
+  - Waste reduction monitoring
+
 ## Data Structure & Analysis
 
 ### Core Data Categories
@@ -51,6 +70,19 @@
   - Material flow tracking
   - Waste recovery monitoring
   - Resource efficiency analysis
+
+### LCA Data Categories
+- **Impact Metrics**
+  - Carbon footprint calculation
+  - Energy consumption tracking
+  - Resource utilization analysis
+  - Transport impact assessment
+
+- **Lifecycle Phase Analysis**
+  - Manufacturing phase metrics
+  - Use phase calculations
+  - End-of-life assessment
+  - Recycling benefit tracking
 
 ## Implementation Analysis
 
