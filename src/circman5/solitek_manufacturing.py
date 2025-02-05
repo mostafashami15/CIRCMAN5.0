@@ -16,6 +16,14 @@ from .analysis.efficiency import EfficiencyAnalyzer
 from .analysis.quality import QualityAnalyzer
 from .analysis.sustainability import SustainabilityAnalyzer
 
+from .analysis.lca.core import LCAAnalyzer, LifeCycleImpact
+from .analysis.lca.impact_factors import (
+    MATERIAL_IMPACT_FACTORS,
+    ENERGY_IMPACT_FACTORS,
+    RECYCLING_BENEFIT_FACTORS,
+    PROCESS_IMPACT_FACTORS,
+)
+
 
 class SoliTekManufacturingAnalysis:
     """
@@ -47,6 +55,15 @@ class SoliTekManufacturingAnalysis:
         # Data monitoring
         self.monitor = ManufacturingMonitor()
         self.visualizer = ManufacturingVisualizer()
+
+        # LCA-specific initializations
+        self.lca_analyzer = LCAAnalyzer()
+        self.lca_data = {
+            "material_flow": pd.DataFrame(),
+            "energy_consumption": pd.DataFrame(),
+            "process_data": pd.DataFrame(),
+        }
+        self.energy_sources = ["grid", "solar", "wind"]
 
         # Define expected data schemas
         self.production_schema = {
@@ -465,6 +482,427 @@ class SoliTekManufacturingAnalysis:
             self.logger.error(f"Error generating visualization: {str(e)}")
             plt.close()
             raise ProcessError(f"Visualization generation failed: {str(e)}")
+
+    def load_lca_data(
+        self,
+        material_data_path: Optional[str] = None,
+        energy_data_path: Optional[str] = None,
+        process_data_path: Optional[str] = None,
+    ) -> None:
+        """
+        Load LCA-specific data from CSV files or use synthetic data for testing.
+
+        Args:
+            material_data_path: Path to material flow data CSV
+            energy_data_path: Path to energy consumption data CSV
+            process_data_path: Path to process data CSV
+        """
+        try:
+            if material_data_path:
+                self.lca_data["material_flow"] = pd.read_csv(material_data_path)
+            if energy_data_path:
+                self.lca_data["energy_consumption"] = pd.read_csv(energy_data_path)
+            if process_data_path:
+                self.lca_data["process_data"] = pd.read_csv(process_data_path)
+
+            self.logger.info("Successfully loaded LCA data")
+
+        except Exception as e:
+            self.logger.error(f"Error loading LCA data: {str(e)}")
+            raise
+
+    def perform_lifecycle_assessment(
+        self, batch_id: Optional[str] = None
+    ) -> LifeCycleImpact:
+        """
+        Perform comprehensive lifecycle assessment for specified batch or overall production.
+
+        Args:
+            batch_id: Optional batch identifier for specific analysis
+
+        Returns:
+            LifeCycleImpact object containing impact assessments for all lifecycle phases
+        """
+        try:
+            # Filter data for specific batch if provided
+            material_data = self._filter_batch_data(
+                self.lca_data["material_flow"], batch_id
+            )
+            energy_data = self._filter_batch_data(
+                self.lca_data["energy_consumption"], batch_id
+            )
+            process_data = self._filter_batch_data(
+                self.lca_data["process_data"], batch_id
+            )
+
+            # Calculate material inputs
+            material_inputs = self._aggregate_material_inputs(material_data)
+
+            # Calculate energy consumption
+            total_energy = energy_data["energy_consumption"].sum()
+
+            # Perform full LCA calculation
+            impact = self.lca_analyzer.perform_full_lca(
+                material_inputs=material_inputs,
+                energy_consumption=total_energy,
+                lifetime_years=25.0,  # Standard PV panel lifetime
+                annual_energy_generation=self._calculate_energy_generation(
+                    material_inputs
+                ),
+                grid_carbon_intensity=0.5,  # Can be adjusted based on location
+                recycling_rates=self._calculate_recycling_rates(material_data),
+                transport_distance=100.0,  # Average transport distance in km
+            )
+
+            self.logger.info(f"Completed lifecycle assessment for batch {batch_id}")
+            return impact
+
+        except Exception as e:
+            self.logger.error(f"Error in lifecycle assessment: {str(e)}")
+            raise
+
+    def generate_lca_report(
+        self, output_path: str, batch_id: Optional[str] = None
+    ) -> None:
+        """
+        Generate comprehensive LCA report including all impact categories.
+
+        Args:
+            output_path: Path where the report should be saved
+            batch_id: Optional batch identifier for specific analysis
+        """
+        try:
+            # Perform lifecycle assessment
+            impact = self.perform_lifecycle_assessment(batch_id)
+
+            # Create detailed report
+            report_data = {
+                "Manufacturing Impact": {
+                    "Total Impact (kg CO2-eq)": impact.manufacturing_impact,
+                    "Material Production": self._calculate_material_impacts(),
+                    "Energy Use": self._calculate_energy_impacts(),
+                    "Process Impacts": self._calculate_process_impacts(),
+                },
+                "Use Phase": {
+                    "Total Impact (kg CO2-eq)": impact.use_phase_impact,
+                    "Energy Generation Benefit": self._calculate_generation_benefit(),
+                    "Maintenance Impact": self._calculate_maintenance_impact(),
+                },
+                "End of Life": {
+                    "Total Impact (kg CO2-eq)": impact.end_of_life_impact,
+                    "Recycling Benefits": self._calculate_recycling_benefits(),
+                    "Disposal Impact": self._calculate_disposal_impact(),
+                    "Transport Impact": self._calculate_transport_impact(),
+                },
+            }
+
+            # Export to Excel with multiple sheets
+            with pd.ExcelWriter(output_path) as writer:
+                for category, data in report_data.items():
+                    pd.DataFrame([data]).to_excel(writer, sheet_name=category)
+
+            self.logger.info(f"LCA report generated successfully at {output_path}")
+
+        except Exception as e:
+            self.logger.error(f"Error generating LCA report: {str(e)}")
+            raise
+
+    def _filter_batch_data(
+        self, data: pd.DataFrame, batch_id: Optional[str]
+    ) -> pd.DataFrame:
+        """Filter data for specific batch if batch_id is provided."""
+        if batch_id and not data.empty and "batch_id" in data.columns:
+            return data[data["batch_id"] == batch_id]
+        return data
+
+    def _aggregate_material_inputs(
+        self, material_data: pd.DataFrame
+    ) -> Dict[str, float]:
+        """Aggregate material quantities by type."""
+        if material_data.empty:
+            return {}
+        return material_data.groupby("material_type")["quantity_used"].sum().to_dict()
+
+    def _calculate_recycling_rates(
+        self, material_data: pd.DataFrame
+    ) -> Dict[str, float]:
+        """
+        Calculate recycling rates from historical data.
+
+        Args:
+            material_data: DataFrame containing waste and recycling information
+                Must include 'material_type', 'waste_generated', and 'recycled_amount' columns
+
+        Returns:
+            Dictionary mapping material types to their recycling rates (0.0 to 1.0)
+        """
+        if material_data.empty:
+            return {}
+
+        recycling_rates = {}
+
+        try:
+            # First, create a copy to avoid modifying the original data
+            data_copy = material_data.copy()
+
+            # Convert columns to numeric values, replacing errors with NaN
+            data_copy["waste_generated"] = data_copy["waste_generated"].astype(float)
+            data_copy["recycled_amount"] = data_copy["recycled_amount"].astype(float)
+
+            # Group by material type and calculate sums
+            material_totals = (
+                data_copy.groupby("material_type")
+                .agg({"waste_generated": "sum", "recycled_amount": "sum"})
+                .astype(float)
+            )  # Ensure totals are float type
+
+            # Calculate recycling rate for each material
+            for material in material_totals.index:
+                # Get values as native Python floats
+                waste = float(material_totals.at[material, "waste_generated"])
+                recycled = float(material_totals.at[material, "recycled_amount"])
+
+                # Calculate rate with safe division
+                if waste > 0:
+                    rate = recycled / waste
+                    # Ensure rate is between 0 and 1
+                    rate = max(0.0, min(1.0, rate))
+                else:
+                    rate = 0.0
+
+                recycling_rates[material] = rate
+
+            self.logger.info(
+                f"Calculated recycling rates for {len(recycling_rates)} materials"
+            )
+            return recycling_rates
+
+        except Exception as e:
+            self.logger.error(f"Error calculating recycling rates: {str(e)}")
+            return {}
+
+    def _calculate_energy_generation(self, material_inputs: Dict[str, float]) -> float:
+        """
+        Calculate expected annual energy generation based on panel specifications.
+
+        Args:
+            material_inputs: Dictionary of material quantities in kg
+
+        Returns:
+            float: Annual energy generation in kWh
+        """
+        try:
+            # Convert the glass weight to a float and calculate area
+            glass_weight = float(material_inputs.get("solar_glass", 0))
+            total_panel_area = glass_weight / 10.0  # Approximate area from glass weight
+
+            average_efficiency = 0.20  # 20% efficiency
+            solar_irradiance = 1000.0  # kWh/m²/year (typical value)
+
+            return total_panel_area * average_efficiency * solar_irradiance
+        except (TypeError, ValueError) as e:
+            self.logger.warning(f"Error calculating energy generation: {str(e)}")
+            return 0.0
+
+    def _calculate_material_impacts(self) -> float:
+        """Calculate detailed material production impacts."""
+        if self.lca_data["material_flow"].empty:
+            return 0.0
+
+        total_impact = 0.0
+        try:
+            material_quantities = self._aggregate_material_inputs(
+                self.lca_data["material_flow"]
+            )
+            for material, quantity in material_quantities.items():
+                quantity = float(quantity)  # Ensure numeric type
+                impact_factor = float(MATERIAL_IMPACT_FACTORS.get(material, 0.0))
+                if quantity > 0:  # Now comparing numeric values
+                    total_impact += quantity * impact_factor
+            return total_impact
+        except (TypeError, ValueError) as e:
+            self.logger.warning(f"Error calculating material impacts: {str(e)}")
+            return 0.0
+
+    def _calculate_energy_impacts(self) -> float:
+        """
+        Calculate environmental impacts from energy consumption.
+        Returns the total impact in kg CO2-eq.
+        """
+        if self.lca_data["energy_consumption"].empty:
+            return 0.0
+
+        total_impact = 0.0
+        energy_data = self.lca_data["energy_consumption"]
+
+        # Calculate impact for each energy source
+        for source in self.energy_sources:
+            # Sum up consumption for this energy source
+            source_consumption = energy_data[energy_data["energy_source"] == source][
+                "energy_consumption"
+            ].sum()
+
+            # Get impact factor for this energy source
+            impact_factor = ENERGY_IMPACT_FACTORS.get(source, 0.0)
+
+            # Calculate impact and add to total
+            total_impact += source_consumption * impact_factor
+
+        return total_impact
+
+    def _calculate_process_impacts(self) -> float:
+        """
+        Calculate environmental impacts from manufacturing processes.
+        Each process step has its own impact factor based on industry standards.
+        Returns the total impact in kg CO2-eq.
+        """
+        if self.lca_data["process_data"].empty:
+            return 0.0
+
+        total_impact = 0.0
+        process_data = self.lca_data["process_data"]
+
+        # Calculate impact for each distinct manufacturing process step
+        for process_step in process_data["process_step"].unique():
+            # Calculate total time spent on this process step
+            step_time = process_data[process_data["process_step"] == process_step][
+                "process_time"
+            ].sum()
+
+            # Get the environmental impact factor for this process
+            impact_factor = PROCESS_IMPACT_FACTORS.get(process_step, 0.0)
+
+            # Calculate impact of this process step and add to total
+            total_impact += step_time * impact_factor
+
+        return total_impact
+
+    def _calculate_generation_benefit(self) -> float:
+        """
+        Calculate environmental benefits from clean energy generation over the panel lifetime.
+        This represents the emissions avoided by generating solar power instead of using grid electricity.
+        Returns the total benefit in kg CO2-eq (negative value represents environmental benefit).
+        """
+        if self.material_flow.empty:
+            return 0.0
+
+        # Calculate total panel area from material inputs
+        material_inputs = self._aggregate_material_inputs(self.material_flow)
+        # Convert glass weight to approximate panel area (10kg glass per m²)
+        total_panel_area = material_inputs.get("solar_glass", 0) / 10.0  # m²
+
+        # Calculate annual energy generation
+        average_efficiency = 0.20  # 20% efficiency
+        solar_irradiance = 1000.0  # kWh/m²/year (typical value)
+        annual_generation = total_panel_area * average_efficiency * solar_irradiance
+
+        # Calculate emissions avoided over 25-year lifetime
+        grid_carbon_intensity = 0.5  # kg CO2/kWh (can be adjusted by region)
+        lifetime_benefit = annual_generation * 25 * grid_carbon_intensity
+
+        # Return negative value since this is an environmental benefit
+        return -lifetime_benefit
+
+    def _calculate_maintenance_impact(self) -> float:
+        """
+        Calculate environmental impacts from maintenance activities over panel lifetime.
+        Includes regular cleaning, inspections, and minor repairs.
+        Returns the total impact in kg CO2-eq.
+        """
+        if self.material_flow.empty:
+            return 0.0
+
+        # Calculate panel area for maintenance calculations
+        material_inputs = self._aggregate_material_inputs(self.material_flow)
+        total_panel_area = material_inputs.get("solar_glass", 0) / 10.0  # m²
+
+        # Define maintenance impact factors
+        cleaning_impact = 0.1  # kg CO2-eq/m²/year for cleaning
+        inspection_impact = 0.05  # kg CO2-eq/m²/year for inspections
+
+        # Calculate annual maintenance impact
+        annual_impact = total_panel_area * (cleaning_impact + inspection_impact)
+
+        # Calculate lifetime impact (25-year standard lifetime)
+        lifetime_impact = annual_impact * 25
+
+        return lifetime_impact
+
+    def _calculate_recycling_benefits(self) -> float:
+        """
+        Calculate environmental benefits from material recycling.
+        Each material has a specific benefit factor representing emissions avoided through recycling.
+        Returns the total benefit in kg CO2-eq (negative value represents benefit).
+        """
+        if self.lca_data["material_flow"].empty:
+            return 0.0
+
+        total_benefit = 0.0
+        material_data = self.lca_data["material_flow"]
+
+        # Calculate benefits for each material type
+        for material in material_data["material_type"].unique():
+            # Get total recycled amount for this material
+            recycled_amount = material_data[material_data["material_type"] == material][
+                "recycled_amount"
+            ].sum()
+
+            # Get recycling benefit factor for this material
+            benefit_factor = RECYCLING_BENEFIT_FACTORS.get(material, 0.0)
+
+            # Calculate and add recycling benefit
+            total_benefit += recycled_amount * benefit_factor
+
+        return total_benefit  # Negative value represents environmental benefit
+
+    def _calculate_disposal_impact(self) -> float:
+        """
+        Calculate environmental impacts from waste disposal.
+        Considers the impact of landfilling non-recycled materials.
+        Returns the total impact in kg CO2-eq.
+        """
+        if self.lca_data["material_flow"].empty:
+            return 0.0
+
+        total_impact = 0.0
+        material_data = self.lca_data["material_flow"]
+
+        # Calculate disposal impact for each material type
+        for material in material_data["material_type"].unique():
+            # Get total waste and recycled amounts
+            material_subset = material_data[material_data["material_type"] == material]
+            waste_generated = material_subset["waste_generated"].sum()
+            recycled_amount = material_subset["recycled_amount"].sum()
+
+            # Calculate amount going to disposal
+            disposed_amount = waste_generated - recycled_amount
+
+            # Apply disposal impact factor (can vary by material type)
+            disposal_impact_factor = 0.1  # kg CO2-eq per kg disposed
+            total_impact += disposed_amount * disposal_impact_factor
+
+        return total_impact
+
+    def _calculate_transport_impact(self) -> float:
+        """
+        Calculate environmental impacts from transportation.
+        Considers the impact of transporting materials and finished products.
+        Returns the total impact in kg CO2-eq.
+        """
+        if self.lca_data["material_flow"].empty:
+            return 0.0
+
+        # Calculate total mass being transported
+        total_mass = self.lca_data["material_flow"]["quantity_used"].sum()
+
+        # Define transport parameters
+        transport_distance = 100.0  # Average transport distance in km
+        transport_emission_factor = 0.062  # kg CO2-eq per tonne-km
+
+        # Convert mass to tonnes and calculate impact
+        impact = (total_mass / 1000) * transport_distance * transport_emission_factor
+
+        return impact
 
     def _visualize_production_trends(self):
         """Enhanced production efficiency and output trends visualization"""
