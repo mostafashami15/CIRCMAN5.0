@@ -97,6 +97,10 @@ class ProjectPaths:
             ).days > days:
                 shutil.move(str(log), str(self.paths["LOGS_ARCHIVE"] / log.name))
 
+    def get_synthetic_data_path(self, filename: str) -> str:
+        """Get path for synthetic data files."""
+        return str(self.paths["SYNTHETIC_DATA"] / filename)
+
 
 # Create global instance
 project_paths = ProjectPaths()
