@@ -1,7 +1,9 @@
 """Unit tests for LCA analysis module."""
 
 import pytest
+from pathlib import Path
 from src.circman5.analysis.lca.core import LCAAnalyzer, LifeCycleImpact
+from src.circman5.config.project_paths import project_paths
 from src.circman5.analysis.lca.impact_factors import (
     MATERIAL_IMPACT_FACTORS,
     ENERGY_IMPACT_FACTORS,
@@ -83,3 +85,17 @@ def test_lifecycle_impact_total_calculation():
     )
 
     assert impact.total_impact == -50.0
+
+
+def test_lca_results_saving(lca_analyzer):
+    """Test saving LCA results to file."""
+    impact = LifeCycleImpact(
+        manufacturing_impact=100.0,
+        use_phase_impact=200.0,
+        end_of_life_impact=50.0,
+        total_carbon_footprint=350.0,
+    )
+
+    lca_analyzer.save_results(impact, "TEST_001")
+    run_dir = project_paths.get_run_directory()
+    assert (run_dir / "reports" / "lca_impact_TEST_001.xlsx").exists()

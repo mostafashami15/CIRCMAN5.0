@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional
 import pandas as pd
 import numpy as np
+from ...config.project_paths import project_paths
+from ...logging_config import setup_logger
 
 
 @dataclass
@@ -26,6 +28,10 @@ class LCAAnalyzer:
 
     def __init__(self):
         # Impact factors for different processes (could be loaded from configuration)
+
+        self.logger = setup_logger("lca_analyzer")
+        self.impact_results_dir = None
+
         self.impact_factors = {
             "silicon_production": 32.8,  # kg CO2-eq per kg
             "glass_production": 0.9,  # kg CO2-eq per kg
@@ -144,3 +150,22 @@ class LCAAnalyzer:
             end_of_life_impact=end_of_life_impact,
             total_carbon_footprint=total_carbon_footprint,
         )
+
+    def save_results(
+        self, impact: LifeCycleImpact, batch_id: Optional[str] = None
+    ) -> None:
+        run_dir = project_paths.get_run_directory()
+        results_file = (
+            run_dir / "reports" / f"lca_impact{'_' + batch_id if batch_id else ''}.xlsx"
+        )
+
+        pd.DataFrame(
+            [
+                {
+                    "Manufacturing Impact": impact.manufacturing_impact,
+                    "Use Phase Impact": impact.use_phase_impact,
+                    "End of Life Impact": impact.end_of_life_impact,
+                    "Total Carbon Footprint": impact.total_carbon_footprint,
+                }
+            ]
+        ).to_excel(results_file)
