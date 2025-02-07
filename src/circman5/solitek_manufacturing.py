@@ -4,9 +4,10 @@ import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import Dict, Optional, List
-from .config import project_paths
+from typing import Dict, Optional, List, Union
+from pathlib import Path
 
+from .config import project_paths
 from .ai.optimization import ManufacturingOptimizer, MetricsDict, PredictionDict
 from pathlib import Path
 from .config.project_paths import project_paths
@@ -256,7 +257,9 @@ class SoliTekManufacturingAnalysis:
 
         return True
 
-    def load_production_data(self, file_path: Optional[str] = None) -> None:
+    def load_production_data(
+        self, file_path: Optional[Union[str, Path]] = None
+    ) -> None:
         """
         Load and validate production data from CSV files.
 
@@ -265,10 +268,14 @@ class SoliTekManufacturingAnalysis:
         """
         try:
             if file_path is None:
-                file_path = (
-                    project_paths.get_path("SYNTHETIC_DATA")
+                # Explicitly convert to string
+                file_path = str(
+                    Path(project_paths.get_path("SYNTHETIC_DATA"))
                     / "test_production_data.csv"
                 )
+            else:
+                # Ensure file_path is a string
+                file_path = str(file_path)
 
             self.logger.info(f"Loading production data from {file_path}")
 
