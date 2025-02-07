@@ -25,14 +25,15 @@ def test_default_paths(analyzer):
     test_data_path = Path(project_paths.get_path("SYNTHETIC_DATA"))
     test_data_path.mkdir(parents=True, exist_ok=True)
 
-    # Create test CSV
+    # Create test CSV with output always less than input
     test_df = pd.DataFrame(
         {
             "timestamp": pd.date_range("2024-01-01", periods=5),
             "batch_id": [f"BATCH_{i}" for i in range(5)],
             "stage": ["test"] * 5,
             "input_amount": np.random.uniform(90, 110, 5),
-            "output_amount": np.random.uniform(80, 100, 5),
+            # Ensure output is always less than input
+            "output_amount": np.random.uniform(80, 90, 5),
             "energy_used": np.random.uniform(140, 160, 5),
         }
     )
