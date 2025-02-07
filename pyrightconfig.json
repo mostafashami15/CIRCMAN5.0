@@ -6,5 +6,19 @@
       "autoImportCompletions": true,
       "useLibraryCodeForTypes": true,
       "typeCheckingMode": "strict"
-  }
+  },
+  "include": ["src"],
+  "exclude": [
+      "**/node_modules",
+      "**/__pycache__",
+      "**/.*",
+      "data/synthetic",
+      "data/processed",
+      "data/raw",
+      "tests/results"
+  ],
+  "reportMissingImports": true,
+  "reportOptionalMemberAccess": false,
+  "pythonVersion": "3.11",
+  "strictParameterNoneValue": true
 }

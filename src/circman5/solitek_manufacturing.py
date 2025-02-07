@@ -5,13 +5,16 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Dict, Optional, List
+from .config import project_paths
 
 from .ai.optimization import ManufacturingOptimizer, MetricsDict, PredictionDict
+from pathlib import Path
+from .config.project_paths import project_paths
 from .logging_config import setup_logger
 from .errors import ValidationError, ProcessError, DataError, ResourceError
 from .errors import ValidationError, DataError, ProcessError
 from .monitoring import ManufacturingMonitor
-from .visualization import ManufacturingVisualizer
+from .visualization import ManufacturingVisualizer, LCAVisualizer
 from .analysis.efficiency import EfficiencyAnalyzer
 from .analysis.quality import QualityAnalyzer
 from .analysis.sustainability import SustainabilityAnalyzer
@@ -33,7 +36,7 @@ class SoliTekManufacturingAnalysis:
     """
 
     def __init__(self):
-        # logger initialization
+        # Use project paths for logging
         self.logger = setup_logger("solitek_manufacturing")
 
         # Initialize core data structures for different metric categories
@@ -253,57 +256,36 @@ class SoliTekManufacturingAnalysis:
 
         return True
 
-    def load_production_data(self, file_path: str) -> None:
+    def load_production_data(self, file_path: Optional[str] = None) -> None:
         """
         Load and validate production data from CSV files.
-        Implements enhanced error checking and data validation with logging.
 
         Args:
-            file_path: Path to the CSV file containing production data
-
-        Raises:
-            DataError: If file doesn't exist or is empty
-            ValidationError: If data fails validation checks
-            ProcessError: If file cannot be parsed or processed
+            file_path: Path to the CSV file. If None, uses test data path.
         """
         try:
+            if file_path is None:
+                file_path = (
+                    project_paths.get_path("SYNTHETIC_DATA")
+                    / "test_production_data.csv"
+                )
+
             self.logger.info(f"Loading production data from {file_path}")
 
-            # Check if file exists
-            if not os.path.exists(file_path):
-                raise DataError(
-                    f"Production data file not found: {file_path}",
-                    data_source=file_path,
-                )
+            if not Path(file_path).exists():
+                raise DataError(f"Production data file not found: {file_path}")
 
-            # Load data
-            try:
-                data = pd.read_csv(file_path)
-            except pd.errors.ParserError as pe:
-                raise ProcessError(
-                    f"Error parsing CSV file: {str(pe)}", process_name="data_loading"
-                )
-
-            # Check if data is empty
+            data = pd.read_csv(file_path)
             if data.empty:
-                raise DataError("Production data file is empty", data_source=file_path)
+                raise DataError("Production data file is empty")
 
-            # Validate data
             if self.validate_production_data(data):
                 self.production_data = data
-                self.logger.info(
-                    f"Successfully loaded and validated {len(data)} records from {file_path}"
-                )
+                self.logger.info(f"Successfully loaded {len(data)} records")
 
-        except (DataError, ValidationError, ProcessError) as e:
-            self.logger.error(f"{e.__class__.__name__}: {str(e)}")
-            raise
         except Exception as e:
-            self.logger.error(f"Unexpected error loading production data: {str(e)}")
-            raise ProcessError(
-                f"Unexpected error during data loading: {str(e)}",
-                process_name="data_loading",
-            )
+            self.logger.error(f"Error loading production data: {str(e)}")
+            raise
 
     def analyze_efficiency(self) -> Dict:
         """
@@ -1188,14 +1170,19 @@ class SoliTekManufacturingAnalysis:
 
         self.visualizer.create_kpi_dashboard(metrics, save_path)
 
-    def export_analysis_report(self, output_path: str) -> None:
+    def export_analysis_report(self, output_path: Optional[str] = None) -> None:
         """
         Generate a comprehensive analysis report and export to Excel.
 
         Args:
-            output_path: Path where the Excel report should be saved
+            output_path: Optional path where the Excel report should be saved.
+                        If None, uses default project path.
         """
         try:
+            if output_path is None:
+                run_dir = project_paths.get_run_directory()
+                output_path = str(run_dir / "reports" / "analysis_report.xlsx")
+
             # Collect all metrics
             report_data = {
                 "production_metrics": self.analyze_efficiency(),
@@ -1205,11 +1192,18 @@ class SoliTekManufacturingAnalysis:
 
             # Export to Excel with multiple sheets
             with pd.ExcelWriter(output_path) as writer:
+                has_data = False
                 for metric_type, data in report_data.items():
                     if isinstance(data, dict) and not any(
                         key == "error" for key in data.keys()
                     ):
                         pd.DataFrame([data]).to_excel(writer, sheet_name=metric_type)
+                        has_data = True
+
+                if not has_data:
+                    pd.DataFrame(["No data available"]).to_excel(
+                        writer, sheet_name="Empty_Report"
+                    )
 
             self.logger.info(f"Analysis report exported to: {output_path}")
 

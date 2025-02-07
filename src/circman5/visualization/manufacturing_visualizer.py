@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Dict, Optional
 import pandas as pd
+from pathlib import Path
+from circman5.config.project_paths import project_paths
 
 
 class ManufacturingVisualizer:
@@ -37,6 +39,10 @@ class ManufacturingVisualizer:
             efficiency_data: DataFrame containing efficiency metrics
             save_path: Optional path to save the plot
         """
+        if save_path is None:
+            run_dir = project_paths.get_run_directory()
+            save_path = str(run_dir / "visualizations" / "efficiency_trends.png")
+
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
 
         # Production Rate Trend
@@ -68,6 +74,9 @@ class ManufacturingVisualizer:
             quality_data: DataFrame containing quality metrics
             save_path: Optional path to save the plot
         """
+        if save_path is None:
+            save_path = self.save_visualization("quality_metrics")
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
         # Defect Rate Distribution
@@ -98,6 +107,9 @@ class ManufacturingVisualizer:
             resource_data: DataFrame containing resource metrics
             save_path: Optional path to save the plot
         """
+        if save_path is None:
+            save_path = self.save_visualization("resource_usage")
+
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
 
         # Resource Consumption Over Time
@@ -133,6 +145,10 @@ class ManufacturingVisualizer:
             monitor_data: Dictionary containing different types of monitoring data
             save_path: Optional path to save the dashboard
         """
+
+        if save_path is None:
+            save_path = self.save_visualization("performance_dashboard")
+
         fig = plt.figure(figsize=(15, 12))
 
         # Layout setup
@@ -191,6 +207,10 @@ class ManufacturingVisualizer:
             metrics_data: Dictionary containing KPI values
             save_path: Optional path to save the dashboard
         """
+
+        if save_path is None:
+            save_path = self.save_visualization("kpi_dashboard")
+
         fig, axes = plt.subplots(2, 2, figsize=(15, 12))
         fig.suptitle("Manufacturing KPIs Dashboard", fontsize=16)
 
@@ -226,6 +246,11 @@ class ManufacturingVisualizer:
             plt.close()
         else:
             plt.show()
+
+    def save_visualization(self, plot_name: str, suffix: str = "png") -> str:
+        """Get standardized path for saving visualizations."""
+        run_dir = project_paths.get_run_directory()
+        return str(run_dir / "visualizations" / f"{plot_name}.{suffix}")
 
     def _create_gauge_chart(self, ax, value: float, title: str, unit: str):
         """Helper method to create gauge charts for KPIs."""

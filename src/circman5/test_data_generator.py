@@ -5,6 +5,8 @@ import numpy as np
 from datetime import datetime, timedelta
 import random
 from typing import Dict, List
+from .config import project_paths
+
 
 from .analysis.lca.impact_factors import (
     MATERIAL_IMPACT_FACTORS,
@@ -48,10 +50,12 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
             "copper_wiring": 0.2,  # kg/m²
         }
 
-    def generate_production_data(self) -> pd.DataFrame:
+    def generate_production_data(self):
         """Generate production data with all required columns."""
         data = []
         current_date = self.start_date
+
+        stages = ["silicon_purification", "wafer_production", "cell_production"]
 
         for _ in range(self.days):
             for hour in range(8, 16):
@@ -65,6 +69,7 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
                         {
                             "timestamp": timestamp,
                             "batch_id": random.choice(self.batch_ids),
+                            "stage": random.choice(stages),  # Added stage column
                             "product_type": random.choice(self.product_types),
                             "production_line": line,
                             "input_amount": input_amount,
@@ -72,9 +77,10 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
                             "energy_used": random.uniform(140, 160),
                             "cycle_time": random.uniform(45, 55),
                             "yield_rate": (output_amount / input_amount) * 100,
+                            "status": "completed",  # Added status column
                         }
                     )
-            current_date += timedelta(days=1)
+                current_date += timedelta(days=1)
 
         return pd.DataFrame(data)
 
@@ -244,6 +250,20 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
             )
 
         return pd.DataFrame(data)
+
+    def save_generated_data(self) -> None:
+        """Save all generated test data to the synthetic data directory."""
+        # Save energy data
+        energy_path = project_paths.get_synthetic_data_path("test_energy_data.csv")
+        self.generate_energy_data().to_csv(energy_path)
+
+        # Save material data
+        material_path = project_paths.get_synthetic_data_path("test_material_data.csv")
+        self.generate_material_flow_data().to_csv(material_path)
+
+        # Save process data
+        process_path = project_paths.get_synthetic_data_path("test_process_data.csv")
+        self.generate_lca_process_data().to_csv(process_path)
 
 
 # For backwards compatibility

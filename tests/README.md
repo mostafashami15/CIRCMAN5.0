@@ -6,3 +6,4 @@
 ## Running Tests
 ```sh
 pytest tests/
+```
