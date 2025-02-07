@@ -3,10 +3,11 @@
 import logging
 import os
 from datetime import datetime
+from typing import Optional
 from circman5.config.project_paths import project_paths
 
 
-def setup_logger(name: str, log_dir: str = None) -> logging.Logger:
+def setup_logger(name: str, log_dir: Optional[str] = None) -> logging.Logger:
     """
     Configure logging system with file and console handlers.
 

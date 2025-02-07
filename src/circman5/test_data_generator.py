@@ -5,7 +5,8 @@ import numpy as np
 from datetime import datetime, timedelta
 import random
 from typing import Dict, List
-from .config import project_paths
+from pathlib import Path
+from circman5.config.project_paths import project_paths
 
 
 from .analysis.lca.impact_factors import (
@@ -253,17 +254,22 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
 
     def save_generated_data(self) -> None:
         """Save all generated test data to the synthetic data directory."""
+        synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
+
         # Save energy data
-        energy_path = project_paths.get_synthetic_data_path("test_energy_data.csv")
-        self.generate_energy_data().to_csv(energy_path)
+        self.generate_energy_data().to_csv(
+            synthetic_dir / "test_energy_data.csv", index=False
+        )
 
         # Save material data
-        material_path = project_paths.get_synthetic_data_path("test_material_data.csv")
-        self.generate_material_flow_data().to_csv(material_path)
+        self.generate_material_flow_data().to_csv(
+            synthetic_dir / "test_material_data.csv", index=False
+        )
 
         # Save process data
-        process_path = project_paths.get_synthetic_data_path("test_process_data.csv")
-        self.generate_lca_process_data().to_csv(process_path)
+        self.generate_lca_process_data().to_csv(
+            synthetic_dir / "test_process_data.csv", index=False
+        )
 
 
 # For backwards compatibility

@@ -1,6 +1,9 @@
 import pytest
 from datetime import datetime
+from pathlib import Path
+import pandas as pd
 from circman5.monitoring import ManufacturingMonitor
+from circman5.config.project_paths import project_paths
 
 
 @pytest.fixture
@@ -53,8 +56,20 @@ def test_resource_metrics(monitor):
     )  # (1000-50)/1000
 
 
+def test_metrics_saving(monitor):
+    """Test metrics are saved in correct location."""
+    # Add test data
+    monitor.metrics_history["efficiency"] = pd.DataFrame(
+        {"timestamp": pd.date_range("2024-01-01", periods=5), "value": range(5)}
+    )
+
+    monitor.save_metrics("efficiency")
+    run_dir = project_paths.get_run_directory()
+    assert (run_dir / "reports" / "efficiency_metrics.csv").exists()
+
+
 def test_batch_summary(monitor):
-    """Test batch summary generation."""
+    """Test batch summary generation and saving."""
     batch_id = "TEST_001"
     monitor.start_batch_monitoring(batch_id)
 
@@ -65,7 +80,12 @@ def test_batch_summary(monitor):
 
     summary = monitor.get_batch_summary(batch_id)
 
+    # Test summary content
     assert "efficiency" in summary
     assert "quality" in summary
     assert "resources" in summary
     assert summary["quality"]["avg_defect_rate"] == 2.5
+
+    # Test summary file exists
+    run_dir = project_paths.get_run_directory()
+    assert (run_dir / "reports" / f"batch_{batch_id}_summary.xlsx").exists()

@@ -7,6 +7,9 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from typing import Dict, List, Optional
+from pathlib import Path
+from .config.project_paths import project_paths
+from .logging_config import setup_logger
 
 
 class ManufacturingMonitor:
@@ -20,6 +23,7 @@ class ManufacturingMonitor:
             "resources": pd.DataFrame(),
         }
         self.current_batch: Optional[str] = None
+        self.logger = setup_logger("manufacturing_monitor")
 
     def start_batch_monitoring(self, batch_id: str) -> None:
         """
@@ -131,21 +135,31 @@ class ManufacturingMonitor:
 
         return metrics
 
+    def save_metrics(self, metric_type: str) -> None:
+        """Save metrics to appropriate location."""
+        if metric_type not in self.metrics_history:
+            raise ValueError(f"Invalid metric type: {metric_type}")
+
+        run_dir = project_paths.get_run_directory()
+        metrics_file = run_dir / "reports" / f"{metric_type}_metrics.csv"
+        self.metrics_history[metric_type].to_csv(metrics_file, index=False)
+
     def get_batch_summary(self, batch_id: str) -> Dict:
-        """
-        Generate summary metrics for a specific batch.
-
-        Args:
-            batch_id: Batch identifier to summarize
-
-        Returns:
-            Dict containing summary metrics for the batch
-        """
-        return {
+        """Generate batch summary and save to reports directory."""
+        summary = {
             "efficiency": self._summarize_efficiency(batch_id),
             "quality": self._summarize_quality(batch_id),
             "resources": self._summarize_resources(batch_id),
         }
+
+        run_dir = project_paths.get_run_directory()
+        summary_file = run_dir / "reports" / f"batch_{batch_id}_summary.xlsx"
+
+        with pd.ExcelWriter(summary_file) as writer:
+            for metric_type, data in summary.items():
+                pd.DataFrame([data]).to_excel(writer, sheet_name=metric_type)
+
+        return summary
 
     def _record_batch_start(self, batch_id: str) -> None:
         """Record the start of a new batch monitoring session."""
