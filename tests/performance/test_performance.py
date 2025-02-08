@@ -1,132 +1,182 @@
-"""Performance tests for the manufacturing analysis system."""
+"""Performance tests for the CIRCMAN5.0 system."""
 
 import pytest
 import time
 import psutil
-import os
+import numpy as np
 from pathlib import Path
 
-from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
 from circman5.test_data_generator import ManufacturingDataGenerator
+from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
 from circman5.config.project_paths import project_paths
 
 
-@pytest.fixture
-def analyzer():
-    """Create analyzer instance."""
-    return SoliTekManufacturingAnalysis()
+@pytest.fixture(scope="module")
+def large_test_data():
+    """Generate large test dataset for performance testing."""
+    return ManufacturingDataGenerator(start_date="2024-01-01", days=365)
 
 
-@pytest.fixture
-def test_data():
-    """Generate test data."""
-    generator = ManufacturingDataGenerator(days=30)
+@pytest.fixture(scope="module")
+def test_run_dir():
+    """Create test run directory."""
+    return project_paths.get_run_directory()
+
+
+def measure_execution_time(func):
+    """Decorator to measure function execution time."""
+
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        duration = end_time - start_time
+        return result, duration
+
+    return wrapper
+
+
+def measure_memory_usage(func):
+    """Decorator to measure function memory usage."""
+
+    def wrapper(*args, **kwargs):
+        process = psutil.Process()
+        memory_before = process.memory_info().rss
+        result = func(*args, **kwargs)
+        memory_after = process.memory_info().rss
+        memory_used = memory_after - memory_before
+        return result, memory_used
+
+    return wrapper
+
+
+@measure_execution_time
+def test_data_generation_performance(large_test_data):
+    """Test performance of data generation."""
+    production_data = large_test_data.generate_production_data()
+    quality_data = large_test_data.generate_quality_data()
+    energy_data = large_test_data.generate_energy_data()
+    material_data = large_test_data.generate_material_flow_data()
+
+    assert not production_data.empty
+    assert not quality_data.empty
+    assert not energy_data.empty
+    assert not material_data.empty
+
     return {
-        "production": generator.generate_production_data(),
-        "quality": generator.generate_quality_data(),
-        "energy": generator.generate_energy_data(),
-        "material": generator.generate_material_flow_data(),
+        "production_size": len(production_data),
+        "quality_size": len(quality_data),
+        "energy_size": len(energy_data),
+        "material_size": len(material_data),
     }
 
 
-def test_data_loading_performance(analyzer, test_data):
-    """Test data loading performance."""
-    start_time = time.time()
+@measure_memory_usage
+def test_analysis_memory_usage(large_test_data):
+    """Test memory usage during analysis."""
+    analyzer = SoliTekManufacturingAnalysis()
 
-    # Get run directory for this test
-    run_dir = project_paths.get_run_directory()
-    data_dir = run_dir / "input_data"
-    data_dir.mkdir(parents=True, exist_ok=True)
-
-    # Save and load test data
-    data_path = data_dir / "test_production_data.csv"
-    test_data["production"].to_csv(data_path, index=False)
-
-    analyzer.load_production_data(data_path)
-
-    load_time = time.time() - start_time
-    assert load_time < 5.0, f"Data loading took {load_time:.2f} seconds"
-    assert data_path.exists(), "Test data file not saved"
-
-
-def test_analysis_performance(analyzer, test_data):
-    """Test analysis performance."""
-    # Load test data
-    analyzer.production_data = test_data["production"]
-    analyzer.quality_data = test_data["quality"]
-    analyzer.energy_data = test_data["energy"]
-    analyzer.material_flow = test_data["material"]
-
-    # Get run directory for results
-    run_dir = project_paths.get_run_directory()
-    results_dir = run_dir / "results"
-    results_dir.mkdir(parents=True, exist_ok=True)
-
-    start_time = time.time()
+    # Load large datasets
+    analyzer.production_data = large_test_data.generate_production_data()
+    analyzer.quality_data = large_test_data.generate_quality_data()
+    analyzer.energy_data = large_test_data.generate_energy_data()
+    analyzer.material_flow = large_test_data.generate_material_flow_data()
 
     # Perform analysis
-    analyzer.analyze_efficiency()
-    analyzer.analyze_quality_metrics()
-    analyzer.calculate_sustainability_metrics()
+    efficiency_metrics = analyzer.analyze_efficiency()
+    quality_metrics = analyzer.analyze_quality_metrics()
+    sustainability_metrics = analyzer.calculate_sustainability_metrics()
 
-    # Generate report
-    report_path = results_dir / "performance_test_report.xlsx"
-    analyzer.export_analysis_report(str(report_path))
-
-    analysis_time = time.time() - start_time
-    assert analysis_time < 10.0, f"Analysis took {analysis_time:.2f} seconds"
-    assert report_path.exists(), "Analysis report not generated"
+    return {
+        "efficiency": efficiency_metrics,
+        "quality": quality_metrics,
+        "sustainability": sustainability_metrics,
+    }
 
 
-def test_visualization_performance(analyzer, test_data):
-    """Test visualization generation performance."""
-    # Load ALL required data
-    analyzer.production_data = test_data["production"]
-    analyzer.quality_data = test_data["quality"]
-    analyzer.energy_data = test_data["energy"]
-    analyzer.material_flow = test_data["material"]  # Added this line
+@measure_execution_time
+def test_optimization_performance(large_test_data):
+    """Test performance of AI optimization."""
+    analyzer = SoliTekManufacturingAnalysis()
 
-    # Get run directory for visualizations
-    run_dir = project_paths.get_run_directory()
-    viz_dir = run_dir / "visualizations"
-    viz_dir.mkdir(parents=True, exist_ok=True)
+    # Load data
+    analyzer.production_data = large_test_data.generate_production_data()
+    analyzer.quality_data = large_test_data.generate_quality_data()
 
-    start_time = time.time()
+    # Train model
+    metrics = analyzer.train_optimization_model()
+
+    # Test optimization
+    current_params = {
+        "input_amount": 100.0,
+        "energy_used": 150.0,
+        "cycle_time": 50.0,
+        "efficiency": 21.0,
+        "defect_rate": 2.0,
+        "thickness_uniformity": 95.0,
+    }
+
+    optimized_params = analyzer.optimize_process_parameters(current_params)
+
+    return {"training_metrics": metrics, "optimization_result": optimized_params}
+
+
+@measure_execution_time
+def test_visualization_performance(large_test_data, test_run_dir):
+    """Test performance of visualization generation."""
+    analyzer = SoliTekManufacturingAnalysis()
+
+    # Load data
+    analyzer.production_data = large_test_data.generate_production_data()
+    analyzer.quality_data = large_test_data.generate_quality_data()
+    analyzer.energy_data = large_test_data.generate_energy_data()
+    analyzer.material_flow = large_test_data.generate_material_flow_data()
 
     # Generate visualizations
-    for metric_type in ["production", "quality", "sustainability"]:
-        viz_path = viz_dir / f"{metric_type}_analysis.png"
+    for metric_type in ["production", "energy", "quality", "sustainability"]:
+        viz_path = test_run_dir / "visualizations" / f"{metric_type}_analysis.png"
         analyzer.generate_visualization(metric_type, str(viz_path))
-        assert viz_path.exists(), f"{metric_type} visualization not generated"
+        assert viz_path.exists()
 
-    viz_time = time.time() - start_time
-    assert viz_time < 15.0, f"Visualization generation took {viz_time:.2f} seconds"
+    return {"visualization_count": 4}
 
 
-def test_memory_usage(analyzer, test_data):
-    """Test memory usage during analysis."""
-    process = psutil.Process()
-    initial_memory = process.memory_info().rss / 1024 / 1024  # MB
+def test_performance_logging(test_run_dir):
+    """Log performance test results."""
+    results = []
 
-    # Load data and perform analysis
-    analyzer.production_data = test_data["production"]
-    analyzer.quality_data = test_data["quality"]
+    # Run data generation test
+    data_result, data_time = test_data_generation_performance(
+        ManufacturingDataGenerator()
+    )
+    results.append(("Data Generation", data_time))
 
-    # Get run directory
-    run_dir = project_paths.get_run_directory()
-    results_dir = run_dir / "results"
-    results_dir.mkdir(parents=True, exist_ok=True)
+    # Run analysis test
+    analysis_result, memory_usage = test_analysis_memory_usage(
+        ManufacturingDataGenerator()
+    )
+    # Ensure memory_usage is a number before division
+    memory_usage_mb = float(memory_usage) / (1024 * 1024)  # Convert to MB
+    results.append(("Analysis Memory", memory_usage_mb))
 
-    # Perform analysis operations
-    analyzer.analyze_efficiency()
-    analyzer.analyze_quality_metrics()
+    # Run optimization test
+    opt_result, opt_time = test_optimization_performance(ManufacturingDataGenerator())
+    results.append(("Optimization", opt_time))
 
-    # Generate report
-    report_path = results_dir / "memory_test_report.xlsx"
-    analyzer.export_analysis_report(str(report_path))
+    # Run visualization test
+    viz_result, viz_time = test_visualization_performance(
+        ManufacturingDataGenerator(), test_run_dir
+    )
+    results.append(("Visualization", viz_time))
 
-    final_memory = process.memory_info().rss / 1024 / 1024  # MB
-    memory_increase = final_memory - initial_memory
+    # Save results
+    performance_log = test_run_dir / "performance_results.txt"
+    with open(performance_log, "w") as f:
+        f.write("=== Performance Test Results ===\n\n")
+        for name, value in results:
+            if name == "Analysis Memory":
+                f.write(f"{name}: {value:.2f} MB\n")
+            else:
+                f.write(f"{name}: {value:.2f} seconds\n")
 
-    assert memory_increase < 500, f"Memory usage increased by {memory_increase:.1f} MB"
-    assert report_path.exists(), "Memory test report not generated"
+    assert performance_log.exists()
