@@ -1,7 +1,10 @@
-from dataclasses import dataclass
-from typing import Dict, List, Optional
 import pandas as pd
 import numpy as np
+
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+from pathlib import Path
+
 from ...config.project_paths import project_paths
 from ...logging_config import setup_logger
 
@@ -152,14 +155,28 @@ class LCAAnalyzer:
         )
 
     def save_results(
-        self, impact: LifeCycleImpact, batch_id: Optional[str] = None
+        self,
+        impact: LifeCycleImpact,
+        batch_id: Optional[str] = None,
+        output_path: Optional[Path] = None,
     ) -> None:
-        run_dir = project_paths.get_run_directory()
-        results_file = (
-            run_dir / "reports" / f"lca_impact{'_' + batch_id if batch_id else ''}.xlsx"
-        )
+        """Save LCA results to Excel file.
 
-        pd.DataFrame(
+        Args:
+            impact: LifeCycleImpact object containing results
+            batch_id: Optional batch identifier for filename
+            output_path: Optional explicit output path
+        """
+        if output_path is None:
+            run_dir = project_paths.get_run_directory()
+            filename = f"lca_impact{'_' + batch_id if batch_id else ''}.xlsx"
+            output_path = run_dir / "reports" / filename
+
+        # Ensure parent directory exists
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Create DataFrame with results
+        results_df = pd.DataFrame(
             [
                 {
                     "Manufacturing Impact": impact.manufacturing_impact,
@@ -168,4 +185,8 @@ class LCAAnalyzer:
                     "Total Carbon Footprint": impact.total_carbon_footprint,
                 }
             ]
-        ).to_excel(results_file)
+        )
+
+        # Save to Excel
+        results_df.to_excel(output_path)
+        self.logger.info(f"LCA results saved to: {output_path}")

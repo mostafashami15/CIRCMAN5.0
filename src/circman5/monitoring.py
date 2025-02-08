@@ -135,14 +135,26 @@ class ManufacturingMonitor:
 
         return metrics
 
-    def save_metrics(self, metric_type: str) -> None:
-        """Save metrics to appropriate location."""
+    def save_metrics(self, metric_type: str, save_path: Optional[Path] = None) -> None:
+        """Save metrics to appropriate location.
+
+        Args:
+            metric_type: Type of metrics to save ('efficiency', 'quality', etc.)
+            save_path: Optional explicit path to save metrics file
+        """
         if metric_type not in self.metrics_history:
             raise ValueError(f"Invalid metric type: {metric_type}")
 
-        run_dir = project_paths.get_run_directory()
-        metrics_file = run_dir / "reports" / f"{metric_type}_metrics.csv"
-        self.metrics_history[metric_type].to_csv(metrics_file, index=False)
+        if save_path is None:
+            run_dir = project_paths.get_run_directory()
+            save_path = run_dir / "reports" / f"{metric_type}_metrics.csv"
+
+        # Ensure directory exists
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Save metrics
+        self.metrics_history[metric_type].to_csv(save_path, index=False)
+        self.logger.info(f"Saved {metric_type} metrics to: {save_path}")
 
     def get_batch_summary(self, batch_id: str) -> Dict:
         """Generate batch summary and save to reports directory."""

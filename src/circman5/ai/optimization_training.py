@@ -94,19 +94,6 @@ class ManufacturingOptimizerTraining(ManufacturingOptimizer):
                 size=(n_variations, scaled_params.shape[1]),
             )
 
-            # Apply constraints before scaling back
-            if constraints:
-                # Scale constraints to match the scaled parameter space
-                scaled_constraints = {}
-                for i, (param_name, (min_val, max_val)) in enumerate(
-                    constraints.items()
-                ):
-                    min_scaled = self.feature_scaler.transform([[min_val]])[0][0]
-                    max_scaled = self.feature_scaler.transform([[max_val]])[0][0]
-                    param_variations[:, i] = np.clip(
-                        param_variations[:, i], min_scaled, max_scaled
-                    )
-
             # Predict outcomes for all variations
             predicted_outputs = self.efficiency_model.predict(param_variations)
             best_idx = np.argmax(predicted_outputs)
@@ -116,9 +103,11 @@ class ManufacturingOptimizerTraining(ManufacturingOptimizer):
                 param_variations[best_idx].reshape(1, -1)
             )[0]
 
-            # Create dictionary and apply constraints one final time
+            # Create dictionary and apply constraints
             optimized_params = {}
-            for param_name, value in zip(current_params.keys(), optimized_params_array):
+            for i, (param_name, value) in enumerate(
+                zip(current_params.keys(), optimized_params_array)
+            ):
                 if constraints and param_name in constraints:
                     min_val, max_val = constraints[param_name]
                     value = np.clip(value, min_val, max_val)
