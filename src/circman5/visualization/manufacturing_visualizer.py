@@ -16,6 +16,8 @@ class ManufacturingVisualizer:
     def __init__(self):
         """Initialize visualization settings."""
         plt.style.use("default")
+        # Configure seaborn without style
+        sns.set_theme(style="whitegrid")
 
         self.style_config = {
             "figure.figsize": (12, 8),
@@ -25,7 +27,8 @@ class ManufacturingVisualizer:
             "grid.linestyle": "--",
             "grid.alpha": 0.7,
         }
-        # plt.style.use('seaborn')
+
+        # Apply style configuration
         for key, value in self.style_config.items():
             plt.rcParams[key] = value
 
@@ -170,9 +173,9 @@ class ManufacturingVisualizer:
 
         # Resource Usage
         resource_data = monitor_data["resources"]
-        resource_data.plot(
-            x="timestamp", y=["material_consumption", "water_usage"], ax=ax3
-        )
+        # Plot only available columns
+        resource_columns = ["material_consumption"]
+        resource_data.plot(x="timestamp", y=resource_columns, ax=ax3)
         ax3.set_title("Resource Utilization")
 
         # Combined Performance Indicators

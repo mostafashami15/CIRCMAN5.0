@@ -8,14 +8,18 @@ import pandas as pd
 import numpy as np
 import os
 from typing import Dict, Optional, List, Sequence
+from pathlib import Path
 
 
 class LCAVisualizer:
     """Visualizes Life Cycle Assessment results."""
 
     def __init__(self):
-        # Set style for all visualizations
-        plt.style.use("seaborn")
+        """Initialize visualization settings."""
+        # Use default matplotlib style
+        plt.style.use("default")
+        # Configure seaborn without style
+        sns.set_theme(style="whitegrid")
         self.colors = sns.color_palette("husl", 8)
 
     def plot_impact_distribution(
@@ -40,9 +44,16 @@ class LCAVisualizer:
             values.append(float(value))
 
         # Create pie chart with explicit lists
-        plt.pie(values, labels=labels, autopct="%1.1f%%", colors=self.colors)
+        abs_values = [abs(v) for v in values]
+        pie_labels = [
+            f"{l} ({'+' if v >= 0 else '-'}{abs(v):.1f})"
+            for l, v in zip(labels, values)
+        ]
 
-        plt.title("Distribution of Environmental Impacts")
+        plt.pie(abs_values, labels=pie_labels, autopct="%1.1f%%", colors=self.colors)
+        plt.title(
+            "Distribution of Environmental Impacts\n(Negative values indicate benefits)"
+        )
 
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches="tight")
