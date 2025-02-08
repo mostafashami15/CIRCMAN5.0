@@ -8,7 +8,8 @@ from typing import Dict, Optional, List, Union
 from pathlib import Path
 
 from .config import project_paths
-from .ai.optimization import ManufacturingOptimizer, MetricsDict, PredictionDict
+from .ai.optimization_prediction import ManufacturingOptimizer
+from .ai.optimization_types import MetricsDict, PredictionDict
 from pathlib import Path
 from .config.project_paths import project_paths
 from .logging_config import setup_logger

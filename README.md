@@ -66,37 +66,104 @@ CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing prin
 ## Project Structure
 ```plaintext
 CIRCMAN5.0/
-├── config/
-│   ├── pyrightconfig.json
-│   └── pytest.ini
 ├── data/
 │   ├── processed/
 │   ├── raw/
 │   └── synthetic/
+│   └── synthetic
+│       ├── test_energy_data.csv
+│       ├── test_material_data.csv
+│       ├── test_process_data.csv
+│       └── test_production_data.csv
 ├── docs/
 │   ├── api/
+│   │   └── README.md (empty)
 │   ├── diagrams/
+│   │   └── architecture.md (empty)
 │   └── guides/
+│       ├── development_roadmap.md
+│       ├── implementation_details.md
+│       ├── system_analysis.md
+│       └── system_documentation.md
 ├── logs/
+├── examples/
+│   └── demo_script.py
 ├── notebooks/
+│   └── requirements.txt
 ├── src/
+│   └── utils/
+│   │   ├── cleanup.py
+│   │   └── results_paths.py
 │   └── circman5/
 │       ├── ai/
+│       │   ├── optimization_base.py
+│       │   ├── optimization_core.py
+│       │   ├── optimization_prediction.py
+│       │   ├── optimization_training.py
+│       │   └── optimization_types.py
 │       ├── analysis/
 │       │   └── lca/
+│       │   │   ├── core.py
+│       │   │   └── impact_factors.py
+│       │   ├── efficiency.py
+│       │   ├── quality.py
+│       │   └── sustainability.py
 │       ├── config/
+│       │   └── project_paths.py
 │       ├── visualization/
-│       └── [core modules]
+│       │   ├── lca_visualizer.py
+│       │   └── manufacturing_visualizer.py
+│       ├── constants.py
+│       ├── data_types.py
+│       ├── errors.py
+│       ├── logging_config.py
+│       ├── monitoring.py
+│       ├── solitek_manufacturing.py
+│       ├── test_data_generator.py
+│       └── test_framework.py
 ├── tests/
 │   ├── ai/
+│   │   └── test_optimization.py
 │   ├── integration/
+│   │   ├── test_data_pipeline.py (empty)
+│   │   ├── test_data_saving.py
+│   │   ├── test_manufacturing_optimization.py (empty)
+│   │   └── test_system_integration.py
 │   ├── performance/
+│   │   └── test_performance.py
 │   ├── results/
 │   │   ├── archive/
 │   │   ├── latest/
 │   │   └── runs/
 │   └── unit/
-└── [project files]
+│   │   └── test_lca_core.py
+│   ├── test_data_generator.py
+│   ├── test_data_generator.py
+│   ├── test_efficiency_analyzer.py
+│   ├── test_lca_data_generator.py
+│   ├── test_lca_integration.py
+│   ├── test_lca_visualization.py
+│   ├── test_logging_config.py
+│   ├── test_manufacturing.py
+│   ├── test_monitoring.py
+│   ├── test_production_data.py
+│   ├── test_project_paths.py
+│   ├── test_quality_analyzer.py
+│   ├── test_solitek_manufacturing.py
+│   ├── test_sustainability_analyzer.py
+│   ├──test_project_imports.py
+│   └── test_visualization.py
+├── poetry.lock
+├── pyproject.toml
+├── pyrightconfig.json
+├── pytest.ini
+├── LICENSE
+├── README.md
+├── setup.py
+├── .pre-commit-config.yaml
+├── .env
+└── .gitignore
+
 ```
 ## Technology Stack
 - **Python 3.11+**

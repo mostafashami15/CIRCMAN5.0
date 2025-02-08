@@ -2,20 +2,25 @@
 Integration tests for the complete manufacturing analysis system.
 Tests the interaction between analyzers, main system, and visualization components.
 """
-
+import os
 import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import os
+import json
+from pathlib import Path
+import shutil
+
 from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
-from circman5.test_data_generator import TestDataGenerator
+from circman5.test_data_generator import ManufacturingDataGenerator
+from circman5.config.project_paths import project_paths
+from circman5.ai.optimization_prediction import ManufacturingOptimizer
 
 
 @pytest.fixture
 def test_data():
     """Generate comprehensive test data."""
-    generator = TestDataGenerator(start_date="2024-01-01", days=10)
+    generator = ManufacturingDataGenerator(start_date="2024-01-01", days=10)
 
     return {
         "production": generator.generate_production_data(),
@@ -154,3 +159,100 @@ def test_visualization_integration(analyzer, test_data, tmp_path):
     dashboard_path = tmp_path / "test_dashboard.png"
     analyzer.generate_performance_report(str(dashboard_path))
     assert os.path.exists(dashboard_path)
+
+
+def test_data_saving(analyzer, test_data, tmp_path):
+    """Test that all components save data in correct project directories."""
+
+    # Get the project's results directory
+    results_base = project_paths.get_run_directory()
+
+    print("\nSaving test results to:")
+    print(f"Results directory: {results_base}")
+
+    # Setup directories
+    data_dir = results_base / "input_data"
+    results_dir = results_base / "results"
+    viz_dir = results_base / "visualizations"
+
+    data_dir.mkdir(parents=True, exist_ok=True)
+    results_dir.mkdir(parents=True, exist_ok=True)
+    viz_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save test data
+    test_data["production"].to_csv(data_dir / "production_data.csv", index=False)
+    test_data["quality"].to_csv(data_dir / "quality_data.csv", index=False)
+    test_data["energy"].to_csv(data_dir / "energy_data.csv", index=False)
+    test_data["material"].to_csv(data_dir / "material_data.csv", index=False)
+
+    print(f"\nSaved data files to: {data_dir}")
+    print(f"Saved results to: {results_dir}")
+    print(f"Saved visualizations to: {viz_dir}")
+
+    # Verify files exist
+    assert (data_dir / "production_data.csv").exists()
+    assert (data_dir / "quality_data.csv").exists()
+    assert (data_dir / "energy_data.csv").exists()
+    assert (data_dir / "material_data.csv").exists()
+
+    # Test analysis results saving
+    analyzer.production_data = test_data["production"]
+    analyzer.quality_data = test_data["quality"]
+    analyzer.energy_data = test_data["energy"]
+    analyzer.material_flow = test_data["material"]
+
+    # Generate and save analysis report
+    report_path = results_dir / "analysis_report.xlsx"
+    analyzer.export_analysis_report(str(report_path))
+    assert report_path.exists()
+
+    # Generate and save visualizations
+    for metric_type in ["production", "energy", "quality", "sustainability"]:
+        viz_path = viz_dir / f"{metric_type}_analysis.png"
+        analyzer.generate_visualization(metric_type, str(viz_path))
+        assert viz_path.exists()
+
+    print("\nGenerated files:")
+    print("\nData files:")
+    for file in data_dir.glob("*"):
+        print(f"- {file.name}")
+
+    print("\nResults files:")
+    for file in results_dir.glob("*"):
+        print(f"- {file.name}")
+
+    print("\nVisualization files:")
+    for file in viz_dir.glob("*"):
+        print(f"- {file.name}")
+
+
+def test_data_consistency(analyzer, test_data, tmp_path):
+    """Test data consistency when saving and loading."""
+
+    # Save production data
+    data_path = tmp_path / "production_data.csv"
+
+    # Convert datetime to string before saving
+    save_data = test_data["production"].copy()
+    if "timestamp" in save_data.columns:
+        save_data["timestamp"] = save_data["timestamp"].dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    save_data.to_csv(data_path, index=False)
+
+    # Load saved data
+    loaded_data = pd.read_csv(data_path)
+
+    # Convert timestamp strings back to datetime for comparison
+    if "timestamp" in test_data["production"].columns:
+        loaded_data["timestamp"] = pd.to_datetime(loaded_data["timestamp"])
+        comparison_data = test_data["production"].copy()
+        comparison_data["timestamp"] = pd.to_datetime(comparison_data["timestamp"])
+    else:
+        comparison_data = test_data["production"]
+
+    # Verify data integrity
+    pd.testing.assert_frame_equal(
+        comparison_data.reset_index(drop=True),
+        loaded_data.reset_index(drop=True),
+        check_dtype=False,
+    )

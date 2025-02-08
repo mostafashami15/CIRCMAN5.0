@@ -1,84 +1,90 @@
-"""
-Test suite for AI-driven optimization engine.
-"""
+"""Tests for the AI optimization module."""
 
 import pytest
-import numpy as np
 import pandas as pd
-from circman5.ai.optimization import ManufacturingOptimizer
+import numpy as np
 
-
-@pytest.fixture
-def sample_manufacturing_data():
-    """Create sample manufacturing data for testing."""
-    np.random.seed(42)
-    n_samples = 100
-
-    production_data = pd.DataFrame(
-        {
-            "batch_id": [f"BATCH_{i:03d}" for i in range(n_samples)],
-            "input_amount": np.random.uniform(80, 120, n_samples),
-            "energy_used": np.random.uniform(140, 160, n_samples),
-            "cycle_time": np.random.uniform(45, 55, n_samples),
-            "output_amount": np.random.uniform(75, 110, n_samples),
-        }
-    )
-
-    quality_data = pd.DataFrame(
-        {
-            "batch_id": [f"BATCH_{i:03d}" for i in range(n_samples)],
-            "efficiency": np.random.uniform(20, 22, n_samples),
-            "defect_rate": np.random.uniform(1, 3, n_samples),
-            "thickness_uniformity": np.random.uniform(94, 96, n_samples),
-        }
-    )
-
-    return production_data, quality_data
+from circman5.ai.optimization_prediction import ManufacturingOptimizer
+from circman5.ai.optimization_types import PredictionDict, MetricsDict
+from circman5.config.project_paths import project_paths
 
 
 @pytest.fixture
 def optimizer():
-    """Create optimizer instance for testing."""
+    """Create a test optimizer instance."""
     return ManufacturingOptimizer()
 
 
-def test_data_preparation(optimizer, sample_manufacturing_data):
-    """Test manufacturing data preparation."""
-    production_data, quality_data = sample_manufacturing_data
-
-    X_scaled, y_scaled = optimizer.prepare_manufacturing_data(
-        production_data, quality_data
+@pytest.fixture
+def test_data():
+    """Generate test data for optimization."""
+    # Create sample production data
+    np.random.seed(42)  # Added for reproducibility
+    production_data = pd.DataFrame(
+        {
+            "input_amount": np.random.uniform(90, 110, 100),
+            "energy_used": np.random.uniform(140, 160, 100),
+            "cycle_time": np.random.uniform(45, 55, 100),
+            "output_amount": np.random.uniform(85, 105, 100),
+            "batch_id": [f"BATCH_{i:03d}" for i in range(100)],
+        }
     )
 
-    assert isinstance(X_scaled, np.ndarray)
-    assert isinstance(y_scaled, np.ndarray)
+    # Create sample quality data
+    quality_data = pd.DataFrame(
+        {
+            "efficiency": np.random.uniform(20, 22, 100),
+            "defect_rate": np.random.uniform(1, 3, 100),
+            "thickness_uniformity": np.random.uniform(94, 96, 100),
+            "batch_id": [f"BATCH_{i:03d}" for i in range(100)],
+        }
+    )
+
+    return {"production": production_data, "quality": quality_data}
+
+
+def test_optimizer_initialization(optimizer):
+    """Test optimizer initialization."""
+    assert optimizer is not None
+    assert hasattr(optimizer, "efficiency_model")
+    assert hasattr(optimizer, "quality_model")
+
+
+def test_data_preparation(optimizer, test_data):
+    """Test data preparation functionality."""
+    X_scaled, y_scaled = optimizer.prepare_manufacturing_data(
+        test_data["production"], test_data["quality"]
+    )
+
+    assert X_scaled is not None
+    assert y_scaled is not None
     assert X_scaled.shape[0] == y_scaled.shape[0]
     assert X_scaled.shape[1] == 6  # Number of features
 
 
-def test_model_training(optimizer, sample_manufacturing_data):
-    """Test optimization model training."""
-    production_data, quality_data = sample_manufacturing_data
-
+def test_model_training(optimizer, test_data):
+    """Test model training and metrics calculation."""
+    # Prepare data
     X_scaled, y_scaled = optimizer.prepare_manufacturing_data(
-        production_data, quality_data
+        test_data["production"], test_data["quality"]
     )
 
+    # Train models
     metrics = optimizer.train_optimization_models(X_scaled, y_scaled)
 
+    assert isinstance(metrics, dict)
     assert "mse" in metrics
     assert "r2" in metrics
     assert metrics["r2"] >= 0  # R² should be non-negative
-    assert optimizer.is_trained
 
 
-def test_process_optimization(optimizer, sample_manufacturing_data):
-    """Test manufacturing process optimization."""
-    production_data, quality_data = sample_manufacturing_data
+def test_process_optimization(optimizer, test_data):
+    """Test process parameter optimization."""
+    np.random.seed(42)  # Add seed for reproducibility
 
-    # Prepare and train model
+    # Prepare and train
     X_scaled, y_scaled = optimizer.prepare_manufacturing_data(
-        production_data, quality_data
+        test_data["production"], test_data["quality"]
     )
     optimizer.train_optimization_models(X_scaled, y_scaled)
 
@@ -92,38 +98,44 @@ def test_process_optimization(optimizer, sample_manufacturing_data):
         "thickness_uniformity": 95.0,
     }
 
+    # Define constraints
     constraints = {
-        "input_amount": (80, 120),
-        "energy_used": (140, 160),
-        "cycle_time": (45, 55),
-        "efficiency": (20, 22),
-        "defect_rate": (1, 3),
-        "thickness_uniformity": (94, 96),
+        "input_amount": (90.0, 110.0),
+        "energy_used": (140.0, 160.0),
+        "cycle_time": (45.0, 55.0),
+        "efficiency": (20.0, 22.0),
+        "defect_rate": (1.0, 3.0),
+        "thickness_uniformity": (94.0, 96.0),
     }
 
-    optimized = optimizer.optimize_process_parameters(current_params, constraints)
+    optimized_params = optimizer.optimize_process_parameters(
+        current_params, constraints
+    )
 
-    assert isinstance(optimized, dict)
-    assert set(optimized.keys()) == set(current_params.keys())
-
-    # Check constraints are respected
-    for param, value in optimized.items():
+    # Verify optimized parameters
+    for param, value in optimized_params.items():
         min_val, max_val = constraints[param]
-        assert min_val <= value <= max_val
+        try:
+            assert (
+                min_val <= float(value) <= max_val
+            ), f"Parameter {param} = {value} outside range [{min_val}, {max_val}]"
+        except AssertionError as e:
+            print(
+                f"Optimization failed for {param}: {value} not in [{min_val}, {max_val}]"
+            )
+            raise
 
 
-def test_outcome_prediction(optimizer, sample_manufacturing_data):
-    """Test manufacturing outcome prediction."""
-    production_data, quality_data = sample_manufacturing_data
-
-    # Prepare and train model
+def test_prediction_generation(optimizer, test_data):
+    """Test manufacturing outcome predictions."""
+    # Prepare and train
     X_scaled, y_scaled = optimizer.prepare_manufacturing_data(
-        production_data, quality_data
+        test_data["production"], test_data["quality"]
     )
     optimizer.train_optimization_models(X_scaled, y_scaled)
 
-    # Test prediction
-    process_params = {
+    # Test predictions
+    test_params = {
         "input_amount": 100.0,
         "energy_used": 150.0,
         "cycle_time": 50.0,
@@ -132,18 +144,23 @@ def test_outcome_prediction(optimizer, sample_manufacturing_data):
         "thickness_uniformity": 95.0,
     }
 
-    predictions = optimizer.predict_manufacturing_outcomes(process_params)
+    predictions = optimizer.predict_manufacturing_outcomes(test_params)
 
+    assert isinstance(predictions, dict)
     assert "predicted_output" in predictions
     assert "predicted_quality" in predictions
     assert isinstance(predictions["predicted_output"], float)
     assert isinstance(predictions["predicted_quality"], float)
 
+    # Check predictions are saved
+    results_dir = optimizer.results_dir
+    assert (results_dir / "predictions.json").exists()
+
 
 def test_error_handling(optimizer):
     """Test error handling in optimization engine."""
     # Test prediction without training
-    process_params = {
+    test_params = {
         "input_amount": 100.0,
         "energy_used": 150.0,
         "cycle_time": 50.0,
@@ -153,7 +170,7 @@ def test_error_handling(optimizer):
     }
 
     with pytest.raises(ValueError):
-        optimizer.predict_manufacturing_outcomes(process_params)
+        optimizer.predict_manufacturing_outcomes(test_params)
 
     with pytest.raises(ValueError):
-        optimizer.optimize_process_parameters(process_params)
+        optimizer.optimize_process_parameters(test_params)

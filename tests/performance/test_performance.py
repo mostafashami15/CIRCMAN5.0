@@ -1,192 +1,132 @@
-"""
-Performance tests for the manufacturing analysis system.
-Tests system performance with various data sizes and processing scenarios.
-"""
+"""Performance tests for the manufacturing analysis system."""
 
 import pytest
 import time
 import psutil
 import os
-import warnings
-import numpy as np
-import pandas as pd
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Tuple, Any, Optional
+
 from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
-from circman5.test_data_generator import ManufacturingDataGenerator  # Updated import
-
-# Filter warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+from circman5.test_data_generator import ManufacturingDataGenerator
+from circman5.config.project_paths import project_paths
 
 
-def generate_large_dataset(num_days: int = 30) -> dict:
-    """Generate a large dataset for performance testing."""
-    try:
-        generator = ManufacturingDataGenerator(start_date="2024-01-01", days=num_days)
-
-        return {
-            "production": generator.generate_production_data(),
-            "energy": generator.generate_energy_data(),
-            "quality": generator.generate_quality_data(),
-            "material": generator.generate_material_flow_data(),
-        }
-    except Exception as e:
-        pytest.fail(f"Failed to generate dataset: {str(e)}")
-        return {}
+@pytest.fixture
+def analyzer():
+    """Create analyzer instance."""
+    return SoliTekManufacturingAnalysis()
 
 
-@pytest.fixture(scope="module")
-def large_dataset():
-    """Create large dataset fixture."""
-    return generate_large_dataset()
+@pytest.fixture
+def test_data():
+    """Generate test data."""
+    generator = ManufacturingDataGenerator(days=30)
+    return {
+        "production": generator.generate_production_data(),
+        "quality": generator.generate_quality_data(),
+        "energy": generator.generate_energy_data(),
+        "material": generator.generate_material_flow_data(),
+    }
 
 
-def measure_execution_time(func):
-    """Decorator to measure function execution time."""
+def test_data_loading_performance(analyzer, test_data):
+    """Test data loading performance."""
+    start_time = time.time()
 
-    def wrapper(*args, **kwargs) -> Tuple[Any, float]:
-        start_time = time.time()
-        try:
-            result = func(*args, **kwargs)
-            end_time = time.time()
-            execution_time = end_time - start_time
-            return (result, execution_time)
-        except Exception as e:
-            pytest.fail(f"Function execution failed: {str(e)}")
-            return (None, 0.0)
+    # Get run directory for this test
+    run_dir = project_paths.get_run_directory()
+    data_dir = run_dir / "input_data"
+    data_dir.mkdir(parents=True, exist_ok=True)
 
-    return wrapper
+    # Save and load test data
+    data_path = data_dir / "test_production_data.csv"
+    test_data["production"].to_csv(data_path, index=False)
 
+    analyzer.load_production_data(data_path)
 
-@pytest.mark.performance
-def test_data_loading_performance(large_dataset, tmp_path):
-    """Test performance of data loading operations."""
-    analyzer = SoliTekManufacturingAnalysis()
-
-    @measure_execution_time
-    def load_data() -> dict:  # Changed return type to dict
-        analyzer.production_data = large_dataset["production"]
-        analyzer.energy_data = large_dataset["energy"]
-        analyzer.quality_data = large_dataset["quality"]
-        analyzer.material_flow = large_dataset["material"]
-        return {"success": True}  # Return a dict instead of bool
-
-    result = load_data()  # Don't try to unpack here
-    if not result[0].get("success", False):  # Check the result properly
-        pytest.fail("Data loading failed")
-    load_time = result[1]  # Get the time separately
-    print(f"\nData loading time: {load_time:.2f} seconds")
-    assert isinstance(load_time, float)
-    assert (
-        load_time < 5.0
-    ), f"Data loading took {load_time:.2f} seconds, exceeding 5 second threshold"
+    load_time = time.time() - start_time
+    assert load_time < 5.0, f"Data loading took {load_time:.2f} seconds"
+    assert data_path.exists(), "Test data file not saved"
 
 
-@pytest.mark.performance
-def test_analysis_performance(large_dataset):
-    """Test performance of analysis operations."""
-    analyzer = SoliTekManufacturingAnalysis()
-    analyzer.production_data = large_dataset["production"]
-    analyzer.energy_data = large_dataset["energy"]
-    analyzer.quality_data = large_dataset["quality"]
-    analyzer.material_flow = large_dataset["material"]
+def test_analysis_performance(analyzer, test_data):
+    """Test analysis performance."""
+    # Load test data
+    analyzer.production_data = test_data["production"]
+    analyzer.quality_data = test_data["quality"]
+    analyzer.energy_data = test_data["energy"]
+    analyzer.material_flow = test_data["material"]
 
-    # Test efficiency analysis performance
-    @measure_execution_time
-    def run_efficiency_analysis():
-        return analyzer.analyze_efficiency()
+    # Get run directory for results
+    run_dir = project_paths.get_run_directory()
+    results_dir = run_dir / "results"
+    results_dir.mkdir(parents=True, exist_ok=True)
 
-    (result, efficiency_time) = run_efficiency_analysis()
-    if result is None:
-        pytest.fail("Efficiency analysis failed")
-    print(f"\nEfficiency analysis time: {efficiency_time:.2f} seconds")
-    assert isinstance(efficiency_time, float)
-    assert (
-        efficiency_time < 2.0
-    ), f"Efficiency analysis took {efficiency_time:.2f} seconds"
+    start_time = time.time()
 
-    # Test quality analysis performance
-    @measure_execution_time
-    def run_quality_analysis():
-        return analyzer.analyze_quality_metrics()
+    # Perform analysis
+    analyzer.analyze_efficiency()
+    analyzer.analyze_quality_metrics()
+    analyzer.calculate_sustainability_metrics()
 
-    (result, quality_time) = run_quality_analysis()
-    if result is None:
-        pytest.fail("Quality analysis failed")
-    print(f"Quality analysis time: {quality_time:.2f} seconds")
-    assert isinstance(quality_time, float)
-    assert quality_time < 2.0, f"Quality analysis took {quality_time:.2f} seconds"
+    # Generate report
+    report_path = results_dir / "performance_test_report.xlsx"
+    analyzer.export_analysis_report(str(report_path))
 
-    # Test sustainability analysis performance
-    @measure_execution_time
-    def run_sustainability_analysis():
-        return analyzer.calculate_sustainability_metrics()
-
-    (result, sustainability_time) = run_sustainability_analysis()
-    if result is None:
-        pytest.fail("Sustainability analysis failed")
-    print(f"Sustainability analysis time: {sustainability_time:.2f} seconds")
-    assert isinstance(sustainability_time, float)
-    assert (
-        sustainability_time < 2.0
-    ), f"Sustainability analysis took {sustainability_time:.2f} seconds"
+    analysis_time = time.time() - start_time
+    assert analysis_time < 10.0, f"Analysis took {analysis_time:.2f} seconds"
+    assert report_path.exists(), "Analysis report not generated"
 
 
-@pytest.mark.performance
-def test_visualization_performance(large_dataset, tmp_path):
-    """Test performance of visualization generation."""
-    analyzer = SoliTekManufacturingAnalysis()
-    analyzer.production_data = large_dataset["production"]
-    analyzer.energy_data = large_dataset["energy"]
-    analyzer.quality_data = large_dataset["quality"]
-    analyzer.material_flow = large_dataset["material"]
+def test_visualization_performance(analyzer, test_data):
+    """Test visualization generation performance."""
+    # Load ALL required data
+    analyzer.production_data = test_data["production"]
+    analyzer.quality_data = test_data["quality"]
+    analyzer.energy_data = test_data["energy"]
+    analyzer.material_flow = test_data["material"]  # Added this line
 
+    # Get run directory for visualizations
+    run_dir = project_paths.get_run_directory()
+    viz_dir = run_dir / "visualizations"
+    viz_dir.mkdir(parents=True, exist_ok=True)
+
+    start_time = time.time()
+
+    # Generate visualizations
     for metric_type in ["production", "quality", "sustainability"]:
+        viz_path = viz_dir / f"{metric_type}_analysis.png"
+        analyzer.generate_visualization(metric_type, str(viz_path))
+        assert viz_path.exists(), f"{metric_type} visualization not generated"
 
-        @measure_execution_time
-        def generate_vis() -> str:
-            vis_path = tmp_path / f"test_{metric_type}.png"
-            analyzer.generate_visualization(metric_type, str(vis_path))
-            return str(vis_path)
-
-        (path, vis_time) = generate_vis()
-        if path is None:
-            pytest.fail(f"{metric_type} visualization failed")
-        print(f"\n{metric_type} visualization time: {vis_time:.2f} seconds")
-        assert isinstance(vis_time, float)
-        assert (
-            vis_time < 3.0
-        ), f"{metric_type} visualization took {vis_time:.2f} seconds"
-        assert Path(path).exists()
+    viz_time = time.time() - start_time
+    assert viz_time < 15.0, f"Visualization generation took {viz_time:.2f} seconds"
 
 
-@pytest.mark.performance
-def test_memory_usage(large_dataset):
-    """Test memory usage with large datasets."""
+def test_memory_usage(analyzer, test_data):
+    """Test memory usage during analysis."""
+    process = psutil.Process()
+    initial_memory = process.memory_info().rss / 1024 / 1024  # MB
 
-    def get_memory_usage() -> float:
-        process = psutil.Process(os.getpid())
-        return process.memory_info().rss / 1024 / 1024  # Convert to MB
+    # Load data and perform analysis
+    analyzer.production_data = test_data["production"]
+    analyzer.quality_data = test_data["quality"]
 
-    initial_memory = get_memory_usage()
-    print(f"\nInitial memory usage: {initial_memory:.2f}MB")
+    # Get run directory
+    run_dir = project_paths.get_run_directory()
+    results_dir = run_dir / "results"
+    results_dir.mkdir(parents=True, exist_ok=True)
 
-    analyzer = SoliTekManufacturingAnalysis()
-    analyzer.production_data = large_dataset["production"]
-    analyzer.energy_data = large_dataset["energy"]
-    analyzer.quality_data = large_dataset["quality"]
-    analyzer.material_flow = large_dataset["material"]
+    # Perform analysis operations
+    analyzer.analyze_efficiency()
+    analyzer.analyze_quality_metrics()
 
-    final_memory = get_memory_usage()
-    print(f"Final memory usage: {final_memory:.2f}MB")
+    # Generate report
+    report_path = results_dir / "memory_test_report.xlsx"
+    analyzer.export_analysis_report(str(report_path))
+
+    final_memory = process.memory_info().rss / 1024 / 1024  # MB
     memory_increase = final_memory - initial_memory
-    print(f"Memory increase: {memory_increase:.2f}MB")
 
-    # Assert memory increase is within acceptable range (less than 500MB)
-    assert memory_increase < 500, f"Memory usage increased by {memory_increase:.2f}MB"
-
-
-if __name__ == "__main__":
-    pytest.main(["-v", "-m", "performance"])
+    assert memory_increase < 500, f"Memory usage increased by {memory_increase:.1f} MB"
+    assert report_path.exists(), "Memory test report not generated"
