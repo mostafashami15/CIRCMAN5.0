@@ -125,7 +125,7 @@ CIRCMAN5.0/
 │   ├── ai/
 │   │   └── test_optimization.py
 │   ├── integration/
-│   │   ├── test_data_pipeline.py (empty)
+│   │   ├── test_data_pipeline.py
 │   │   ├── test_data_saving.py
 │   │   ├── test_manufacturing_optimization.py
 │   │   └── test_system_integration.py
