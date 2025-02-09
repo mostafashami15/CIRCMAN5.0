@@ -251,9 +251,11 @@ class ManufacturingVisualizer:
             plt.show()
 
     def save_visualization(self, plot_name: str, suffix: str = "png") -> str:
-        """Get standardized path for saving visualizations."""
+        """Get standardized path for saving visualizations and ensure directory exists."""
         run_dir = project_paths.get_run_directory()
-        return str(run_dir / "visualizations" / f"{plot_name}.{suffix}")
+        viz_dir = run_dir / "visualizations"
+        viz_dir.mkdir(parents=True, exist_ok=True)
+        return str(viz_dir / f"{plot_name}.{suffix}")
 
     def _create_gauge_chart(self, ax, value: float, title: str, unit: str):
         """Helper method to create gauge charts for KPIs."""

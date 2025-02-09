@@ -264,22 +264,39 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
 
     def save_generated_data(self) -> None:
         """Save all generated test data to the synthetic data directory."""
-        synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
+        try:
+            # Get and ensure synthetic data directory exists
+            synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
+            synthetic_dir.mkdir(parents=True, exist_ok=True)
 
-        # Save energy data
-        self.generate_energy_data().to_csv(
-            synthetic_dir / "test_energy_data.csv", index=False
-        )
+            # Get parent directory directly from synthetic_dir
+            root_dir = synthetic_dir.parent.parent
 
-        # Save material data
-        self.generate_material_flow_data().to_csv(
-            synthetic_dir / "test_material_data.csv", index=False
-        )
+            # Define all files to save
+            data_files = {
+                "test_energy_data.csv": self.generate_energy_data(),
+                "test_material_data.csv": self.generate_material_flow_data(),
+                "test_process_data.csv": self.generate_lca_process_data(),
+                "test_production_data.csv": self.generate_production_data(),
+            }
 
-        # Save process data
-        self.generate_lca_process_data().to_csv(
-            synthetic_dir / "test_process_data.csv", index=False
-        )
+            # Clean up any existing files in root directory
+            for filename in data_files.keys():
+                root_file = root_dir / filename
+                if root_file.exists():
+                    root_file.unlink()
+
+            # Save each file to synthetic directory
+            for filename, data in data_files.items():
+                file_path = synthetic_dir / filename
+                data.to_csv(file_path, index=False)
+
+                # Verify file was created in correct location
+                if not file_path.exists():
+                    raise IOError(f"Failed to save {filename} to {synthetic_dir}")
+
+        except Exception as e:
+            raise IOError(f"Error saving test data: {str(e)}")
 
 
 # For backwards compatibility

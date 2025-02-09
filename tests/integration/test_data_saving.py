@@ -88,20 +88,35 @@ def test_all_components_saving(test_run_dir):
 def test_data_generator_saving(test_generator, test_run_dir):
     """Test data generator's save functionality."""
     synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
+    synthetic_dir.mkdir(parents=True, exist_ok=True)
 
-    # Save generated data
-    test_generator.save_generated_data()
-
+    # Define expected files outside try block
     expected_files = [
         "test_energy_data.csv",
         "test_material_data.csv",
         "test_process_data.csv",
+        "test_production_data.csv",
     ]
 
-    for filename in expected_files:
-        assert (synthetic_dir / filename).exists()
-        df = pd.read_csv(synthetic_dir / filename)
-        assert not df.empty
+    try:
+        # Save generated data
+        test_generator.save_generated_data()
+
+        # Verify files were created in correct location
+        for filename in expected_files:
+            file_path = synthetic_dir / filename
+            assert (
+                file_path.exists()
+            ), f"File not found in synthetic data directory: {filename}"
+            df = pd.read_csv(file_path)
+            assert not df.empty, f"Empty data in {filename}"
+
+    finally:
+        # Clean up test files
+        for filename in expected_files:
+            file_path = synthetic_dir / filename
+            if file_path.exists():
+                file_path.unlink()
 
 
 def test_generated_data_integration(generated_test_data, test_run_dir):

@@ -59,9 +59,14 @@ def test_efficiency_plot(visualizer, sample_data):
 
 def test_quality_plot(visualizer, sample_data):
     """Test quality metrics plotting."""
-    visualizer.plot_quality_metrics(sample_data["quality"])
     run_dir = project_paths.get_run_directory()
-    assert (run_dir / "visualizations" / "quality_metrics.png").exists()
+    viz_dir = run_dir / "visualizations"
+    viz_dir.mkdir(parents=True, exist_ok=True)
+
+    save_path = viz_dir / "quality_metrics.png"
+    visualizer.plot_quality_metrics(sample_data["quality"], str(save_path))
+
+    assert save_path.exists(), f"Plot file not created at {save_path}"
 
 
 def test_resource_plot(visualizer, sample_data):

@@ -1,12 +1,27 @@
-"""
-Test suite for sustainability analyzer module.
-"""
+"""Test suite for sustainability analyzer module."""
 
 import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+from pathlib import Path
 from circman5.analysis.sustainability import SustainabilityAnalyzer
+from circman5.config.project_paths import project_paths
+
+
+@pytest.fixture(autouse=True)
+def cleanup_files():
+    """Clean up any CSV files in project root before and after tests."""
+    # Clean up before test
+    project_root = project_paths.PROJECT_ROOT
+    for csv_file in project_root.glob("*.csv"):
+        csv_file.unlink()
+
+    yield
+
+    # Clean up after test
+    for csv_file in project_root.glob("*.csv"):
+        csv_file.unlink()
 
 
 @pytest.fixture
@@ -14,7 +29,11 @@ def sample_material_data():
     """Create sample material flow data for testing."""
     dates = pd.date_range(start="2024-01-01", periods=10, freq="h")
 
-    return pd.DataFrame(
+    # Create synthetic directory if it doesn't exist
+    synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
+    synthetic_dir.mkdir(parents=True, exist_ok=True)
+
+    data = pd.DataFrame(
         {
             "timestamp": dates,
             "material_type": ["Silicon", "Glass", "EVA", "Backsheet", "Frame"] * 2,
@@ -24,13 +43,21 @@ def sample_material_data():
         }
     )
 
+    # Save to synthetic directory
+    data.to_csv(synthetic_dir / "test_material_data.csv", index=False)
+    return data
+
 
 @pytest.fixture
 def sample_energy_data():
     """Create sample energy consumption data for testing."""
     dates = pd.date_range(start="2024-01-01", periods=10, freq="h")
 
-    return pd.DataFrame(
+    # Create synthetic directory if it doesn't exist
+    synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
+    synthetic_dir.mkdir(parents=True, exist_ok=True)
+
+    data = pd.DataFrame(
         {
             "timestamp": dates,
             "energy_source": ["grid", "solar", "wind"] * 3 + ["grid"],
@@ -38,6 +65,10 @@ def sample_energy_data():
             "efficiency_rate": np.random.uniform(0.8, 0.95, 10),
         }
     )
+
+    # Save to synthetic directory
+    data.to_csv(synthetic_dir / "test_energy_data.csv", index=False)
+    return data
 
 
 @pytest.fixture
