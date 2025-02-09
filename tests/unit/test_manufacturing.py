@@ -1,14 +1,27 @@
+"""Test suite for SoliTek Manufacturing Analysis System."""
+
 import sys
 import os
-
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../src"))
-)
 import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from circman5.manufacturing import AdvancedPVManufacturing
+from pathlib import Path
+
+from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+from circman5.test_data_generator import ManufacturingDataGenerator
+
+
+@pytest.fixture
+def test_data():
+    """Generate test data for manufacturing tests."""
+    generator = ManufacturingDataGenerator(start_date="2024-01-01", days=5)
+    return {
+        "production": generator.generate_production_data(),
+        "quality": generator.generate_quality_data(),
+        "energy": generator.generate_energy_data(),
+        "material": generator.generate_material_flow_data(),
+    }
 
 
 class TestPVManufacturing:
@@ -16,123 +29,115 @@ class TestPVManufacturing:
 
     def setup_method(self):
         """Setup test cases"""
-        self.pv_system = AdvancedPVManufacturing()
+        self.pv_system = SoliTekManufacturingAnalysis()
         self.test_batch_id = "TEST_BATCH_001"
 
-    def test_batch_initialization(self):
+    def initialize_test_data(self, test_data):
+        """Helper method to initialize test data."""
+        self.pv_system.production_data = test_data["production"]
+        self.pv_system.quality_data = test_data["quality"]
+        self.pv_system.energy_data = test_data["energy"]
+        self.pv_system.material_flow = test_data["material"]
+
+    def test_batch_initialization(self, test_data):
         """Test batch creation and initialization"""
-        # Test batch creation
-        self.pv_system.start_batch(
-            batch_id=self.test_batch_id, stage="silicon_purification", input_amount=100
-        )
+        self.initialize_test_data(test_data)
+        test_data = self.pv_system.production_data.copy()
 
-        # Assert batch exists
-        assert self.test_batch_id in self.pv_system.batches["batch_id"].values
+        # Verify initial state
+        assert not test_data.empty, "Production data should not be empty"
+        assert "batch_id" in test_data.columns, "batch_id column should exist"
+        assert "stage" in test_data.columns, "stage column should exist"
+        assert len(test_data) > 0, "Should contain production records"
 
-        # Check initial values
-        batch = self.pv_system.batches[
-            self.pv_system.batches["batch_id"] == self.test_batch_id
-        ].iloc[0]
-
-        assert batch["status"] == "in_progress"
-        assert batch["input_amount"] == 100.0
-        assert batch["output_amount"] == 0.0
-
-    def test_quality_control(self):
+    def test_quality_control(self, test_data):
         """Test quality control measurements"""
-        # Setup
-        self.pv_system.start_batch(self.test_batch_id, "silicon_purification", 100)
+        self.initialize_test_data(test_data)
 
-        # Record quality check
-        self.pv_system.record_quality_check(
-            batch_id=self.test_batch_id,
-            efficiency=21.5,
-            defect_rate=2.3,
-            thickness_uniformity=95.5,
-            contamination_level=0.5,
-        )
+        # Analyze quality metrics
+        quality_metrics = self.pv_system.analyze_quality_metrics()
 
-        # Get quality data
-        quality = self.pv_system.quality_data[
-            self.pv_system.quality_data["batch_id"] == self.test_batch_id
-        ].iloc[0]
+        # Assert quality measurements are calculated
+        assert isinstance(quality_metrics, dict), "Should return metrics dictionary"
+        assert not "error" in quality_metrics, "Should not return error"
+        assert "avg_defect_rate" in quality_metrics, "Should include defect rate"
+        assert "efficiency_score" in quality_metrics, "Should include efficiency score"
+        assert (
+            quality_metrics["avg_defect_rate"] >= 0
+        ), "Defect rate should be non-negative"
+        assert (
+            quality_metrics["efficiency_score"] >= 0
+        ), "Efficiency score should be non-negative"
 
-        # Assert quality measurements
-        assert quality["efficiency"] == 21.5
-        assert quality["defect_rate"] == 2.3
-        assert quality["thickness_uniformity"] == 95.5
-        assert quality["contamination_level"] == 0.5
+    def test_sustainability_metrics(self, test_data):
+        """Test sustainability metrics recording and calculation"""
+        self.initialize_test_data(test_data)
 
-    def test_circular_metrics(self):
-        """Test circularity metrics recording and calculation"""
-        # Setup
-        self.pv_system.start_batch(self.test_batch_id, "silicon_purification", 100)
+        # Calculate sustainability metrics
+        metrics = self.pv_system.calculate_sustainability_metrics()
 
-        # Record circular metrics
-        self.pv_system.record_circular_metrics(
-            batch_id=self.test_batch_id,
-            recycled_content=30,
-            recyclable_output=95,
-            water_reused=80,
-        )
+        # Verify metrics
+        assert isinstance(metrics, dict), "Should return metrics dictionary"
+        assert not "error" in metrics, "Should not return error"
+        assert "material_efficiency" in metrics, "Should include material efficiency"
+        assert "recycling_rate" in metrics, "Should include recycling rate"
+        assert (
+            metrics["material_efficiency"] >= 0
+        ), "Material efficiency should be non-negative"
+        assert metrics["recycling_rate"] >= 0, "Recycling rate should be non-negative"
 
-        # Get circular metrics
-        metrics = self.pv_system.circular_metrics[
-            self.pv_system.circular_metrics["batch_id"] == self.test_batch_id
-        ].iloc[0]
+    def test_efficiency_analysis(self, test_data):
+        """Test efficiency analysis process"""
+        self.initialize_test_data(test_data)
 
-        # Assert metrics
-        assert metrics["recycled_content"] == 30.0
-        assert metrics["recyclable_output"] == 95.0
-        assert metrics["water_reused"] == 80.0
+        # Perform efficiency analysis
+        efficiency_metrics = self.pv_system.analyze_efficiency()
 
-    def test_batch_completion(self):
-        """Test batch completion process"""
-        # Setup
-        self.pv_system.start_batch(self.test_batch_id, "silicon_purification", 100)
+        # Verify analysis results
+        assert isinstance(efficiency_metrics, dict), "Should return metrics dictionary"
+        assert not "error" in efficiency_metrics, "Should not return error"
+        assert "yield_rate" in efficiency_metrics, "Should include yield rate"
+        assert (
+            efficiency_metrics["yield_rate"] >= 0
+        ), "Yield rate should be non-negative"
+        assert (
+            "energy_efficiency" in efficiency_metrics
+        ), "Should include energy efficiency"
 
-        # Complete batch
-        self.pv_system.complete_batch(
-            batch_id=self.test_batch_id, output_amount=90, energy_used=150
-        )
+    def test_visualization_generation(self, test_data, tmp_path):
+        """Test visualization generation"""
+        self.initialize_test_data(test_data)
+        test_path = tmp_path / "test_visualization.png"
 
-        # Get batch data
-        batch = self.pv_system.batches[
-            self.pv_system.batches["batch_id"] == self.test_batch_id
-        ].iloc[0]
+        # Generate visualization
+        self.pv_system.generate_visualization("production", str(test_path))
 
-        # Assert completion status and metrics
-        assert batch["status"] == "completed"
-        assert batch["output_amount"] == 90.0
-        assert batch["energy_used"] == 150.0
-        assert batch["yield_rate"] == 90.0
+        # Verify file was created
+        assert test_path.exists(), "Visualization file should be created"
 
-    def test_material_efficiency(self):
-        """Test material efficiency calculations"""
-        # Setup and complete a batch
-        self.pv_system.start_batch(self.test_batch_id, "silicon_purification", 100)
-        self.pv_system.complete_batch(self.test_batch_id, 90, 150)
-
-        # Calculate efficiency
-        efficiency = self.pv_system._calculate_material_efficiency(self.test_batch_id)
-
-        # Assert efficiency calculation
-        assert efficiency == 90.0
-
-    def test_error_handling(self):
+    def test_error_handling(self, test_data, tmp_path):
         """Test error handling in the system"""
+        self.initialize_test_data(test_data)
 
-        # Start the first batch successfully
-        self.pv_system.start_batch("TEST_001", "silicon_purification", 100)
+        # Test invalid metric type
+        with pytest.raises(Exception) as exc_info:
+            self.pv_system.generate_visualization(
+                "invalid_metric", str(tmp_path / "test.png")
+            )
+        assert "Unknown metric type" in str(exc_info.value)
 
-        # ✅ Expect a ValueError when trying to start the same batch again
-        with pytest.raises(ValueError, match="Batch TEST_001 already exists"):
-            self.pv_system.start_batch("TEST_001", "silicon_purification", 100)
+        # Test invalid file path
+        with pytest.raises(Exception) as exc_info:
+            self.pv_system.load_production_data("/nonexistent/path/data.csv")
+        assert "not found" in str(exc_info.value)
 
-        # ✅ Test invalid stage (expecting ValueError)
-        with pytest.raises(ValueError, match="Invalid stage. Valid stages are"):
-            self.pv_system.start_batch("TEST_002", "invalid_stage", 100)
+    def test_report_generation(self, test_data, tmp_path):
+        """Test analysis report generation"""
+        self.initialize_test_data(test_data)
 
-        # ✅ Test invalid batch completion (expecting ValueError)
-        with pytest.raises(ValueError, match="Batch INVALID_BATCH not found"):
-            self.pv_system.complete_batch("INVALID_BATCH", 90, 150)
+        # Generate report
+        report_path = tmp_path / "analysis_report.xlsx"
+        self.pv_system.export_analysis_report(str(report_path))
+
+        # Verify report exists
+        assert report_path.exists(), "Report file should be created"

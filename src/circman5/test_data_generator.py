@@ -233,19 +233,30 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
         return pd.DataFrame(data)
 
     def generate_material_flow_data(self) -> pd.DataFrame:
-        """Generate material flow data."""
+        """Generate material flow data with realistic waste and recycling ratios."""
         production_data = self.generate_production_data()
         data = []
 
         for _, production_row in production_data.iterrows():
+            # Generate base quantity
+            quantity_used = random.uniform(900, 1100)
+
+            # Generate waste as percentage of quantity used (5-15%)
+            waste_ratio = random.uniform(0.05, 0.15)
+            waste_generated = quantity_used * waste_ratio
+
+            # Generate recycled amount as percentage of waste (60-90%)
+            recycling_ratio = random.uniform(0.60, 0.90)
+            recycled_amount = waste_generated * recycling_ratio
+
             data.append(
                 {
                     "timestamp": production_row["timestamp"],
                     "batch_id": production_row["batch_id"],
                     "material_type": random.choice(self.material_types),
-                    "quantity_used": random.uniform(900, 1100),
-                    "waste_generated": random.uniform(10, 50),
-                    "recycled_amount": random.uniform(5, 40),
+                    "quantity_used": quantity_used,
+                    "waste_generated": waste_generated,
+                    "recycled_amount": recycled_amount,
                 }
             )
 
