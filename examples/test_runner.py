@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from circman5.config.project_paths import project_paths
-from circman5.logging_config import setup_logger
+from circman5.utils.logging_config import setup_logger
 
 
 class TestRunner:

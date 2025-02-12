@@ -5,7 +5,6 @@ description = "Human-Centered AI-aided Framework for PV Manufacturing"
 authors = ["Mostafa Shami <mostafashami15@gmail.com>"]
 packages = [
     { include = "circman5", from = "src" },
-    { include = "utils", from = "src" }
 ]
 
 [tool.poetry.dependencies]

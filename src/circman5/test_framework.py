@@ -1,10 +1,11 @@
-from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+from circman5.manufacturing.core import SoliTekManufacturingAnalysis
 from circman5.test_data_generator import ManufacturingDataGenerator
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import shutil
 from datetime import datetime
+from pathlib import Path
 from circman5.config import project_paths
 
 
@@ -92,7 +93,7 @@ def test_framework():
 
             # Test data loading
             log_print("\nTesting data loading capabilities...")
-            analyzer.load_production_data(production_path)
+            analyzer.load_data(production_path=production_path)
             analyzer.energy_data = energy_data
             analyzer.quality_data = quality_data
             analyzer.material_flow = material_data
@@ -100,7 +101,9 @@ def test_framework():
 
             # Test efficiency analysis
             log_print("\nTesting efficiency analysis...")
-            efficiency_metrics = analyzer.analyze_efficiency()
+            efficiency_metrics = analyzer.analyze_manufacturing_performance()[
+                "efficiency"
+            ]
             log_print("Efficiency Metrics:")
             if "yield_rate" in efficiency_metrics:
                 log_print(f"Average Yield: {efficiency_metrics['yield_rate']:.2f}%")
@@ -110,14 +113,16 @@ def test_framework():
 
             # Test sustainability metrics
             log_print("\nTesting sustainability calculations...")
-            sustainability_metrics = analyzer.calculate_sustainability_metrics()
+            sustainability_metrics = analyzer.analyze_manufacturing_performance()[
+                "sustainability"
+            ]
             log_print("Sustainability Metrics:")
             for metric, value in sustainability_metrics.items():
                 log_print(f"{metric}: {value}")
 
             # Test quality analysis
             log_print("\nTesting quality metrics analysis...")
-            quality_metrics = analyzer.analyze_quality_metrics()
+            quality_metrics = analyzer.analyze_manufacturing_performance()["quality"]
             log_print("Quality Metrics:")
             if "average_efficiency" in quality_metrics:
                 log_print(
@@ -130,13 +135,31 @@ def test_framework():
                 viz_path = os.path.join(
                     directories["viz"], f"{metric_type}_analysis.png"
                 )
-                analyzer.generate_visualization(metric_type, save_path=viz_path)
+                # This depends on the metric_type, but you can use the internal methods:
+                if metric_type == "production":
+                    analyzer.visualizer.visualize_production_trends(
+                        analyzer.production_data, save_path=viz_path
+                    )
+                elif metric_type == "quality":
+                    analyzer.visualizer.visualize_quality_metrics(
+                        analyzer.quality_data,
+                        analyzer=analyzer.quality_analyzer,
+                        save_path=viz_path,
+                    )
+                elif metric_type == "sustainability":
+                    analyzer.visualizer.visualize_sustainability_indicators(
+                        analyzer.material_flow, analyzer.energy_data, save_path=viz_path
+                    )
+                elif metric_type == "energy":
+                    analyzer.visualizer.visualize_energy_patterns(
+                        analyzer.energy_data, save_path=viz_path
+                    )
                 log_print(f"Generated visualization for {metric_type}")
 
             # Test report generation
             log_print("\nTesting report generation...")
             report_path = os.path.join(directories["reports"], "analysis_report.xlsx")
-            analyzer.export_analysis_report(report_path)
+            analyzer.generate_reports(output_dir=Path(report_path).parent)
             log_print("Analysis report generated successfully")
 
         except Exception as e:

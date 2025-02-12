@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 from pathlib import Path
 from .config.project_paths import project_paths
-from .logging_config import setup_logger
+from .utils.logging_config import setup_logger
 
 
 class ManufacturingMonitor:

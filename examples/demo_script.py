@@ -8,10 +8,12 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+from circman5.manufacturing.core import SoliTekManufacturingAnalysis
 from circman5.test_data_generator import ManufacturingDataGenerator
-from circman5.logging_config import setup_logger
+from circman5.utils.logging_config import setup_logger
 from circman5.config.project_paths import project_paths
+from circman5.manufacturing.reporting.visualizations import ManufacturingVisualizer
+from circman5.manufacturing.reporting.reports import ReportGenerator
 
 
 def prepare_data(data_generator):
@@ -36,8 +38,10 @@ def main():
     logger.info("Initializing CIRCMAN5.0 Manufacturing Analysis System...")
 
     try:
-        # Initialize system
+        # Initialize system components
         analyzer = SoliTekManufacturingAnalysis()
+        visualizer = ManufacturingVisualizer()
+        report_generator = ReportGenerator()
 
         # Generate synthetic manufacturing data
         logger.info("Generating synthetic manufacturing data...")
@@ -81,16 +85,31 @@ def main():
         for param, value in optimized_params.items():
             logger.info(f"  {param}: {value:.2f}")
 
-        # Generate visualizations
+        # Generate visualizations using the dedicated visualizer
         logger.info("Generating analysis visualizations...")
-        for metric in ["production", "energy", "quality", "sustainability"]:
+        data_map = {
+            "production": production_data,
+            "energy": energy_data,
+            "quality": quality_data,
+            "sustainability": material_flow,
+        }
+        for metric, data in data_map.items():
             viz_path = visualizations_dir / f"{metric}_analysis.png"
-            analyzer.generate_visualization(metric, str(viz_path))
+            visualizer.generate_visualization(metric, data, str(viz_path))
             logger.info(f"  Saved {metric} visualization")
 
-        # Generate comprehensive analysis report
+        # Generate comprehensive analysis report using the report generator
         report_path = reports_dir / "analysis_report.xlsx"
-        analyzer.export_analysis_report(str(report_path))
+        report_generator.export_analysis_report(
+            {
+                "production_data": production_data.to_dict(),  # Convert DataFrames to dictionaries
+                "quality_data": quality_data.to_dict(),
+                "energy_data": energy_data.to_dict(),
+                "material_flow": material_flow.to_dict(),
+                "optimization_results": optimized_params,
+            },
+            str(report_path),
+        )
         logger.info("Analysis report saved")
 
     except Exception as e:

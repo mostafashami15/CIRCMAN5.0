@@ -10,6 +10,19 @@ src_path = project_root / "src"
 sys.path.insert(0, str(src_path))
 
 
+def cleanup_main_root():
+    """Clean up irrelevant output files in the main project root."""
+    # Define the file types to clean up
+    irrelevant_files = [".png", ".xlsx", ".csv", "test_log.txt"]
+
+    for file in project_root.glob("*"):
+        if file.suffix in irrelevant_files and file.is_file():
+            file.unlink()  # Delete the file
+            print(f"Removed: {file}")
+
+    print("Main root directory cleaned up.")
+
+
 def cleanup_test_results():
     """Clean up and reorganize test results directory."""
     # Use the global project_root, not a local one.
@@ -91,6 +104,10 @@ def cleanup_test_results():
 
 if __name__ == "__main__":
     try:
+        # Clean up irrelevant files in the main project root
+        cleanup_main_root()
+
+        # Clean up and reorganize the test results directory
         cleanup_test_results()
     except Exception as e:
         print(f"Error during cleanup: {str(e)}")

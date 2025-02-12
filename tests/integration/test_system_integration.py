@@ -5,11 +5,11 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-from circman5.visualization.manufacturing_visualizer import ManufacturingVisualizer
-from circman5.visualization.lca_visualizer import LCAVisualizer
+from circman5.manufacturing.reporting.visualizations import ManufacturingVisualizer
+from circman5.manufacturing.lifecycle import LCAVisualizer
 from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.config.project_paths import project_paths
-from circman5.analysis.lca.core import LCAAnalyzer
+from circman5.manufacturing.lifecycle import LCAAnalyzer
 
 
 @pytest.fixture(scope="module")

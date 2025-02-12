@@ -1,3 +1,4 @@
+# tests/unit/manufacturing/optimization/test_model.py
 """Integration tests for manufacturing optimization system."""
 
 import pytest
@@ -5,7 +6,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+from circman5.manufacturing.core import SoliTekManufacturingAnalysis
 from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.config.project_paths import project_paths
 

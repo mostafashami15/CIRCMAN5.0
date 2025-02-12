@@ -8,7 +8,7 @@ from typing import Dict, List
 from pathlib import Path
 from circman5.config.project_paths import project_paths
 
-from .analysis.lca.impact_factors import (
+from circman5.manufacturing.lifecycle.impact_factors import (
     MATERIAL_IMPACT_FACTORS,
     ENERGY_IMPACT_FACTORS,
     RECYCLING_BENEFIT_FACTORS,

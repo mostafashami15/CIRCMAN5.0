@@ -5,10 +5,10 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-from circman5.analysis.efficiency import EfficiencyAnalyzer
-from circman5.analysis.quality import QualityAnalyzer
-from circman5.analysis.sustainability import SustainabilityAnalyzer
-from circman5.analysis.lca.core import LCAAnalyzer
+from circman5.manufacturing.analyzers.efficiency import EfficiencyAnalyzer
+from circman5.manufacturing.analyzers.quality import QualityAnalyzer
+from circman5.manufacturing.analyzers.sustainability import SustainabilityAnalyzer
+from circman5.manufacturing.lifecycle import LCAAnalyzer
 from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.config.project_paths import project_paths
 

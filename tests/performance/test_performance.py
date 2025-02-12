@@ -8,9 +8,9 @@ from pathlib import Path
 import logging
 
 from circman5.test_data_generator import ManufacturingDataGenerator
-from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+from circman5.manufacturing.core import SoliTekManufacturingAnalysis
 from circman5.config.project_paths import project_paths
-from circman5.logging_config import setup_logger
+from circman5.utils.logging_config import setup_logger
 
 
 # Setup logging

@@ -1,78 +1,57 @@
-"""
-Test script for SoliTek Manufacturing Analysis with AI optimization.
-"""
+"""Integration tests for manufacturing analysis system."""
 
-from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+import pytest
+from pathlib import Path
 import pandas as pd
-import numpy as np
+from circman5.manufacturing.core import SoliTekManufacturingAnalysis
 
 
-def main():
-    # Create test instance
-    print("Creating SoliTek Manufacturing Analysis instance...")
-    analyzer = SoliTekManufacturingAnalysis()
+@pytest.fixture
+def analyzer():
+    """Create analyzer fixture with test data."""
+    return SoliTekManufacturingAnalysis()
 
-    # Generate sample data
-    print("\nGenerating sample data...")
-    n_samples = 100
-    dates = pd.date_range("2025-01-01", periods=n_samples, freq="H")
 
-    # Production data
-    analyzer.production_data = pd.DataFrame(
-        {
-            "batch_id": [f"BATCH_{i:03d}" for i in range(n_samples)],
-            "timestamp": dates,
-            "input_amount": np.random.uniform(80, 120, n_samples),
-            "output_amount": np.random.uniform(75, 110, n_samples),
-            "energy_used": np.random.uniform(140, 160, n_samples),
-            "cycle_time": np.random.uniform(45, 55, n_samples),
-        }
+def test_performance_report(analyzer, tmp_path):
+    """Test performance report generation."""
+    report_path = tmp_path / "performance_report.xlsx"
+    metrics = analyzer.analyze_manufacturing_performance()
+    analyzer.report_generator.generate_performance_report(
+        metrics, save_path=report_path
     )
-
-    # Quality data
-    analyzer.quality_data = pd.DataFrame(
-        {
-            "batch_id": [f"BATCH_{i:03d}" for i in range(n_samples)],
-            "test_timestamp": dates,
-            "efficiency": np.random.uniform(20, 22, n_samples),
-            "defect_rate": np.random.uniform(1, 3, n_samples),
-            "thickness_uniformity": np.random.uniform(94, 96, n_samples),
-        }
-    )
-
-    # Train the model
-    print("\nTraining AI optimization model...")
-    metrics = analyzer.train_optimization_model()
-    print("Training Metrics:", metrics)
-
-    # Test optimization
-    print("\nTesting process optimization...")
-    current_params = {
-        "input_amount": 100.0,
-        "energy_used": 150.0,
-        "cycle_time": 50.0,
-        "efficiency": 21.0,
-        "defect_rate": 2.0,
-        "thickness_uniformity": 95.0,
-    }
-
-    optimized = analyzer.optimize_process_parameters(current_params)
-    print("Optimized Parameters:", optimized)
-
-    # Test prediction
-    print("\nTesting outcome prediction...")
-    predictions = analyzer.predict_batch_outcomes(current_params)
-    print("Predicted Outcomes:", predictions)
-
-    # Test optimization potential analysis
-    print("\nAnalyzing optimization potential...")
-    improvements = analyzer.analyze_optimization_potential()
-    print("Potential Improvements:", improvements)
-
-    # Generate performance report
-    print("\nGenerating performance report...")
-    analyzer.generate_performance_report("test_performance_report.png")
+    assert report_path.exists()
 
 
-if __name__ == "__main__":
-    main()
+def test_metric_calculations(analyzer):
+    """Test metric calculations."""
+    metrics = analyzer.analyze_manufacturing_performance()
+    assert "efficiency" in metrics
+    assert "quality" in metrics
+    assert "sustainability" in metrics
+
+
+def test_visualization_generation(analyzer, tmp_path):
+    """Test visualization generation with validated data."""
+    viz_dir = tmp_path / "visualizations"
+    viz_dir.mkdir()
+
+    # Test each visualization type
+    for viz_type in ["production", "energy", "quality", "sustainability"]:
+        viz_path = viz_dir / f"{viz_type}_viz.png"
+        analyzer.generate_visualization(viz_type, str(viz_path))
+        assert viz_path.exists()
+
+
+def test_report_generation(analyzer, tmp_path):
+    """Test comprehensive report generation."""
+    report_dir = tmp_path / "reports"
+    report_dir.mkdir()
+    analyzer.generate_reports(output_dir=report_dir)
+    assert any(report_dir.glob("*.xlsx"))
+
+
+def test_data_validation(analyzer):
+    """Test data validation functionality."""
+    metrics = analyzer.analyze_manufacturing_performance()
+    assert isinstance(metrics, dict)
+    assert all(key in metrics for key in ["efficiency", "quality", "sustainability"])
