@@ -1,3 +1,4 @@
+# tests/integration/test_data_pipeline.py
 """Integration tests for analysis module pipeline."""
 
 import pytest
@@ -192,14 +193,25 @@ def test_data_consistency(analysis_pipeline, test_data):
     )
 
     # Verify metric ranges are consistent
-    assert all(
-        0 <= v <= 100
-        for v in efficiency_metrics.values()
-        if isinstance(v, (int, float))
-    )
+    for metric, value in efficiency_metrics.items():
+        if not isinstance(value, (int, float)):
+            continue
+
+        if metric == "energy_efficiency":
+            # Energy efficiency is a ratio between 0 and 1
+            assert 0 <= value <= 1, f"Energy efficiency {value} not in range [0,1]"
+        else:
+            # Other metrics should be percentages between 0 and 100
+            assert (
+                0 <= value <= 100
+            ), f"Metric {metric} value {value} not in range [0,100]"
+
+    # Verify quality metrics
     assert all(
         0 <= v <= 100 for v in quality_metrics.values() if isinstance(v, (int, float))
     )
+
+    # Verify material metrics
     assert all(
         0 <= v <= 100 for v in material_metrics.values() if isinstance(v, (int, float))
     )

@@ -203,7 +203,7 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
                     data.append(
                         {
                             "batch_id": random.choice(self.batch_ids),
-                            "test_timestamp": timestamp,
+                            "timestamp": timestamp,
                             "efficiency": random.uniform(20, 22),
                             "defect_rate": random.uniform(1, 3),
                             "thickness_uniformity": random.uniform(94, 96),

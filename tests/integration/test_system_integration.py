@@ -69,8 +69,8 @@ def test_manufacturing_visualization(manufacturing_viz, test_data, test_run_dir)
 
     # Test quality metrics visualization
     quality_data = test_data["quality"].copy()
-    # Rename test_timestamp to timestamp for consistency
-    quality_data = quality_data.rename(columns={"test_timestamp": "timestamp"})
+    # Rename timestamp to timestamp for consistency
+    quality_data = quality_data.rename(columns={"timestamp": "timestamp"})
     # Add quality score for visualization
     quality_data["quality_score"] = 100 - quality_data["defect_rate"]
 
@@ -147,7 +147,7 @@ def test_comprehensive_visualization(
         ),
         "quality": pd.DataFrame(
             {
-                "timestamp": test_data["quality"]["test_timestamp"],
+                "timestamp": test_data["quality"]["timestamp"],
                 "quality_score": 100 - test_data["quality"]["defect_rate"],
             }
         ),
@@ -172,7 +172,11 @@ def test_comprehensive_visualization(
     output_dir.mkdir(exist_ok=True)
 
     lca_viz.create_comprehensive_report(
-        impact_data={"Manufacturing": 45.2, "Use Phase": -120.5},
+        impact_data={
+            "Manufacturing Impact": 45.2,
+            "Use Phase Impact": -120.5,
+            "End of Life Impact": 15.8,  # supply a value for End of Life Impact as well
+        },
         material_data=test_data["material"],
         energy_data=test_data["energy"],
         output_dir=str(output_dir),

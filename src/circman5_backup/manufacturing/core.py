@@ -91,7 +91,7 @@ class SoliTekManufacturingAnalysis:
 
         self.quality_schema = {
             "batch_id": str,
-            "test_timestamp": "datetime64[ns]",
+            "timestamp": "datetime64[ns]",
             "efficiency": float,
             "defect_rate": float,
             "thickness_uniformity": float,
@@ -955,7 +955,7 @@ class SoliTekManufacturingAnalysis:
 
         plt.subplot(2, 2, 2)
         daily_defects = self.quality_data.groupby(
-            pd.Grouper(key="test_timestamp", freq="D"), observed=True
+            pd.Grouper(key="timestamp", freq="D"), observed=True
         )["defect_rate"].mean()
         daily_defects.plot(style=".-", title="Daily Average Defect Rate")
         plt.ylabel("Defect Rate (%)")

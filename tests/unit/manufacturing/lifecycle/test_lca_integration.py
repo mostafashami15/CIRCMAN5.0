@@ -75,7 +75,8 @@ def test_lca_report_generation(
 
     # Then generate comprehensive report
     manufacturing_analyzer.generate_reports(output_dir=reports_dir)
-    report_path = reports_dir / "comprehensive_analysis.xlsx"
+    # Updated expected filename:
+    report_path = reports_dir / "analysis_report.xlsx"
     assert report_path.exists()
 
 

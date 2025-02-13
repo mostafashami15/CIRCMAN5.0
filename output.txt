@@ -1,825 +1,203 @@
-============================= test session starts ==============================
-platform darwin -- Python 3.11.7, pytest-7.4.4, pluggy-1.5.0 -- /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/.venv/bin/python
-cachedir: .pytest_cache
-metadata: {'Python': '3.11.7', 'Platform': 'macOS-15.3-arm64-arm-64bit', 'Packages': {'pytest': '7.4.4', 'pluggy': '1.5.0'}, 'Plugins': {'cov': '6.0.0', 'html': '4.1.1', 'metadata': '3.1.1', 'xdist': '3.6.1'}}
-rootdir: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0
-configfile: pytest.ini
-plugins: cov-6.0.0, html-4.1.1, metadata-3.1.1, xdist-3.6.1
-collecting ... collected 14 items
-
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_initialization PASSED [  7%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_data_loading FAILED [ 14%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_manufacturing_analysis PASSED [ 21%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_lifecycle_assessment PASSED [ 28%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_optimization_workflow PASSED [ 35%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_report_generation PASSED [ 42%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_visualization_generation PASSED [ 50%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_empty_data_handling FAILED [ 57%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_invalid_data_handling PASSED [ 64%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_parameter_validation PASSED [ 71%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_batch_specific_analysis FAILED [ 78%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_end_to_end_workflow FAILED [ 85%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_performance_metrics PASSED [ 92%]
-tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_data_consistency FAILED [100%]
-
-=================================== FAILURES ===================================
-___________________ TestManufacturingCore.test_data_loading ____________________
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c93bd0>
-production_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/production.csv'
-quality_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/quality.csv'
-material_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/material.csv'
-energy_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/energy.csv'
-process_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/process.csv'
-
-    def load_data(
-        self,
-        production_path: Optional[str] = None,
-        quality_path: Optional[str] = None,
-        material_path: Optional[str] = None,
-        energy_path: Optional[str] = None,
-        process_path: Optional[str] = None,
-    ) -> None:
-        """
-        Load all required data files for analysis.
-
-        Args:
-            production_path: Path to production data file
-            quality_path: Path to quality data file
-            material_path: Path to material flow data file
-            energy_path: Path to energy consumption data file
-            process_path: Path to process data file
-        """
-        try:
-            if production_path:
-                self.production_data = self.data_loader.load_production_data(
-                    production_path
-                )
-
-            if quality_path:
->               self.quality_data = self.data_loader.load_quality_data(quality_path)
-
-src/circman5/manufacturing/core.py:92:
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-src/circman5/manufacturing/data_loader.py:74: in load_quality_data
-    return self._load_and_validate_csv(file_path, self.quality_schema, "quality")
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-self = <circman5.manufacturing.data_loader.ManufacturingDataLoader object at 0x118c382d0>
-file_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/quality.csv'
-schema = {'batch_id': <class 'str'>, 'defect_rate': <class 'float'>, 'efficiency': <class 'float'>, 'test_timestamp': 'datetime64[ns]', ...}
-data_type = 'quality'
-
-    def _load_and_validate_csv(
-        self, file_path: Union[str, Path], schema: Dict, data_type: str
-    ) -> pd.DataFrame:
-        """Helper method to load and validate CSV files."""
-        try:
-            file_path = str(file_path)  # Ensure string path
-            self.logger.info(f"Loading {data_type} data from {file_path}")
-
-            if not Path(file_path).exists():
-                raise DataError(f"{data_type} data file not found: {file_path}")
-
-            data = pd.read_csv(file_path)
-            if data.empty:
-                raise DataError(f"{data_type} data file is empty")
-
-            # Validate schema
-            missing_cols = [col for col in schema if col not in data.columns]
-            if missing_cols:
->               raise ValidationError(
-                    f"Missing required columns in {data_type} data: {missing_cols}"
-                )
-E               circman5.utils.errors.ValidationError: Missing required columns in quality data: ['visual_inspection']
-
-src/circman5/manufacturing/data_loader.py:176: ValidationError
-
-During handling of the above exception, another exception occurred:
-
-self = <tests.unit.manufacturing.test_core.TestManufacturingCore object at 0x1184c5a50>
-analyzer = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c93bd0>
-test_data = {'energy':               timestamp production_line  ...  energy_source efficiency_rate
-0   2024-01-01 08:00:00        ......  91.825548  completed
-119 2024-02-09 15:00:00  BATCH_0077  ...  88.476661  completed
-
-[120 rows x 11 columns], ...}
-tmp_path = PosixPath('/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0')
-
-    def test_data_loading(self, analyzer, test_data, tmp_path):
-        """Test data loading from files."""
-        # Save test data to temporary files
-        paths = {}
-        for data_type, df in test_data.items():
-            path = tmp_path / f"{data_type}.csv"
-            df.to_csv(path, index=False)
-            paths[f"{data_type}_path"] = str(path)
-
-        # Test loading
->       analyzer.load_data(**paths)
-
-tests/unit/manufacturing/test_core.py:74:
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c93bd0>
-production_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/production.csv'
-quality_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/quality.csv'
-material_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/material.csv'
-energy_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/energy.csv'
-process_path = '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/process.csv'
-
-    def load_data(
-        self,
-        production_path: Optional[str] = None,
-        quality_path: Optional[str] = None,
-        material_path: Optional[str] = None,
-        energy_path: Optional[str] = None,
-        process_path: Optional[str] = None,
-    ) -> None:
-        """
-        Load all required data files for analysis.
-
-        Args:
-            production_path: Path to production data file
-            quality_path: Path to quality data file
-            material_path: Path to material flow data file
-            energy_path: Path to energy consumption data file
-            process_path: Path to process data file
-        """
-        try:
-            if production_path:
-                self.production_data = self.data_loader.load_production_data(
-                    production_path
-                )
-
-            if quality_path:
-                self.quality_data = self.data_loader.load_quality_data(quality_path)
-
-            if material_path:
-                self.material_flow = self.data_loader.load_material_data(material_path)
-                self.lca_data["material_flow"] = self.material_flow
-
-            if energy_path:
-                self.energy_data = self.data_loader.load_energy_data(energy_path)
-                self.lca_data["energy_consumption"] = self.energy_data
-
-            if process_path:
-                self.lca_data["process_data"] = self.data_loader.load_process_data(
-                    process_path
-                )
-
-            self.logger.info("Successfully loaded all data files")
-
-        except Exception as e:
-            self.logger.error(f"Error loading data: {str(e)}")
->           raise DataError(f"Data loading failed: {str(e)}")
-E           circman5.utils.errors.DataError: Data loading failed: Missing required columns in quality data: ['visual_inspection']
-
-src/circman5/manufacturing/core.py:111: DataError
------------------------------- Captured log setup ------------------------------
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123311.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123311.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123311.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123311.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123311.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123311.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123311.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123311.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123311.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123311.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123311.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123311.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123311.log
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123311.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123311.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123311.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123311.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123311.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123311.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123311.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123311.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123311.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123311.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123311.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123311.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123311.log
------------------------------ Captured stderr call -----------------------------
-INFO: Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/production.csv
-INFO: Successfully loaded 120 production records
-INFO: Loading quality data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/quality.csv
-ERROR: Error loading quality data: Missing required columns in quality data: ['visual_inspection']
-ERROR: Error loading data: Missing required columns in quality data: ['visual_inspection']
------------------------------- Captured log call -------------------------------
-INFO     manufacturing_data_loader:data_loader.py:164 Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/production.csv
-INFO     manufacturing_data_loader:data_loader.py:197 Successfully loaded 120 production records
-INFO     manufacturing_data_loader:data_loader.py:164 Loading quality data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_data_loading0/quality.csv
-ERROR    manufacturing_data_loader:data_loader.py:201 Error loading quality data: Missing required columns in quality data: ['visual_inspection']
-ERROR    solitek_manufacturing:core.py:110 Error loading data: Missing required columns in quality data: ['visual_inspection']
-________________ TestManufacturingCore.test_empty_data_handling ________________
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x12883de90>
-
-    def analyze_efficiency(self) -> Dict[str, float]:
-        """Analyze manufacturing efficiency metrics."""
-        try:
-            if self.production_data.empty:
->               raise DataError("No production data available for analysis")
-E               circman5.utils.errors.DataError: No production data available for analysis
-
-src/circman5/manufacturing/core.py:433: DataError
-
-During handling of the above exception, another exception occurred:
-
-self = <tests.unit.manufacturing.test_core.TestManufacturingCore object at 0x118ca4210>
-analyzer = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x12883de90>
-
-    def test_empty_data_handling(self, analyzer):
-        """Test handling of empty datasets."""
-        empty_df = pd.DataFrame()
-
-        analyzer.production_data = empty_df
-        with pytest.raises(DataError):
->           analyzer.analyze_efficiency()
-
-tests/unit/manufacturing/test_core.py:181:
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x12883de90>
-
-    def analyze_efficiency(self) -> Dict[str, float]:
-        """Analyze manufacturing efficiency metrics."""
-        try:
-            if self.production_data.empty:
-                raise DataError("No production data available for analysis")
-
-            return self.efficiency_analyzer.analyze_batch_efficiency(
-                self.production_data
-            )
-        except Exception as e:
-            self.logger.error(f"Error analyzing efficiency: {str(e)}")
->           raise ProcessError(f"Efficiency analysis failed: {str(e)}")
-E           circman5.utils.errors.ProcessError: Efficiency analysis failed: No production data available for analysis
-
-src/circman5/manufacturing/core.py:440: ProcessError
------------------------------- Captured log setup ------------------------------
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123316.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123316.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123316.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123316.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123316.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123316.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123316.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123316.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123316.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123316.log
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123316.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123316.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123316.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123316.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123316.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123316.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123316.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123316.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123316.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123316.log
------------------------------ Captured stderr call -----------------------------
-ERROR: Error analyzing efficiency: No production data available for analysis
------------------------------- Captured log call -------------------------------
-ERROR    solitek_manufacturing:core.py:439 Error analyzing efficiency: No production data available for analysis
-______________ TestManufacturingCore.test_batch_specific_analysis ______________
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c7d2d0>
-impact = LifeCycleImpact(manufacturing_impact=0.0, use_phase_impact=0.0, end_of_life_impact=0.0)
-material_data = Empty DataFrame
-Columns: [timestamp, batch_id, material_type, quantity_used, waste_generated, recycled_amount]
-Index: []
-energy_data =               timestamp production_line  ...  energy_source efficiency_rate
-0   2024-01-01 08:00:00          LINE_A  ....rid        0.895761
-119 2024-02-09 15:00:00          LINE_C  ...           wind        0.912985
-
-[120 rows x 5 columns]
-batch_id = 'BATCH_0047', output_dir = None
-
-    def _generate_lca_visualizations(
-        self,
-        impact: LifeCycleImpact,
-        material_data: pd.DataFrame,
-        energy_data: pd.DataFrame,
-        batch_id: Optional[str] = None,
-        output_dir: Optional[Path] = None,
-    ) -> None:
-        """Generate all LCA-related visualizations."""
-        try:
-            # Use provided output directory or fall back to default
-            viz_dir = Path(output_dir) if output_dir else self.lca_visualizer.viz_dir
-            viz_dir.mkdir(parents=True, exist_ok=True)
-
-            # Create visualization filename with batch_id if provided
-            filename_suffix = f"_{batch_id}" if batch_id else ""
-
-            # Generate lifecycle comparison visualization
-            self.lca_visualizer.plot_lifecycle_comparison(
-                impact.manufacturing_impact,
-                impact.use_phase_impact,
-                impact.end_of_life_impact,
-                save_path=str(viz_dir / f"lifecycle_comparison{filename_suffix}.png"),
-            )
-
-            # Generate material flow visualization
->           self.lca_visualizer.plot_material_flow(
-                material_data,
-                save_path=str(viz_dir / f"material_flow{filename_suffix}.png"),
-            )
-
-src/circman5/manufacturing/core.py:272:
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-src/circman5/manufacturing/lifecycle/visualizer.py:234: in plot_material_flow
-    material_totals.plot(kind="bar", stacked=True, color=self.colors[:3])
-.venv/lib/python3.11/site-packages/pandas/plotting/_core.py:1030: in __call__
-    return plot_backend.plot(data, kind=kind, **kwargs)
-.venv/lib/python3.11/site-packages/pandas/plotting/_matplotlib/__init__.py:71: in plot
-    plot_obj.generate()
-.venv/lib/python3.11/site-packages/pandas/plotting/_matplotlib/core.py:508: in generate
-    self._post_plot_logic(ax, self.data)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-self = <pandas.plotting._matplotlib.core.BarPlot object at 0x11a09a950>
-ax = <Axes: >
-data = Empty DataFrame
-Columns: [quantity_used, waste_generated, recycled_amount]
-Index: []
-
-    def _post_plot_logic(self, ax: Axes, data) -> None:
-        if self.use_index:
-            str_index = [pprint_thing(key) for key in data.index]
-        else:
-            str_index = [pprint_thing(key) for key in range(data.shape[0])]
-
->       s_edge = self.ax_pos[0] - 0.25 + self.lim_offset
-E       IndexError: index 0 is out of bounds for axis 0 with size 0
-
-.venv/lib/python3.11/site-packages/pandas/plotting/_matplotlib/core.py:1972: IndexError
-
-During handling of the above exception, another exception occurred:
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c7d2d0>
-batch_id = 'BATCH_0047', output_dir = None
-
-    def perform_lifecycle_assessment(
-        self, batch_id: Optional[str] = None, output_dir: Optional[Path] = None
-    ) -> LifeCycleImpact:
-        """
-        Perform comprehensive lifecycle assessment and visualization.
-
-        Args:
-            batch_id: Optional batch identifier for specific analysis
-
-        Returns:
-            LifeCycleImpact: Object containing impact assessments
-        """
-        try:
-            # Validate input data
-            if self.lca_data["material_flow"].empty:
-                raise ValueError("No material flow data available")
-            if self.lca_data["energy_consumption"].empty:
-                raise ValueError("No energy consumption data available")
-
-            # Filter data for specific batch if provided
-            material_data = self._filter_batch_data(
-                self.lca_data["material_flow"], batch_id
-            )
-            energy_data = self._filter_batch_data(
-                self.lca_data["energy_consumption"], batch_id
-            )
-            process_data = self._filter_batch_data(
-                self.lca_data["process_data"], batch_id
-            )
-
-            # Calculate material inputs and energy consumption
-            material_inputs = self.lca_analyzer._aggregate_material_inputs(
-                material_data
-            )
-            total_energy = energy_data["energy_consumption"].sum()
-
-            # Calculate recycling rates
-            recycling_rates = self.lca_analyzer.calculate_recycling_rates(material_data)
-
-            # Calculate annual energy generation
-            annual_energy_generation = self.lca_analyzer.calculate_energy_generation(
-                material_inputs
-            )
-
-            # Perform full LCA calculation
-            impact = self.lca_analyzer.perform_full_lca(
-                material_inputs=material_inputs,
-                energy_consumption=total_energy,
-                lifetime_years=25.0,  # Standard PV panel lifetime
-                annual_energy_generation=annual_energy_generation,
-                grid_carbon_intensity=0.5,  # Can be adjusted based on location
-                recycling_rates=recycling_rates,
-                transport_distance=100.0,  # Average transport distance in km
-            )
-
-            # Generate visualizations
->           self._generate_lca_visualizations(
-                impact, material_data, energy_data, batch_id, output_dir=output_dir
-            )
-
-src/circman5/manufacturing/core.py:169:
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c7d2d0>
-impact = LifeCycleImpact(manufacturing_impact=0.0, use_phase_impact=0.0, end_of_life_impact=0.0)
-material_data = Empty DataFrame
-Columns: [timestamp, batch_id, material_type, quantity_used, waste_generated, recycled_amount]
-Index: []
-energy_data =               timestamp production_line  ...  energy_source efficiency_rate
-0   2024-01-01 08:00:00          LINE_A  ....rid        0.895761
-119 2024-02-09 15:00:00          LINE_C  ...           wind        0.912985
-
-[120 rows x 5 columns]
-batch_id = 'BATCH_0047', output_dir = None
-
-    def _generate_lca_visualizations(
-        self,
-        impact: LifeCycleImpact,
-        material_data: pd.DataFrame,
-        energy_data: pd.DataFrame,
-        batch_id: Optional[str] = None,
-        output_dir: Optional[Path] = None,
-    ) -> None:
-        """Generate all LCA-related visualizations."""
-        try:
-            # Use provided output directory or fall back to default
-            viz_dir = Path(output_dir) if output_dir else self.lca_visualizer.viz_dir
-            viz_dir.mkdir(parents=True, exist_ok=True)
-
-            # Create visualization filename with batch_id if provided
-            filename_suffix = f"_{batch_id}" if batch_id else ""
-
-            # Generate lifecycle comparison visualization
-            self.lca_visualizer.plot_lifecycle_comparison(
-                impact.manufacturing_impact,
-                impact.use_phase_impact,
-                impact.end_of_life_impact,
-                save_path=str(viz_dir / f"lifecycle_comparison{filename_suffix}.png"),
-            )
-
-            # Generate material flow visualization
-            self.lca_visualizer.plot_material_flow(
-                material_data,
-                save_path=str(viz_dir / f"material_flow{filename_suffix}.png"),
-            )
-
-            # Generate energy consumption visualization
-            self.lca_visualizer.plot_energy_consumption_trends(
-                energy_data,
-                save_path=str(viz_dir / f"energy_trends{filename_suffix}.png"),
-            )
-
-            self.logger.info(f"Generated visualizations in {viz_dir}")
-
-        except Exception as e:
-            self.logger.error(f"Error generating LCA visualizations: {str(e)}")
->           raise ProcessError(f"Visualization generation failed: {str(e)}")
-E           circman5.utils.errors.ProcessError: Visualization generation failed: index 0 is out of bounds for axis 0 with size 0
-
-src/circman5/manufacturing/core.py:287: ProcessError
-
-During handling of the above exception, another exception occurred:
-
-self = <tests.unit.manufacturing.test_core.TestManufacturingCore object at 0x118ca5a90>
-analyzer = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c7d2d0>
-test_data = {'energy':               timestamp production_line  ...  energy_source efficiency_rate
-0   2024-01-01 08:00:00        ......  92.642776  completed
-119 2024-02-09 15:00:00  BATCH_0013  ...  88.769681  completed
-
-[120 rows x 11 columns], ...}
-
-    def test_batch_specific_analysis(self, analyzer, test_data):
-        """Test batch-specific analysis capabilities."""
-        self.initialize_test_data(analyzer, test_data)
-
-        batch_id = test_data["production"]["batch_id"].iloc[0]
-
-        # Test LCA for specific batch
->       impact = analyzer.perform_lifecycle_assessment(batch_id=batch_id)
-
-tests/unit/manufacturing/test_core.py:224:
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-self = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c7d2d0>
-batch_id = 'BATCH_0047', output_dir = None
-
-    def perform_lifecycle_assessment(
-        self, batch_id: Optional[str] = None, output_dir: Optional[Path] = None
-    ) -> LifeCycleImpact:
-        """
-        Perform comprehensive lifecycle assessment and visualization.
-
-        Args:
-            batch_id: Optional batch identifier for specific analysis
-
-        Returns:
-            LifeCycleImpact: Object containing impact assessments
-        """
-        try:
-            # Validate input data
-            if self.lca_data["material_flow"].empty:
-                raise ValueError("No material flow data available")
-            if self.lca_data["energy_consumption"].empty:
-                raise ValueError("No energy consumption data available")
-
-            # Filter data for specific batch if provided
-            material_data = self._filter_batch_data(
-                self.lca_data["material_flow"], batch_id
-            )
-            energy_data = self._filter_batch_data(
-                self.lca_data["energy_consumption"], batch_id
-            )
-            process_data = self._filter_batch_data(
-                self.lca_data["process_data"], batch_id
-            )
-
-            # Calculate material inputs and energy consumption
-            material_inputs = self.lca_analyzer._aggregate_material_inputs(
-                material_data
-            )
-            total_energy = energy_data["energy_consumption"].sum()
-
-            # Calculate recycling rates
-            recycling_rates = self.lca_analyzer.calculate_recycling_rates(material_data)
-
-            # Calculate annual energy generation
-            annual_energy_generation = self.lca_analyzer.calculate_energy_generation(
-                material_inputs
-            )
-
-            # Perform full LCA calculation
-            impact = self.lca_analyzer.perform_full_lca(
-                material_inputs=material_inputs,
-                energy_consumption=total_energy,
-                lifetime_years=25.0,  # Standard PV panel lifetime
-                annual_energy_generation=annual_energy_generation,
-                grid_carbon_intensity=0.5,  # Can be adjusted based on location
-                recycling_rates=recycling_rates,
-                transport_distance=100.0,  # Average transport distance in km
-            )
-
-            # Generate visualizations
-            self._generate_lca_visualizations(
-                impact, material_data, energy_data, batch_id, output_dir=output_dir
-            )
-
-            # Save LCA results
-            self.lca_analyzer.save_results(impact, batch_id)
-
-            self.logger.info(f"Completed lifecycle assessment for batch {batch_id}")
-            return impact
-
-        except Exception as e:
-            self.logger.error(f"Error in lifecycle assessment: {str(e)}")
->           raise ProcessError(f"Lifecycle assessment failed: {str(e)}")
-E           circman5.utils.errors.ProcessError: Lifecycle assessment failed: Visualization generation failed: index 0 is out of bounds for axis 0 with size 0
-
-src/circman5/manufacturing/core.py:181: ProcessError
------------------------------- Captured log setup ------------------------------
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123316.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123316.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123316.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123316.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123316.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123316.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123316.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123316.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123316.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123316.log
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123316.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123316.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123316.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123316.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123316.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123316.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123316.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123316.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123316.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123316.log
------------------------------ Captured stderr call -----------------------------
-ERROR: Error performing LCA: Material inputs dictionary cannot be empty
-ERROR: Error generating LCA visualizations: index 0 is out of bounds for axis 0 with size 0
-ERROR: Error in lifecycle assessment: Visualization generation failed: index 0 is out of bounds for axis 0 with size 0
------------------------------- Captured log call -------------------------------
-ERROR    lca_analyzer:lca_analyzer.py:192 Error performing LCA: Material inputs dictionary cannot be empty
-ERROR    solitek_manufacturing:core.py:286 Error generating LCA visualizations: index 0 is out of bounds for axis 0 with size 0
-ERROR    solitek_manufacturing:core.py:180 Error in lifecycle assessment: Visualization generation failed: index 0 is out of bounds for axis 0 with size 0
-________________ TestManufacturingCore.test_end_to_end_workflow ________________
-
-self = <tests.unit.manufacturing.test_core.TestManufacturingCore object at 0x118ca6290>
-analyzer = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x118c3b190>
-test_data = {'energy':               timestamp production_line  ...  energy_source efficiency_rate
-0   2024-01-01 08:00:00        ......  87.435971  completed
-119 2024-02-09 15:00:00  BATCH_0094  ...  90.199875  completed
-
-[120 rows x 11 columns], ...}
-tmp_path = PosixPath('/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_end_to_end_workflow0')
-
-    def test_end_to_end_workflow(self, analyzer, test_data, tmp_path):
-        """Test complete analysis workflow."""
-        self.initialize_test_data(analyzer, test_data)
-
-        # Perform analyses
-        performance = analyzer.analyze_manufacturing_performance()
-        impact = analyzer.perform_lifecycle_assessment()
-
-        # Generate reports and visualizations
-        report_dir = tmp_path / "reports"
-        report_dir.mkdir(parents=True, exist_ok=True)
-
-        analyzer.generate_reports(report_dir)
-
-        # Verify outputs
->       assert (report_dir / "analysis_report.xlsx").exists()
-E       AssertionError: assert False
-E        +  where False = <bound method Path.exists of PosixPath('/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_end_to_end_workflow0/reports/analysis_report.xlsx')>()
-E        +    where <bound method Path.exists of PosixPath('/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_end_to_end_workflow0/reports/analysis_report.xlsx')> = (PosixPath('/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_end_to_end_workflow0/reports') / 'analysis_report.xlsx').exists
-
-tests/unit/manufacturing/test_core.py:246: AssertionError
------------------------------- Captured log setup ------------------------------
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123316.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123316.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123316.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123316.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123316.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123316.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123316.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123316.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123316.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123316.log
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123316.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123316.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123316.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123316.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123316.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123316.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123316.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123316.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123316.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123316.log
------------------------------ Captured stderr call -----------------------------
-INFO: Efficiency analysis completed: {'yield_rate': 91.04507920839673, 'output_amount': 90.55046180190828, 'input_amount': 99.45673350960979, 'cycle_time_efficiency': 1.8183299972511613, 'energy_efficiency': 0.6020278283813449}
-INFO: Quality metrics calculated: {'avg_defect_rate': np.float64(2.009072391262499), 'efficiency_score': np.float64(20.980167794398103), 'uniformity_score': np.float64(95.08121605783045)}
-INFO: Carbon footprint calculated: 1006.6776819337206
-INFO: Material efficiency metrics calculated: {'material_efficiency': np.float64(90.06963563530071), 'recycling_rate': np.float64(75.49625393795696), 'waste_reduction': np.float64(90.06963563530073)}
-INFO: Carbon footprint calculated: 1006.6776819337206
-INFO: Energy efficiency calculated: 80.22% (Base: 89.20%, Carbon Impact: 0.90)
-INFO: Sustainability score calculated: 82.74187982645438
-INFO: Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1006.6776819337206), 'per_unit': np.float64(8.388980682781005)}, 'material_efficiency': {'material_efficiency': 90.06963563530071, 'recycling_rate': 75.49625393795696, 'waste_reduction': 90.06963563530073}, 'sustainability_score': {'overall': 82.74187982645438}}
-INFO: Saved production trends visualization to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123316/visualizations/production_trends.png
-INFO: Quality trends analyzed successfully
-WARNING: Use phase impact calculation yielded non-negative value
-INFO: Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123316/visualizations
-INFO: Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123318/reports/lca_impact.xlsx
-INFO: Completed lifecycle assessment for batch None
-INFO: Efficiency analysis completed: {'yield_rate': 91.04507920839673, 'output_amount': 90.55046180190828, 'input_amount': 99.45673350960979, 'cycle_time_efficiency': 1.8183299972511613, 'energy_efficiency': 0.6020278283813449}
-INFO: Quality metrics calculated: {'avg_defect_rate': np.float64(2.009072391262499), 'efficiency_score': np.float64(20.980167794398103), 'uniformity_score': np.float64(95.08121605783045)}
-INFO: Carbon footprint calculated: 1006.6776819337206
-INFO: Material efficiency metrics calculated: {'material_efficiency': np.float64(90.06963563530071), 'recycling_rate': np.float64(75.49625393795696), 'waste_reduction': np.float64(90.06963563530073)}
-INFO: Carbon footprint calculated: 1006.6776819337206
-INFO: Energy efficiency calculated: 80.22% (Base: 89.20%, Carbon Impact: 0.90)
-INFO: Sustainability score calculated: 82.74187982645438
-INFO: Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1006.6776819337206), 'per_unit': np.float64(8.388980682781005)}, 'material_efficiency': {'material_efficiency': 90.06963563530071, 'recycling_rate': 75.49625393795696, 'waste_reduction': 90.06963563530073}, 'sustainability_score': {'overall': 82.74187982645438}}
-INFO: Saved production trends visualization to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123318/visualizations/production_trends.png
-INFO: Quality trends analyzed successfully
-INFO: Comprehensive report generated at: /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_end_to_end_workflow0/reports/comprehensive_analysis.xlsx
-INFO: Successfully generated all reports
------------------------------- Captured log call -------------------------------
-INFO     efficiency_analyzer:efficiency.py:63 Efficiency analysis completed: {'yield_rate': 91.04507920839673, 'output_amount': 90.55046180190828, 'input_amount': 99.45673350960979, 'cycle_time_efficiency': 1.8183299972511613, 'energy_efficiency': 0.6020278283813449}
-INFO     quality_analyzer:quality.py:29 Quality metrics calculated: {'avg_defect_rate': np.float64(2.009072391262499), 'efficiency_score': np.float64(20.980167794398103), 'uniformity_score': np.float64(95.08121605783045)}
-INFO     sustainability_analyzer:sustainability.py:33 Carbon footprint calculated: 1006.6776819337206
-INFO     sustainability_analyzer:sustainability.py:61 Material efficiency metrics calculated: {'material_efficiency': np.float64(90.06963563530071), 'recycling_rate': np.float64(75.49625393795696), 'waste_reduction': np.float64(90.06963563530073)}
-INFO     sustainability_analyzer:sustainability.py:33 Carbon footprint calculated: 1006.6776819337206
-INFO     sustainability_analyzer:sustainability.py:132 Energy efficiency calculated: 80.22% (Base: 89.20%, Carbon Impact: 0.90)
-INFO     sustainability_analyzer:sustainability.py:78 Sustainability score calculated: 82.74187982645438
-INFO     sustainability_analyzer:sustainability.py:183 Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1006.6776819337206), 'per_unit': np.float64(8.388980682781005)}, 'material_efficiency': {'material_efficiency': 90.06963563530071, 'recycling_rate': 75.49625393795696, 'waste_reduction': 90.06963563530073}, 'sustainability_score': {'overall': 82.74187982645438}}
-INFO     manufacturing_visualizer:visualizations.py:85 Saved production trends visualization to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123316/visualizations/production_trends.png
-INFO     quality_analyzer:quality.py:80 Quality trends analyzed successfully
-WARNING  lca_analyzer:lca_analyzer.py:121 Use phase impact calculation yielded non-negative value
-INFO     solitek_manufacturing:core.py:283 Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123316/visualizations
-INFO     lca_analyzer:lca_analyzer.py:298 Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123318/reports/lca_impact.xlsx
-INFO     solitek_manufacturing:core.py:176 Completed lifecycle assessment for batch None
-INFO     efficiency_analyzer:efficiency.py:63 Efficiency analysis completed: {'yield_rate': 91.04507920839673, 'output_amount': 90.55046180190828, 'input_amount': 99.45673350960979, 'cycle_time_efficiency': 1.8183299972511613, 'energy_efficiency': 0.6020278283813449}
-INFO     quality_analyzer:quality.py:29 Quality metrics calculated: {'avg_defect_rate': np.float64(2.009072391262499), 'efficiency_score': np.float64(20.980167794398103), 'uniformity_score': np.float64(95.08121605783045)}
-INFO     sustainability_analyzer:sustainability.py:33 Carbon footprint calculated: 1006.6776819337206
-INFO     sustainability_analyzer:sustainability.py:61 Material efficiency metrics calculated: {'material_efficiency': np.float64(90.06963563530071), 'recycling_rate': np.float64(75.49625393795696), 'waste_reduction': np.float64(90.06963563530073)}
-INFO     sustainability_analyzer:sustainability.py:33 Carbon footprint calculated: 1006.6776819337206
-INFO     sustainability_analyzer:sustainability.py:132 Energy efficiency calculated: 80.22% (Base: 89.20%, Carbon Impact: 0.90)
-INFO     sustainability_analyzer:sustainability.py:78 Sustainability score calculated: 82.74187982645438
-INFO     sustainability_analyzer:sustainability.py:183 Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1006.6776819337206), 'per_unit': np.float64(8.388980682781005)}, 'material_efficiency': {'material_efficiency': 90.06963563530071, 'recycling_rate': 75.49625393795696, 'waste_reduction': 90.06963563530073}, 'sustainability_score': {'overall': 82.74187982645438}}
-INFO     manufacturing_visualizer:visualizations.py:85 Saved production trends visualization to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123318/visualizations/production_trends.png
-INFO     quality_analyzer:quality.py:80 Quality trends analyzed successfully
-INFO     manufacturing_reports:reports.py:41 Comprehensive report generated at: /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-43/test_end_to_end_workflow0/reports/comprehensive_analysis.xlsx
-INFO     solitek_manufacturing:core.py:240 Successfully generated all reports
-_________________ TestManufacturingCore.test_data_consistency __________________
-
-self = <tests.unit.manufacturing.test_core.TestManufacturingCore object at 0x118ca6dd0>
-analyzer = <circman5.manufacturing.core.SoliTekManufacturingAnalysis object at 0x11febc950>
-test_data = {'energy':               timestamp production_line  ...  energy_source efficiency_rate
-0   2024-01-01 08:00:00        ......  87.405799  completed
-119 2024-02-09 15:00:00  BATCH_0015  ...  95.429826  completed
-
-[120 rows x 11 columns], ...}
-
-    def test_data_consistency(self, analyzer, test_data):
-        """Test data consistency across operations."""
-        self.initialize_test_data(analyzer, test_data)
-
-        # Get metrics through different methods
-        performance = analyzer.analyze_manufacturing_performance()
-        efficiency = analyzer.analyze_efficiency()
-        quality = analyzer.analyze_quality_metrics()
-
-        # Verify consistency
-        assert performance["efficiency"]["yield_rate"] == efficiency["yield_rate"]
->       assert performance["quality"]["defect_rate"] == quality["avg_defect_rate"]
-E       KeyError: 'defect_rate'
-
-tests/unit/manufacturing/test_core.py:272: KeyError
------------------------------- Captured log setup ------------------------------
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123320.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123320.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123320.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123320.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123320.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123320.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123320.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123320.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123320.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123320.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123320.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123320.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123320.log
-DEBUG    solitek_manufacturing:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123320.log
-DEBUG    manufacturing_data_loader:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_123320.log
-DEBUG    efficiency_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_123320.log
-DEBUG    quality_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_123320.log
-DEBUG    sustainability_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123320.log
-DEBUG    lca_analyzer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123320.log
-DEBUG    manufacturing_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_123320.log
-DEBUG    visualization_path_manager:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/visualization_path_manager_20250213_123320.log
-DEBUG    lca_visualizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_123320.log
-DEBUG    manufacturing_reports:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_123320.log
-DEBUG    manufacturing_model:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_123320.log
-DEBUG    process_optimizer:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_123320.log
-DEBUG    manufacturing_monitor:logging_config.py:53 Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_123320.log
------------------------------ Captured stderr call -----------------------------
-INFO: Efficiency analysis completed: {'yield_rate': 91.78674572918918, 'output_amount': 92.29519359717177, 'input_amount': 100.55394475960912, 'cycle_time_efficiency': 1.8445883405731442, 'energy_efficiency': 0.615793823724743}
-INFO: Quality metrics calculated: {'avg_defect_rate': np.float64(1.9747789066212666), 'efficiency_score': np.float64(21.02122636793807), 'uniformity_score': np.float64(94.87175579504692)}
-INFO: Carbon footprint calculated: 1020.5666555698817
-INFO: Material efficiency metrics calculated: {'material_efficiency': np.float64(90.18661091329511), 'recycling_rate': np.float64(75.29013016606855), 'waste_reduction': np.float64(90.18661091329511)}
-INFO: Carbon footprint calculated: 1020.5666555698817
-INFO: Energy efficiency calculated: 81.25% (Base: 90.49%, Carbon Impact: 0.90)
-INFO: Sustainability score calculated: 83.03718055815375
-INFO: Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1020.5666555698817), 'per_unit': np.float64(8.504722129749014)}, 'material_efficiency': {'material_efficiency': 90.18661091329511, 'recycling_rate': 75.29013016606855, 'waste_reduction': 90.18661091329511}, 'sustainability_score': {'overall': 83.03718055815375}}
-INFO: Saved production trends visualization to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123320/visualizations/production_trends.png
-INFO: Quality trends analyzed successfully
-INFO: Efficiency analysis completed: {'yield_rate': 91.78674572918918, 'output_amount': 92.29519359717177, 'input_amount': 100.55394475960912, 'cycle_time_efficiency': 1.8445883405731442, 'energy_efficiency': 0.615793823724743}
-INFO: Quality metrics calculated: {'avg_defect_rate': np.float64(1.9747789066212666), 'efficiency_score': np.float64(21.02122636793807), 'uniformity_score': np.float64(94.87175579504692)}
------------------------------- Captured log call -------------------------------
-INFO     efficiency_analyzer:efficiency.py:63 Efficiency analysis completed: {'yield_rate': 91.78674572918918, 'output_amount': 92.29519359717177, 'input_amount': 100.55394475960912, 'cycle_time_efficiency': 1.8445883405731442, 'energy_efficiency': 0.615793823724743}
-INFO     quality_analyzer:quality.py:29 Quality metrics calculated: {'avg_defect_rate': np.float64(1.9747789066212666), 'efficiency_score': np.float64(21.02122636793807), 'uniformity_score': np.float64(94.87175579504692)}
-INFO     sustainability_analyzer:sustainability.py:33 Carbon footprint calculated: 1020.5666555698817
-INFO     sustainability_analyzer:sustainability.py:61 Material efficiency metrics calculated: {'material_efficiency': np.float64(90.18661091329511), 'recycling_rate': np.float64(75.29013016606855), 'waste_reduction': np.float64(90.18661091329511)}
-INFO     sustainability_analyzer:sustainability.py:33 Carbon footprint calculated: 1020.5666555698817
-INFO     sustainability_analyzer:sustainability.py:132 Energy efficiency calculated: 81.25% (Base: 90.49%, Carbon Impact: 0.90)
-INFO     sustainability_analyzer:sustainability.py:78 Sustainability score calculated: 83.03718055815375
-INFO     sustainability_analyzer:sustainability.py:183 Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1020.5666555698817), 'per_unit': np.float64(8.504722129749014)}, 'material_efficiency': {'material_efficiency': 90.18661091329511, 'recycling_rate': 75.29013016606855, 'waste_reduction': 90.18661091329511}, 'sustainability_score': {'overall': 83.03718055815375}}
-INFO     manufacturing_visualizer:visualizations.py:85 Saved production trends visualization to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123320/visualizations/production_trends.png
-INFO     quality_analyzer:quality.py:80 Quality trends analyzed successfully
-INFO     efficiency_analyzer:efficiency.py:63 Efficiency analysis completed: {'yield_rate': 91.78674572918918, 'output_amount': 92.29519359717177, 'input_amount': 100.55394475960912, 'cycle_time_efficiency': 1.8445883405731442, 'energy_efficiency': 0.615793823724743}
-INFO     quality_analyzer:quality.py:29 Quality metrics calculated: {'avg_defect_rate': np.float64(1.9747789066212666), 'efficiency_score': np.float64(21.02122636793807), 'uniformity_score': np.float64(94.87175579504692)}
-DEBUG    quality_analyzer:quality.py:53 Quality score calculated: 66.59293014353611
-=========================== short test summary info ============================
-FAILED tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_data_loading
-FAILED tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_empty_data_handling
-FAILED tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_batch_specific_analysis
-FAILED tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_end_to_end_workflow
-FAILED tests/unit/manufacturing/test_core.py::TestManufacturingCore::test_data_consistency
-========================= 5 failed, 9 passed in 11.86s =========================
+.
+├── LICENSE
+├── README.md
+├── data
+│   ├── processed
+│   ├── raw
+│   └── synthetic
+│       ├── test_energy_data.csv
+│       ├── test_material_data.csv
+│       ├── test_process_data.csv
+│       ├── test_production_data.csv
+│       └── test_quality_data.csv
+├── docs
+│   ├── api
+│   │   └── README.md
+│   ├── diagrams
+│   │   └── architecture.md
+│   └── guides
+│       ├── development_roadmap.md
+│       ├── implementation_details.md
+│       ├── system_analysis.md
+│       └── system_documentation.md
+├── examples
+│   ├── demo_script.py
+│   └── test_runner.py
+├── logs
+│   ├── archive
+├── notebooks
+│   └── requirements.txt
+├── output.txt
+├── poetry.lock
+├── pyproject.toml
+├── pyrightconfig.json
+├── pytest.ini
+├── scripts
+│   ├── cleanup.py
+│   ├── fix_imports.py
+│   ├── fix_project_structure.py
+│   ├── reorganize_tests.sh
+│   ├── standardize_timestamp.py
+│   └── verify_structure.py
+├── setup.py
+├── src
+│   ├── __init__.py
+│   ├── circman5
+│   │   ├── __init__.py
+│   │   ├── config
+│   │   │   ├── __init__.py
+│   │   │   ├── constants.py
+│   │   │   └── project_paths.py
+│   │   ├── constants.py
+│   │   ├── manufacturing
+│   │   │   ├── __init__.py
+│   │   │   ├── analyzers
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── efficiency.py
+│   │   │   │   ├── quality.py
+│   │   │   │   └── sustainability.py
+│   │   │   ├── core.py
+│   │   │   ├── data_loader.py
+│   │   │   ├── lifecycle
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── impact_factors.py
+│   │   │   │   ├── lca_analyzer.py
+│   │   │   │   └── visualizer.py
+│   │   │   ├── optimization
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── model.py
+│   │   │   │   ├── optimizer.py
+│   │   │   │   └── types.py
+│   │   │   ├── reporting
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── reports.py
+│   │   │   │   ├── visualization_paths.py
+│   │   │   │   └── visualizations.py
+│   │   │   ├── schemas.py
+│   │   │   └── visualization_utils.py
+│   │   ├── monitoring.py
+│   │   ├── test_data_generator.py
+│   │   ├── test_framework.py
+│   │   └── utils
+│   │       ├── __init__.py
+│   │       ├── cleanup.py
+│   │       ├── data_types.py
+│   │       ├── errors.py
+│   │       ├── logging_config.py
+│   │       └── result_paths.py
+│   └── circman5_backup
+│       ├── __init__.py
+│       ├── ai
+│       │   ├── __init__.py
+│       │   ├── optimization_base.py
+│       │   ├── optimization_base.py.bak
+│       │   ├── optimization_core.py
+│       │   ├── optimization_prediction.py
+│       │   ├── optimization_training.py
+│       │   └── optimization_types.py
+│       ├── analysis
+│       │   ├── __init__.py
+│       │   ├── efficiency.py
+│       │   ├── lca
+│       │   │   ├── core.py
+│       │   │   ├── impact_factors.py
+│       │   │   └── init.py
+│       │   ├── quality.py
+│       │   └── sustainability.py
+│       ├── config
+│       │   ├── __init__.py
+│       │   ├── constants.py
+│       │   └── project_paths.py
+│       ├── lca
+│       │   └── __init__.py
+│       ├── manufacturing
+│       │   ├── __init__.py
+│       │   ├── analyzers
+│       │   │   ├── __init__.py
+│       │   │   ├── efficiency.py
+│       │   │   ├── quality.py
+│       │   │   └── sustainability.py
+│       │   ├── core.py
+│       │   ├── core.py.bak
+│       │   ├── data_loader.py
+│       │   ├── lifecycle
+│       │   └── reporting
+│       │       └── __init__.py
+│       ├── monitoring.py
+│       ├── solitek_manufacturing.py.backup
+│       ├── test_data_generator.py
+│       ├── test_framework.py
+│       ├── utils
+│       │   ├── __init__.py
+│       │   ├── data_types.py
+│       │   ├── errors.py
+│       │   └── logging_config.py
+│       └── visualization
+│           ├── __init__.py
+│           ├── lca_visualizer.py
+│           └── manufacturing_visualizer.py
+└── tests
+    ├── README.md
+    ├── __init__.py
+    │   └── __init__.py
+    ├── integration
+    │   ├── __init__.py
+    │   ├── conftest.py
+    │   ├── system
+    │   │   ├── __init__.py
+    │   │   ├── test_helpers.py
+    │   │   └── test_script.py
+    │   ├── test_data_pipeline.py
+    │   ├── test_data_saving.py
+    │   ├── test_manufacturing_optimization.py
+    │   └── test_system_integration.py
+    ├── performance
+    │   ├── __init__.py
+    │   └── test_performance.py
+    ├── results
+    │   ├── __init__.py
+    │   ├── archive
+    │   ├── latest -> /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_174443
+    │   └── runs
+    │       ├── run_20250213_174439
+    │       │   ├── input_data
+    │       │   ├── lca_results
+    │       │   ├── reports
+    │       │   ├── results
+    │       │   └── visualizations
+    └── unit
+        ├── __init__.py
+        ├── manufacturing
+        │   ├── __init__.py
+        │   ├── analyzers
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_efficiency.py
+        │   │   ├── test_quality.py
+        │   │   └── test_sustainability.py
+        │   ├── lifecycle
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_lca_core.py
+        │   │   └── test_lca_integration.py
+        │   ├── optimization
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_model.py
+        │   │   └── test_optimizer.py
+        │   ├── reporting
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_reports.py
+        │   │   ├── test_visualization_paths.py
+        │   │   └── test_visualizations.py
+        │   ├── test_core.py
+        │   ├── test_monitoring.py
+        │   ├── test_production_data.py
+        │   └── test_project_imports.py
+        └── utils
+            ├── __init__.py
+            ├── test_data_generator.py
+            ├── test_lca_data_generator.py
+            ├── test_logging_config.py
+            └── test_project_paths.py

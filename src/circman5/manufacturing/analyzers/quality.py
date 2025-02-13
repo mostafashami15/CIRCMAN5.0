@@ -61,9 +61,7 @@ class QualityAnalyzer:
             self.logger.warning("Empty quality data provided for trend analysis")
             return {}
 
-        daily_metrics = quality_data.groupby(
-            pd.Grouper(key="test_timestamp", freq="D")
-        ).agg(
+        daily_metrics = quality_data.groupby(pd.Grouper(key="timestamp", freq="D")).agg(
             {
                 "defect_rate": "mean",
                 "efficiency": "mean",

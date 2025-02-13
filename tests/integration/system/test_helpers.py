@@ -26,7 +26,7 @@ def generate_test_data(days: int = 30) -> Dict[str, pd.DataFrame]:
     # Quality data
     quality_data = pd.DataFrame(
         {
-            "test_timestamp": dates,
+            "timestamp": dates,
             "batch_id": production_data["batch_id"],
             "efficiency": np.random.uniform(20, 22, len(dates)),
             "defect_rate": np.random.uniform(1, 3, len(dates)),

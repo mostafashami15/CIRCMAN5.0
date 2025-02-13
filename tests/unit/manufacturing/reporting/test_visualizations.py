@@ -45,7 +45,7 @@ def sample_quality_data():
     dates = pd.date_range(start="2024-01-01", periods=10, freq="D")
     return pd.DataFrame(
         {
-            "test_timestamp": dates,  # Using test_timestamp as required
+            "timestamp": dates,  # Using timestamp as required
             "efficiency": np.random.uniform(85, 95, 10),
             "defect_rate": np.random.uniform(1, 5, 10),
             "thickness_uniformity": np.random.uniform(90, 98, 10),

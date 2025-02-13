@@ -16,7 +16,7 @@ def sample_quality_data():
     return pd.DataFrame(
         {
             "batch_id": [f"BATCH_{i:03d}" for i in range(10)],
-            "test_timestamp": dates,
+            "timestamp": dates,
             "efficiency": np.random.uniform(20, 22, 10),
             "defect_rate": np.random.uniform(1, 3, 10),
             "thickness_uniformity": np.random.uniform(94, 96, 10),
@@ -108,8 +108,8 @@ def test_trend_calculation_consistency(analyzer, sample_quality_data, reports_di
     # Verify trend lengths match data grouping
     expected_length = len(
         pd.date_range(
-            start=sample_quality_data["test_timestamp"].min(),
-            end=sample_quality_data["test_timestamp"].max(),
+            start=sample_quality_data["timestamp"].min(),
+            end=sample_quality_data["timestamp"].max(),
             freq="D",
         )
     )

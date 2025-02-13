@@ -32,3 +32,20 @@ def test_run_dir():
     (run_dir / "visualizations").mkdir(exist_ok=True)
     (run_dir / "results").mkdir(exist_ok=True)
     return run_dir
+
+
+@pytest.fixture(scope="module")
+def analyzer_with_data():
+    """Create an analyzer instance pre-populated with test data."""
+    generator = ManufacturingDataGenerator(start_date="2024-01-01", days=5)
+    analyzer = SoliTekManufacturingAnalysis()
+    analyzer.production_data = generator.generate_production_data()
+    analyzer.quality_data = generator.generate_quality_data()
+    analyzer.energy_data = generator.generate_energy_data()
+    analyzer.material_flow = generator.generate_material_flow_data()
+    analyzer.lca_data = {
+        "material_flow": analyzer.material_flow,
+        "energy_consumption": analyzer.energy_data,
+        "process_data": generator.generate_lca_process_data(),
+    }
+    return analyzer

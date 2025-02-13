@@ -24,6 +24,22 @@ class ManufacturingVisualizer:
         VisualizationConfig.setup_style()
         self.colors = VisualizationConfig.COLOR_PALETTE
 
+    def _add_plot_padding(self, ax, padding=0.05):
+        """Add padding to plot limits to avoid singular transformations."""
+        xlims = ax.get_xlim()
+        ylims = ax.get_ylim()
+
+        # Add padding if limits are identical
+        if xlims[0] == xlims[1]:
+            value = xlims[0]
+            delta = max(abs(value) * padding, 0.1)  # At least 0.1 padding
+            ax.set_xlim(value - delta, value + delta)
+
+        if ylims[0] == ylims[1]:
+            value = ylims[0]
+            delta = max(abs(value) * padding, 0.1)
+            ax.set_ylim(value - delta, value + delta)
+
     def visualize_production_trends(
         self, production_data: pd.DataFrame, save_path: Optional[str] = None
     ) -> None:
@@ -46,6 +62,7 @@ class ManufacturingVisualizer:
             if len(daily_output) > 1:  # Only plot if we have multiple points
                 daily_output.plot(style=".-", title="Daily Production Output")
                 plt.xlim(daily_output.index.min(), daily_output.index.max())
+                self._add_plot_padding(plt.gca())
             plt.ylabel("Output Amount")
 
             # Yield rate distribution
@@ -64,6 +81,7 @@ class ManufacturingVisualizer:
             if len(efficiency_trend) > 1:  # Only plot if we have multiple points
                 efficiency_trend.plot(title="7-Day Rolling Average Efficiency")
                 plt.xlim(efficiency_trend.index.min(), efficiency_trend.index.max())
+                self._add_plot_padding(plt.gca())
             plt.ylabel("Efficiency (%)")
 
             # Cycle times by production line
@@ -109,7 +127,7 @@ class ManufacturingVisualizer:
 
         plt.subplot(2, 2, 2)
         daily_defects = quality_data.groupby(
-            pd.Grouper(key="test_timestamp", freq="D"), observed=True
+            pd.Grouper(key="timestamp", freq="D"), observed=True
         )["defect_rate"].mean()
         daily_defects.plot(style=".-", title="Daily Average Defect Rate")
         plt.ylabel("Defect Rate (%)")
@@ -267,11 +285,9 @@ class ManufacturingVisualizer:
             )
             ax1.set_title("Production Efficiency")
 
-            # Quality Plot - Using test_timestamp instead of timestamp
+            # Quality Plot - Using timestamp instead of timestamp
             quality_data = monitor_data["quality"]
-            sns.lineplot(
-                data=quality_data, x="test_timestamp", y="quality_score", ax=ax2
-            )
+            sns.lineplot(data=quality_data, x="timestamp", y="quality_score", ax=ax2)
             ax2.set_title("Quality Metrics")
 
             # Resource Usage
@@ -450,14 +466,14 @@ class ManufacturingVisualizer:
         sns.histplot(data=quality_data, x="quality_score", ax=axes[0, 0])
         axes[0, 0].set_title("Quality Score Distribution")
 
-        # Defect rate over time - Using test_timestamp
+        # Defect rate over time - Using timestamp
         if "defect_rate" in quality_data.columns:
-            quality_data.plot(x="test_timestamp", y="defect_rate", ax=axes[0, 1])
+            quality_data.plot(x="timestamp", y="defect_rate", ax=axes[0, 1])
             axes[0, 1].set_title("Defect Rate Over Time")
 
-        # Quality metrics over time - Using test_timestamp
+        # Quality metrics over time - Using timestamp
         if "quality_score" in quality_data.columns:
-            quality_data.plot(x="test_timestamp", y="quality_score", ax=axes[1, 0])
+            quality_data.plot(x="timestamp", y="quality_score", ax=axes[1, 0])
             axes[1, 0].set_title("Quality Score Over Time")
 
         plt.tight_layout()

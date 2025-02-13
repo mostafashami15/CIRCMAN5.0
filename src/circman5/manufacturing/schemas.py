@@ -40,7 +40,7 @@ ENERGY_SCHEMA: SchemaType = {
 # Quality Data Schema
 QUALITY_SCHEMA: SchemaType = {
     "batch_id": str,
-    "test_timestamp": "datetime64[ns]",
+    "timestamp": "datetime64[ns]",
     "efficiency": float,
     "defect_rate": float,
     "thickness_uniformity": float,

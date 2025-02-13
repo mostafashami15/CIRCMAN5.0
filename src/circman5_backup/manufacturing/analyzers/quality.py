@@ -69,9 +69,7 @@ class QualityAnalyzer:
         if quality_data.empty:
             return {}
 
-        daily_metrics = quality_data.groupby(
-            pd.Grouper(key="test_timestamp", freq="D")
-        ).agg(
+        daily_metrics = quality_data.groupby(pd.Grouper(key="timestamp", freq="D")).agg(
             {
                 "defect_rate": "mean",
                 "efficiency": "mean",
