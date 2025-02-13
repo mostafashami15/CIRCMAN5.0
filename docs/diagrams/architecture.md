@@ -1,6 +1,3 @@
-Here's the complete content for `docs/diagrams/architecture.md`:
-
-```markdown
 # CIRCMAN5.0 System Architecture Diagrams
 
 ## System Overview
