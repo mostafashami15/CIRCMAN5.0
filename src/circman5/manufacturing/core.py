@@ -111,7 +111,7 @@ class SoliTekManufacturingAnalysis:
             raise DataError(f"Data loading failed: {str(e)}")
 
     def perform_lifecycle_assessment(
-        self, batch_id: Optional[str] = None
+        self, batch_id: Optional[str] = None, output_dir: Optional[Path] = None
     ) -> LifeCycleImpact:
         """
         Perform comprehensive lifecycle assessment and visualization.
@@ -123,6 +123,12 @@ class SoliTekManufacturingAnalysis:
             LifeCycleImpact: Object containing impact assessments
         """
         try:
+            # Validate input data
+            if self.lca_data["material_flow"].empty:
+                raise ValueError("No material flow data available")
+            if self.lca_data["energy_consumption"].empty:
+                raise ValueError("No energy consumption data available")
+
             # Filter data for specific batch if provided
             material_data = self._filter_batch_data(
                 self.lca_data["material_flow"], batch_id
@@ -161,7 +167,7 @@ class SoliTekManufacturingAnalysis:
 
             # Generate visualizations
             self._generate_lca_visualizations(
-                impact, material_data, energy_data, batch_id
+                impact, material_data, energy_data, batch_id, output_dir=output_dir
             )
 
             # Save LCA results
@@ -243,9 +249,14 @@ class SoliTekManufacturingAnalysis:
         material_data: pd.DataFrame,
         energy_data: pd.DataFrame,
         batch_id: Optional[str] = None,
+        output_dir: Optional[Path] = None,
     ) -> None:
         """Generate all LCA-related visualizations."""
         try:
+            # Use provided output directory or fall back to default
+            viz_dir = Path(output_dir) if output_dir else self.lca_visualizer.viz_dir
+            viz_dir.mkdir(parents=True, exist_ok=True)
+
             # Create visualization filename with batch_id if provided
             filename_suffix = f"_{batch_id}" if batch_id else ""
 
@@ -254,18 +265,22 @@ class SoliTekManufacturingAnalysis:
                 impact.manufacturing_impact,
                 impact.use_phase_impact,
                 impact.end_of_life_impact,
-                save_path=f"lifecycle_comparison{filename_suffix}.png",
+                save_path=str(viz_dir / f"lifecycle_comparison{filename_suffix}.png"),
             )
 
             # Generate material flow visualization
             self.lca_visualizer.plot_material_flow(
-                material_data, save_path=f"material_flow{filename_suffix}.png"
+                material_data,
+                save_path=str(viz_dir / f"material_flow{filename_suffix}.png"),
             )
 
             # Generate energy consumption visualization
             self.lca_visualizer.plot_energy_consumption_trends(
-                energy_data, save_path=f"energy_trends{filename_suffix}.png"
+                energy_data,
+                save_path=str(viz_dir / f"energy_trends{filename_suffix}.png"),
             )
+
+            self.logger.info(f"Generated visualizations in {viz_dir}")
 
         except Exception as e:
             self.logger.error(f"Error generating LCA visualizations: {str(e)}")

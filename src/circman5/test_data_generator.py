@@ -134,15 +134,14 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
         return pd.DataFrame(data)
 
     def generate_lca_energy_data(self) -> pd.DataFrame:
-        """Generate energy consumption data for LCA calculations."""
+        """Generate energy consumption data with all required fields."""
         data = []
         current_date = self.start_date
 
         for _ in range(self.days):
             for hour in range(8, 16):
-                timestamp = current_date + timedelta(hours=hour)
-
                 for line in self.production_lines:
+                    timestamp = current_date + timedelta(hours=hour)
                     for source in self.energy_sources:
                         data.append(
                             {
@@ -151,10 +150,12 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
                                 "energy_source": source,
                                 "energy_consumption": random.uniform(40, 60),
                                 "production_line": line,
+                                "efficiency_rate": random.uniform(
+                                    0.80, 0.95
+                                ),  # Added this field
                             }
                         )
-
-            current_date += timedelta(days=1)
+                current_date += timedelta(days=1)
 
         return pd.DataFrame(data)
 

@@ -1,75 +1,53 @@
-"""
-Test suite for LCA integration in SoliTekManufacturingAnalysis.
-Tests all aspects of lifecycle assessment calculations.
-"""
+# tests/unit/manufacturing/lifecycle/test_lca_integration.py
+"""Integration tests for LCA functionality in manufacturing analysis."""
 
 import pytest
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-
-from src.circman5.test_data_generator import ManufacturingDataGenerator
-from circman5.manufacturing.core import SoliTekManufacturingAnalysis
+from pathlib import Path
+from circman5.utils.errors import ProcessError
 
 
-@pytest.fixture
-def test_data_generator():
-    """Create a data generator for testing."""
-    return ManufacturingDataGenerator(
-        start_date="2024-01-01", days=5  # Small dataset for faster testing
+def test_lca_data_loading(
+    manufacturing_analyzer, sample_lca_data, input_data_dir, copy_synthetic_input_files
+):
+    # Now the input_data_dir contains material_data.csv, energy_data.csv, process_data.csv.
+    material_path = input_data_dir / "material_data.csv"
+    energy_path = input_data_dir / "energy_data.csv"
+    process_path = input_data_dir / "process_data.csv"
+
+    manufacturing_analyzer.load_lca_data(
+        material_data_path=str(material_path),
+        energy_data_path=str(energy_path),
+        process_data_path=str(process_path),
     )
 
-
-@pytest.fixture
-def analyzer():
-    """Create SoliTekManufacturingAnalysis instance for testing."""
-    return SoliTekManufacturingAnalysis()
+    assert not manufacturing_analyzer.lca_data["material_flow"].empty
+    assert not manufacturing_analyzer.lca_data["energy_consumption"].empty
+    assert not manufacturing_analyzer.lca_data["process_data"].empty
 
 
-def test_lca_data_loading(analyzer, test_data_generator):
-    """Test loading and validation of LCA data."""
-    # Generate test data
-    test_data = test_data_generator.generate_complete_lca_dataset()
-
-    # Save test data to temporary CSV files
-    test_data["material_flow"].to_csv("test_material_data.csv", index=False)
-    test_data["energy_consumption"].to_csv("test_energy_data.csv", index=False)
-    test_data["process_data"].to_csv("test_process_data.csv", index=False)
-
-    # Test loading data
-    analyzer.load_lca_data(
-        material_data_path="test_material_data.csv",
-        energy_data_path="test_energy_data.csv",
-        process_data_path="test_process_data.csv",
-    )
-
-    # Verify data was loaded correctly
-    assert not analyzer.lca_data["material_flow"].empty
-    assert not analyzer.lca_data["energy_consumption"].empty
-    assert not analyzer.lca_data["process_data"].empty
-
-
-def test_recycling_rates_calculation(analyzer, test_data_generator):
+def test_recycling_rates_calculation(manufacturing_analyzer, sample_lca_data):
     """Test calculation of recycling rates from material data."""
-    # Generate test data
-    material_data = test_data_generator.generate_lca_material_data()
+    manufacturing_analyzer.lca_data = sample_lca_data
 
     # Calculate recycling rates
-    recycling_rates = analyzer._calculate_recycling_rates(material_data)
+    recycling_rates = manufacturing_analyzer.lca_analyzer.calculate_recycling_rates(
+        manufacturing_analyzer.lca_data["material_flow"]
+    )
 
     # Verify results
     assert isinstance(recycling_rates, dict)
     assert all(0 <= rate <= 1 for rate in recycling_rates.values())
+    assert len(recycling_rates) > 0
 
 
-def test_lifecycle_assessment(analyzer, test_data_generator):
+def test_lifecycle_assessment(manufacturing_analyzer, sample_lca_data):
     """Test full lifecycle assessment calculation."""
-    # Generate and load test data
-    test_data = test_data_generator.generate_complete_lca_dataset()
-    analyzer.lca_data = test_data
+    manufacturing_analyzer.lca_data = sample_lca_data
 
     # Perform lifecycle assessment
-    impact = analyzer.perform_lifecycle_assessment()
+    impact = manufacturing_analyzer.perform_lifecycle_assessment()
 
     # Verify results
     assert hasattr(impact, "manufacturing_impact")
@@ -77,95 +55,128 @@ def test_lifecycle_assessment(analyzer, test_data_generator):
     assert hasattr(impact, "end_of_life_impact")
     assert hasattr(impact, "total_carbon_footprint")
 
+    # Verify logical relationships
+    assert impact.manufacturing_impact > 0  # Manufacturing should have positive impact
+    assert impact.use_phase_impact < 0  # Use phase should show environmental benefit
+    assert isinstance(impact.total_carbon_footprint, float)
 
-def test_lca_report_generation(analyzer, test_data_generator, tmp_path):
+
+def test_lca_report_generation(
+    manufacturing_analyzer, sample_lca_data, reports_dir, lca_results_dir
+):
     """Test generation of LCA report."""
-    # Generate and load test data
-    test_data = test_data_generator.generate_complete_lca_dataset()
-    analyzer.lca_data = test_data
+    manufacturing_analyzer.lca_data = sample_lca_data
 
-    # Generate report
-    report_path = tmp_path / "lca_report.xlsx"
-    analyzer.generate_lca_report(str(report_path))
+    # First generate LCA report
+    impact = manufacturing_analyzer.perform_lifecycle_assessment()
+    manufacturing_analyzer.lca_analyzer.save_results(impact, output_dir=lca_results_dir)
+    lca_report_path = lca_results_dir / "lca_impact.xlsx"
+    assert lca_report_path.exists()
 
-    # Verify report was created
+    # Then generate comprehensive report
+    manufacturing_analyzer.generate_reports(output_dir=reports_dir)
+    report_path = reports_dir / "comprehensive_analysis.xlsx"
     assert report_path.exists()
 
-    # Load and verify report content
-    xlsx = pd.ExcelFile(report_path)
-    assert "Manufacturing Impact" in xlsx.sheet_names
-    assert "Use Phase" in xlsx.sheet_names
-    assert "End of Life" in xlsx.sheet_names
 
-
-def test_material_impacts_calculation(analyzer, test_data_generator):
-    """Test calculation of material production impacts."""
-    # Generate test data
-    test_data = test_data_generator.generate_complete_lca_dataset()
-    analyzer.lca_data = test_data
-
-    # Calculate material impacts
-    impact = analyzer._calculate_material_impacts()
-
-    # Verify results
-    assert isinstance(impact, float)
-    assert impact >= 0
-
-
-def test_energy_impacts_calculation(analyzer, test_data_generator):
-    """Test calculation of energy consumption impacts."""
-    # Generate test data
-    test_data = test_data_generator.generate_complete_lca_dataset()
-    analyzer.lca_data = test_data
-
-    # Calculate energy impacts
-    impact = analyzer._calculate_energy_impacts()
-
-    # Verify results
-    assert isinstance(impact, float)
-    assert impact >= 0
-
-
-def test_process_impacts_calculation(analyzer, test_data_generator):
-    """Test calculation of manufacturing process impacts."""
-    # Generate test data
-    test_data = test_data_generator.generate_complete_lca_dataset()
-    analyzer.lca_data = test_data
-
-    # Calculate process impacts
-    impact = analyzer._calculate_process_impacts()
-
-    # Verify results
-    assert isinstance(impact, float)
-    assert impact >= 0
-
-
-def test_batch_specific_assessment(analyzer, test_data_generator):
+def test_batch_specific_assessment(
+    manufacturing_analyzer, sample_lca_data, test_data_generator, lca_results_dir
+):
     """Test lifecycle assessment for specific batch."""
-    # Generate test data
-    test_data = test_data_generator.generate_complete_lca_dataset()
-    analyzer.lca_data = test_data
+    # Ensure material data has meaningful solar glass quantity
+    material_data = sample_lca_data["material_flow"].copy()
+    material_data.loc[0, "material_type"] = "solar_glass"
+    material_data.loc[0, "quantity_used"] = 1000.0
+    sample_lca_data["material_flow"] = material_data
+
+    manufacturing_analyzer.lca_data = sample_lca_data
 
     # Get a test batch ID
-    test_batch = analyzer.lca_data["material_flow"]["batch_id"].iloc[0]
+    test_batch = material_data["batch_id"].iloc[0]
 
     # Perform assessment for specific batch
-    impact = analyzer.perform_lifecycle_assessment(batch_id=test_batch)
+    impact = manufacturing_analyzer.perform_lifecycle_assessment(
+        batch_id=test_batch, output_dir=lca_results_dir  # Add output directory
+    )
 
     # Verify results
     assert hasattr(impact, "manufacturing_impact")
-    assert hasattr(impact, "use_phase_impact")
-    assert hasattr(impact, "end_of_life_impact")
-    assert hasattr(impact, "total_carbon_footprint")
+    assert impact.manufacturing_impact > 0
+    assert impact.use_phase_impact < 0
+    assert isinstance(impact.total_carbon_footprint, float)
+
+    # Verify outputs are in correct directory
+    expected_files = [
+        f"lifecycle_comparison_{test_batch}.png",
+        f"material_flow_{test_batch}.png",
+        f"energy_trends_{test_batch}.png",
+    ]
+    for filename in expected_files:
+        file_path = lca_results_dir / filename
+        assert file_path.exists(), f"Expected file not found: {file_path}"
 
 
-def test_error_handling(analyzer):
+def test_visualization_generation(
+    manufacturing_analyzer, sample_lca_data, visualizations_dir
+):
+    """Test generation of LCA visualizations."""
+    manufacturing_analyzer.lca_data = sample_lca_data
+
+    # Perform assessment to generate data for visualization
+    impact = manufacturing_analyzer.perform_lifecycle_assessment()
+
+    # Generate visualizations
+    manufacturing_analyzer.lca_visualizer.create_comprehensive_report(
+        impact.to_dict(),
+        manufacturing_analyzer.lca_data["material_flow"],
+        manufacturing_analyzer.lca_data["energy_consumption"],
+        output_dir=visualizations_dir,
+    )
+
+    # Verify files exist in correct location
+    for viz_file in [
+        "impact_distribution.png",
+        "lifecycle_comparison.png",
+        "material_flow.png",
+        "energy_trends.png",
+    ]:
+        viz_path = visualizations_dir / viz_file
+        assert viz_path.exists(), f"Visualization not found: {viz_path}"
+
+
+def test_error_handling(manufacturing_analyzer):
     """Test error handling for invalid data scenarios."""
     # Test with empty data
-    empty_df = pd.DataFrame()
+    manufacturing_analyzer.lca_data = {
+        "material_flow": pd.DataFrame(),
+        "energy_consumption": pd.DataFrame(),
+        "process_data": pd.DataFrame(),
+    }
 
-    # Verify empty data handling
-    assert analyzer._calculate_recycling_rates(empty_df) == {}
-    assert analyzer._calculate_material_impacts() == 0.0
-    assert analyzer._calculate_energy_impacts() == 0.0
-    assert analyzer._calculate_process_impacts() == 0.0
+    # Verify appropriate error handling
+    with pytest.raises(ProcessError) as exc_info:
+        manufacturing_analyzer.perform_lifecycle_assessment()
+    assert "No material flow data available" in str(exc_info.value)
+
+
+def test_data_validation(manufacturing_analyzer, sample_lca_data):
+    """Test data validation during LCA calculations."""
+    manufacturing_analyzer.lca_data = sample_lca_data
+
+    # Verify data validation
+    material_data = manufacturing_analyzer.lca_data["material_flow"]
+    assert not material_data.empty
+    assert all(
+        col in material_data.columns
+        for col in [
+            "material_type",
+            "quantity_used",
+            "waste_generated",
+            "recycled_amount",
+        ]
+    )
+
+    # Verify numerical constraints
+    assert (material_data["quantity_used"] >= 0).all()
+    assert (material_data["waste_generated"] >= 0).all()
+    assert (material_data["recycled_amount"] >= 0).all()

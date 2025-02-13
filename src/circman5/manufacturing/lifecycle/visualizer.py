@@ -1,14 +1,21 @@
+# src/circman5/manufacturing/lifecycle/visualizer.py
+
 """
 LCA visualization methods for analyzing environmental impacts and material flows.
 """
 
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
+from matplotlib.dates import date2num
+from matplotlib.dates import DateFormatter
 import seaborn as sns
 import pandas as pd
 import numpy as np
 import os
-from typing import Dict, Optional, List, Sequence
+from typing import Dict, Optional, List, Sequence, Union
 from pathlib import Path
+from circman5.utils.logging_config import setup_logger
+from circman5.utils.result_paths import get_run_directory
 
 
 class LCAVisualizer:
@@ -16,11 +23,112 @@ class LCAVisualizer:
 
     def __init__(self):
         """Initialize visualization settings."""
-        # Use default matplotlib style
+        self.logger = setup_logger("lca_visualizer")  # Remove duplicate line
+        self.run_dir = get_run_directory()
+        self.viz_dir = self.run_dir / "visualizations"
+        self.viz_dir.mkdir(parents=True, exist_ok=True)
+
+        # Configure plot styles
         plt.style.use("default")
-        # Configure seaborn without style
         sns.set_theme(style="whitegrid")
         self.colors = sns.color_palette("husl", 8)
+
+        # Set default figure parameters
+        plt.rcParams.update(
+            {
+                "figure.autolayout": True,
+                "figure.figsize": (12, 6),
+                "axes.grid": True,
+                "grid.alpha": 0.3,
+            }
+        )
+
+    def _handle_report_plotting(
+        self,
+        df: pd.DataFrame,
+        save_path: Optional[str] = None,
+        title: str = "",
+        xlabel: str = "",
+        ylabel: str = "",
+    ) -> None:
+        fig = None
+        """
+        Handle time series plotting for reports with proper axis handling.
+
+        Args:
+            df: DataFrame to plot
+            save_path: Optional path to save plot
+            title: Plot title
+            xlabel: X-axis label
+            ylabel: Y-axis label
+        """
+        try:
+            fig, ax = plt.subplots(figsize=(12, 6))
+
+            if df.empty:
+                self.logger.warning(f"No data to plot for {title}")
+                plt.close(fig)
+                return
+
+            # Plot data
+            df.plot(ax=ax)
+
+            # Handle x-axis limits
+            x_min = df.index.min()
+            x_max = df.index.max()
+
+            if pd.isna(x_min) or pd.isna(x_max) or x_min == x_max:
+                # For single point or invalid data, use date range
+                reference_date = pd.Timestamp.now()
+                # Convert timestamps to matplotlib numeric dates
+                x_min_plt = float(
+                    date2num(
+                        pd.Timestamp(
+                            reference_date - pd.Timedelta(days=1)
+                        ).to_pydatetime()
+                    )
+                )
+                x_max_plt = float(
+                    date2num(
+                        pd.Timestamp(
+                            reference_date + pd.Timedelta(days=1)
+                        ).to_pydatetime()
+                    )
+                )
+                ax.set_xlim(x_min_plt, x_max_plt)
+            else:
+                # Add padding to the time range
+                delta = pd.Timedelta((x_max - x_min) * 0.1)
+                x_min_plt = float(date2num(pd.Timestamp(x_min - delta).to_pydatetime()))
+                x_max_plt = float(date2num(pd.Timestamp(x_max + delta).to_pydatetime()))
+                if abs(x_max_plt - x_min_plt) < 1e-6:
+                    x_min_plt -= 0.5
+                    x_max_plt += 0.5
+
+            ax.set_xlim(x_min_plt, x_max_plt)
+
+            # Set labels and title
+            ax.set_title(title)
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel(ylabel)
+
+            # Format x-axis with dates
+            ax.xaxis.set_major_formatter(DateFormatter("%Y-%m-%d"))
+            plt.xticks(rotation=45)
+
+            # Adjust layout
+            plt.tight_layout()
+
+            # Save or show plot
+            if save_path:
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
+
+            plt.close(fig)
+
+        except Exception as e:
+            plt.close(fig)
+            self.logger.error(f"Error in report plotting: {str(e)}")
+            raise
 
     def plot_impact_distribution(
         self, impact_data: Dict[str, float], save_path: Optional[str] = None
@@ -140,78 +248,141 @@ class LCAVisualizer:
     def plot_energy_consumption_trends(
         self, energy_data: pd.DataFrame, save_path: Optional[str] = None
     ) -> None:
+        """Create line plot showing energy consumption trends over time."""
+        try:
+            plt.figure(figsize=(12, 6))
+
+            if energy_data.empty:
+                self.logger.warning("No energy consumption data to plot")
+                plt.close()
+                return
+
+            # Calculate daily energy consumption by source
+            daily_consumption = (
+                energy_data.groupby(
+                    [pd.Grouper(key="timestamp", freq="D"), "energy_source"]
+                )["energy_consumption"]
+                .sum()
+                .unstack(fill_value=0)  # Fill NaN values with 0
+            )
+
+            if daily_consumption.empty:
+                self.logger.warning("No daily consumption data after grouping")
+                plt.close()
+                return
+
+            # Create line plot
+            ax = daily_consumption.plot(marker="o")
+
+            # Handle x-axis limits
+            x_min = daily_consumption.index.min()
+            x_max = daily_consumption.index.max()
+
+            if x_min == x_max:
+                # For single day, add padding
+                padding = pd.Timedelta(days=1)
+                ax.set_xlim(x_min - padding, x_max + padding)
+            else:
+                # For multiple days, add small padding
+                padding = (x_max - x_min) * 0.05
+                ax.set_xlim(x_min - padding, x_max + padding)
+
+            plt.title("Energy Consumption Trends by Source")
+            plt.xlabel("Date")
+            plt.ylabel("Energy Consumption (kWh)")
+            plt.legend(
+                title="Energy Source", bbox_to_anchor=(1.05, 1), loc="upper left"
+            )
+            plt.grid(True)
+
+            # Ensure proper layout with legend
+            plt.tight_layout()
+
+            if save_path:
+                plt.savefig(save_path, dpi=300, bbox_inches="tight")
+            plt.close()
+
+        except Exception as e:
+            plt.close()
+            self.logger.error(f"Error plotting energy consumption trends: {str(e)}")
+            raise
+
+    def _get_visualization_path(self, viz_dir: Union[str, Path], filename: str) -> str:
+        """Get the proper path for saving visualizations."""
+        viz_path = Path(viz_dir) / filename
+        viz_path.parent.mkdir(parents=True, exist_ok=True)
+        return str(viz_path)  # Convert Path to string
+
+    def _ensure_save_path(self, filename: str, batch_id: Optional[str] = None) -> str:
         """
-        Create line plot showing energy consumption trends over time.
+        Ensure visualization is saved in the correct directory with proper naming.
 
         Args:
-            energy_data: DataFrame containing energy consumption data
-            save_path: Optional path to save the visualization
+            filename: Base filename for the visualization
+            batch_id: Optional batch identifier for batch-specific visualizations
+
+        Returns:
+            str: Full path to save the visualization
         """
-        plt.figure(figsize=(12, 6))
+        # Add batch_id to filename if provided
+        if batch_id:
+            base_name, ext = os.path.splitext(filename)
+            filename = f"{base_name}_{batch_id}{ext}"
 
-        # Calculate daily energy consumption by source
-        daily_consumption = (
-            energy_data.groupby(
-                [pd.Grouper(key="timestamp", freq="D"), "energy_source"]
-            )["energy_consumption"]
-            .sum()
-            .unstack()
-        )
-
-        # Create line plot
-        daily_consumption.plot(marker="o")
-
-        plt.title("Energy Consumption Trends by Source")
-        plt.xlabel("Date")
-        plt.ylabel("Energy Consumption (kWh)")
-        plt.legend(title="Energy Source")
-        plt.grid(True)
-
-        if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches="tight")
-            plt.close()
-        else:
-            plt.show()
+        # Always save to visualization directory
+        save_path = self.viz_dir / filename
+        return str(save_path)
 
     def create_comprehensive_report(
         self,
         impact_data: Dict[str, float],
         material_data: pd.DataFrame,
         energy_data: pd.DataFrame,
-        output_dir: str,
+        output_dir: Union[str, Path],
+        batch_id: Optional[str] = None,
     ) -> None:
-        """
-        Generate a comprehensive set of LCA visualizations.
+        """Generate all LCA-related visualizations."""
+        try:
+            viz_dir = Path(output_dir)
+            viz_dir.mkdir(parents=True, exist_ok=True)
 
-        Args:
-            impact_data: Dictionary of impact categories and their values
-            material_data: DataFrame containing material flow information
-            energy_data: DataFrame containing energy consumption data
-            output_dir: Directory to save visualization files
-        """
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
+            # Impact distribution plot (no time series)
+            self.plot_impact_distribution(
+                impact_data, save_path=str(viz_dir / "impact_distribution.png")
+            )
 
-        # Generate all visualizations
-        self.plot_impact_distribution(
-            impact_data, save_path=f"{output_dir}/impact_distribution.png"
-        )
+            # Lifecycle comparison (no time series)
+            self.plot_lifecycle_comparison(
+                impact_data["Manufacturing Impact"],
+                impact_data["Use Phase Impact"],
+                impact_data["End of Life Impact"],
+                save_path=str(viz_dir / "lifecycle_comparison.png"),
+            )
 
-        manufacturing = impact_data.get("Manufacturing Impact", 0)
-        use_phase = impact_data.get("Use Phase Impact", 0)
-        end_of_life = impact_data.get("End of Life Impact", 0)
+            # Material flow with robust handling
+            if not material_data.empty:
+                material_data_timeseries = material_data.set_index("timestamp")
+                self._handle_report_plotting(
+                    material_data_timeseries,
+                    save_path=str(viz_dir / "material_flow.png"),
+                    title="Material Flow Analysis",
+                    xlabel="Time",
+                    ylabel="Amount (kg)",
+                )
 
-        self.plot_lifecycle_comparison(
-            manufacturing,
-            use_phase,
-            end_of_life,
-            save_path=f"{output_dir}/lifecycle_comparison.png",
-        )
+            # Energy trends with robust handling
+            if not energy_data.empty:
+                energy_data_timeseries = energy_data.set_index("timestamp")
+                self._handle_report_plotting(
+                    energy_data_timeseries,
+                    save_path=str(viz_dir / "energy_trends.png"),
+                    title="Energy Consumption Trends",
+                    xlabel="Time",
+                    ylabel="Energy (kWh)",
+                )
 
-        self.plot_material_flow(
-            material_data, save_path=f"{output_dir}/material_flow.png"
-        )
+            self.logger.info(f"Generated visualizations in {viz_dir}")
 
-        self.plot_energy_consumption_trends(
-            energy_data, save_path=f"{output_dir}/energy_trends.png"
-        )
+        except Exception as e:
+            self.logger.error(f"Error generating LCA visualizations: {str(e)}")
+            raise

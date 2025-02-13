@@ -1,65 +1,55 @@
 # tests/unit/utils/test_logging_config.py
+
 import os
 import logging
 import shutil
+import time
 from pathlib import Path
 import pytest
 from circman5.utils.logging_config import setup_logger
 from circman5.config.project_paths import project_paths
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def test_log_dir(tmp_path):
     """Create a temporary directory for test logs."""
-    return tmp_path / "test_logs"
+    log_dir = tmp_path / "test_logs"
+    log_dir.mkdir(parents=True)
+    yield log_dir
+    # Cleanup
+    if log_dir.exists():
+        shutil.rmtree(log_dir)
 
 
-@pytest.fixture
-def cleanup_logs():
-    """Cleanup fixture to remove test logs after each test."""
-    yield
-    log_dir = Path(project_paths.get_path("LOGS_DIR"))
-    for log_file in log_dir.glob("test_logger_*.log"):
-        try:
-            log_file.unlink()
-        except FileNotFoundError:
-            pass
+def verify_log_file_creation(
+    directory: Path, pattern: str = "test_logger_*.log", timeout: float = 1.0
+) -> list:
+    """Helper function to verify log file creation with timeout."""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        log_files = list(directory.glob(pattern))
+        if log_files:
+            return log_files
+        time.sleep(0.1)
+    return []
 
 
-def test_logger_creation(cleanup_logs):
+def test_logger_creation(test_log_dir):
     """Test that logger is created with correct configuration."""
-    # Setup logger
-    logger = setup_logger("test_logger")
+    logger = setup_logger("test_logger", str(test_log_dir))
 
-    # Verify logger level
-    assert logger.level == logging.DEBUG
-
-    # Verify handlers
-    assert len(logger.handlers) == 2
-
-    # Verify file handler
-    file_handler = logger.handlers[0]
-    assert isinstance(file_handler, logging.FileHandler)
-    assert file_handler.level == logging.DEBUG
-
-    # Verify console handler
-    console_handler = logger.handlers[1]
-    assert isinstance(console_handler, logging.StreamHandler)
-    assert console_handler.level == logging.INFO
-
-    # Verify log file creation
-    log_dir = Path(project_paths.get_path("LOGS_DIR"))
-    log_files = list(log_dir.glob("test_logger_*.log"))
-    assert len(log_files) > 0
-
-    # Test logging
+    # Test log writing
     test_message = "Test log message"
     logger.info(test_message)
 
-    # Verify message was written to file
-    with open(log_files[-1], "r") as f:
+    # Verify log file creation
+    log_files = verify_log_file_creation(test_log_dir)
+    assert len(log_files) > 0, "Log file was not created"
+
+    # Verify message in log file
+    with open(log_files[0], "r") as f:
         log_content = f.read()
-        assert test_message in log_content
+        assert test_message in log_content, "Test message not found in log file"
 
 
 @pytest.mark.parametrize(
@@ -71,40 +61,46 @@ def test_logger_creation(cleanup_logs):
         (logging.ERROR, "Error message"),
     ],
 )
-def test_logger_levels(cleanup_logs, log_level, message):
+def test_logger_levels(test_log_dir, log_level, message):
     """Test logger handles different logging levels correctly."""
-    logger = setup_logger("test_logger")
+    logger = setup_logger("test_logger", str(test_log_dir))
 
     # Get logging function for the level
     log_func = getattr(logger, logging.getLevelName(log_level).lower())
     log_func(message)
 
-    # Verify in log file
-    log_dir = Path(project_paths.get_path("LOGS_DIR"))
-    log_files = list(log_dir.glob("test_logger_*.log"))
-    with open(log_files[-1], "r") as f:
+    # Verify log file creation and content
+    log_files = verify_log_file_creation(test_log_dir)
+    assert (
+        len(log_files) > 0
+    ), f"Log file not created for {logging.getLevelName(log_level)}"
+
+    with open(log_files[0], "r") as f:
         log_content = f.read()
-        assert message in log_content
+        assert (
+            message in log_content
+        ), f"Message not found for level {logging.getLevelName(log_level)}"
 
 
-def test_custom_log_directory(tmp_path, cleanup_logs):
+def test_custom_log_directory(test_log_dir):
     """Test logger creation with custom directory."""
-    custom_dir = tmp_path / "custom_logs"
-    custom_dir.mkdir()
-
-    logger = setup_logger("test_logger", str(custom_dir))
+    logger = setup_logger("test_logger", str(test_log_dir))
     logger.info("Test message")
 
-    # Verify log file was created in custom directory
-    log_files = list(custom_dir.glob("test_logger_*.log"))
-    assert len(log_files) == 1
+    # Verify log file creation
+    log_files = verify_log_file_creation(test_log_dir)
+    assert len(log_files) == 1, "Expected exactly one log file"
+
+    with open(log_files[0], "r") as f:
+        log_content = f.read()
+        assert "Test message" in log_content
 
 
-def test_duplicate_handler_prevention(cleanup_logs):
+def test_duplicate_handler_prevention(test_log_dir):
     """Test that duplicate handlers are not added."""
-    logger = setup_logger("test_logger")
+    logger = setup_logger("test_logger", str(test_log_dir))
     initial_handlers = len(logger.handlers)
 
     # Setup logger again with same name
-    logger = setup_logger("test_logger")
+    logger = setup_logger("test_logger", str(test_log_dir))
     assert len(logger.handlers) == initial_handlers

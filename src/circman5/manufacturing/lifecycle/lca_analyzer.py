@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 import pandas as pd
 from pathlib import Path
+from circman5.utils.result_paths import get_run_directory
 from ...utils.logging_config import setup_logger
 from ...config.project_paths import project_paths
 from .impact_factors import (
@@ -67,21 +68,60 @@ class LCAAnalyzer:
     def calculate_manufacturing_impact(
         self, material_inputs: Dict[str, float], energy_consumption: float
     ) -> float:
-        """Calculate manufacturing phase impact."""
-        return self._calculate_manufacturing_impact(material_inputs, energy_consumption)
+        """
+        Calculate manufacturing phase impact.
 
-    def calculate_use_phase_impact(
-        self,
-        annual_energy_generation: float,  # Changed parameter name to match internal method
-        lifetime_years: float,
-        grid_carbon_intensity: float,
-    ) -> float:
-        """Calculate use phase impact (usually negative due to clean energy generation)."""
-        return self._calculate_use_phase_impact(
-            annual_generation=annual_energy_generation,
-            lifetime=lifetime_years,
-            grid_intensity=grid_carbon_intensity,
+        Args:
+            material_inputs: Dictionary of material types and quantities
+            energy_consumption: Total energy consumed in kWh
+
+        Returns:
+            float: Manufacturing phase impact in kg CO2-eq
+
+        Raises:
+            ValueError: If material_inputs is empty or energy_consumption is negative
+        """
+        # Validate inputs
+        if not material_inputs:
+            raise ValueError("Material inputs dictionary cannot be empty")
+        if energy_consumption < 0:
+            raise ValueError("Energy consumption cannot be negative")
+
+        impact = 0.0
+
+        # Material impacts
+        for material, quantity in material_inputs.items():
+            if quantity < 0:
+                raise ValueError(f"Material quantity cannot be negative: {material}")
+            impact_factor = MATERIAL_IMPACT_FACTORS.get(material, 0.0)
+            impact += quantity * impact_factor
+
+        # Energy impact
+        impact += energy_consumption * ENERGY_IMPACT_FACTORS.get(
+            "grid_electricity", 0.5
         )
+
+        return impact
+
+    def _calculate_use_phase_impact(
+        self, annual_generation: float, lifetime: float, grid_intensity: float
+    ) -> float:
+        """Calculate use phase impact with meaningful values."""
+        # Validate physical constraints
+        if annual_generation < 0:
+            raise ValueError("Annual energy generation cannot be negative")
+        if lifetime <= 0:
+            raise ValueError("System lifetime must be positive")
+        if grid_intensity < 0:
+            raise ValueError("Grid carbon intensity cannot be negative")
+
+        # Calculate avoided emissions (must be meaningfully negative)
+        impact = -1.0 * annual_generation * lifetime * grid_intensity
+        if impact >= 0:
+            self.logger.warning(
+                "Use phase impact calculation yielded non-negative value"
+            )
+        return impact
 
     def calculate_end_of_life_impact(
         self,
@@ -89,175 +129,17 @@ class LCAAnalyzer:
         recycling_rates: Dict[str, float],
         transport_distance: float,
     ) -> float:
-        """Calculate end of life impact including recycling benefits."""
-        return self._calculate_end_of_life_impact(
-            material_inputs, recycling_rates, transport_distance
-        )
+        """
+        Calculate end of life impact including recycling benefits and transport impacts.
 
-    def _aggregate_material_inputs(
-        self, material_data: pd.DataFrame
-    ) -> Dict[str, float]:
-        """Aggregate material quantities by type."""
-        if material_data.empty:
-            return {}
-        return material_data.groupby("material_type")["quantity_used"].sum().to_dict()
+        Args:
+            material_inputs: Dictionary of material types and quantities
+            recycling_rates: Dictionary of material types and their recycling rates
+            transport_distance: Transport distance in km
 
-    def calculate_recycling_rates(
-        self, material_data: pd.DataFrame
-    ) -> Dict[str, float]:
-        """Calculate recycling rates from historical data."""
-        if material_data.empty:
-            return {}
-
-        recycling_rates = {}
-        try:
-            data_copy = material_data.copy()
-            data_copy["waste_generated"] = data_copy["waste_generated"].astype(float)
-            data_copy["recycled_amount"] = data_copy["recycled_amount"].astype(float)
-
-            material_totals = (
-                data_copy.groupby("material_type")
-                .agg({"waste_generated": "sum", "recycled_amount": "sum"})
-                .astype(float)
-            )
-
-            for material in material_totals.index:
-                waste = float(material_totals.at[material, "waste_generated"])
-                recycled = float(material_totals.at[material, "recycled_amount"])
-
-                if waste > 0:
-                    rate = recycled / waste
-                    rate = max(0.0, min(1.0, rate))
-                else:
-                    rate = 0.0
-
-                recycling_rates[material] = rate
-
-            return recycling_rates
-        except Exception as e:
-            self.logger.error(f"Error calculating recycling rates: {str(e)}")
-            return {}
-
-    def calculate_energy_generation(self, material_inputs: Dict[str, float]) -> float:
-        """Calculate expected annual energy generation."""
-        try:
-            glass_weight = float(material_inputs.get("solar_glass", 0))
-            total_panel_area = glass_weight / 10.0  # Approximate area from glass weight
-
-            average_efficiency = 0.20  # 20% efficiency
-            solar_irradiance = 1000.0  # kWh/m²/year (typical value)
-
-            return total_panel_area * average_efficiency * solar_irradiance
-        except Exception as e:
-            self.logger.error(f"Error calculating energy generation: {str(e)}")
-            return 0.0
-
-    def perform_full_lca(
-        self,
-        material_inputs: Dict[str, float],
-        energy_consumption: float,
-        lifetime_years: float,
-        annual_energy_generation: float,
-        grid_carbon_intensity: float,
-        recycling_rates: Dict[str, float],
-        transport_distance: float,
-    ) -> LifeCycleImpact:
-        """Perform comprehensive lifecycle assessment."""
-        try:
-            # Manufacturing phase impact
-            manufacturing_impact = self._calculate_manufacturing_impact(
-                material_inputs, energy_consumption
-            )
-
-            # Use phase impact
-            use_phase_impact = self._calculate_use_phase_impact(
-                annual_energy_generation, lifetime_years, grid_carbon_intensity
-            )
-
-            # End of life impact
-            end_of_life_impact = self._calculate_end_of_life_impact(
-                material_inputs, recycling_rates, transport_distance
-            )
-
-            return LifeCycleImpact(
-                manufacturing_impact=manufacturing_impact,
-                use_phase_impact=use_phase_impact,
-                end_of_life_impact=end_of_life_impact,
-            )
-
-        except Exception as e:
-            self.logger.error(f"Error performing LCA: {str(e)}")
-            return LifeCycleImpact(0.0, 0.0, 0.0)
-
-    def save_results(
-        self, impact: LifeCycleImpact, batch_id: Optional[str] = None
-    ) -> None:
-        """Save LCA results to Excel file."""
-        try:
-            # Get the run directory and ensure it exists
-            run_dir = project_paths.get_run_directory()
-            if not run_dir.exists():
-                run_dir.mkdir(parents=True, exist_ok=True)
-
-            # Create the reports directory
-            reports_dir = run_dir / "reports"
-            reports_dir.mkdir(parents=True, exist_ok=True)
-
-            # Construct the filename
-            filename = f"lca_impact_{batch_id}.xlsx" if batch_id else "lca_impact.xlsx"
-            file_path = reports_dir / filename
-
-            # Convert impact data to DataFrame
-            df = pd.DataFrame([impact.to_dict()])
-
-            # Save to Excel
-            df.to_excel(file_path, index=False)
-
-            # Log success
-            self.logger.info(
-                f"LCA Results saved successfully for batch {batch_id or 'default'}:\n"
-                f"File Path: {file_path}\n"
-                f"Manufacturing Impact: {impact.manufacturing_impact}\n"
-                f"Use Phase Impact: {impact.use_phase_impact}\n"
-                f"End of Life Impact: {impact.end_of_life_impact}"
-            )
-
-        except Exception as e:
-            # Log detailed error message
-            self.logger.error(
-                f"Error saving LCA results for batch {batch_id or 'default'}: {str(e)}"
-            )
-            raise
-
-    def _calculate_manufacturing_impact(
-        self, material_inputs: Dict[str, float], energy_consumption: float
-    ) -> float:
-        """Calculate manufacturing phase impact."""
-        impact = 0.0
-
-        # Material impacts
-        for material, quantity in material_inputs.items():
-            impact_factor = MATERIAL_IMPACT_FACTORS.get(material, 0.0)
-            impact += quantity * impact_factor
-
-        # Energy impact
-        impact += energy_consumption * ENERGY_IMPACT_FACTORS.get("grid", 0.5)
-
-        return impact
-
-    def _calculate_use_phase_impact(
-        self, annual_generation: float, lifetime: float, grid_intensity: float
-    ) -> float:
-        """Calculate use phase impact (usually negative due to clean energy generation)."""
-        return -annual_generation * lifetime * grid_intensity
-
-    def _calculate_end_of_life_impact(
-        self,
-        material_inputs: Dict[str, float],
-        recycling_rates: Dict[str, float],
-        transport_distance: float,
-    ) -> float:
-        """Calculate end of life impact including recycling benefits."""
+        Returns:
+            float: End of life impact in kg CO2-eq
+        """
         impact = 0.0
 
         # Recycling benefits
@@ -272,3 +154,148 @@ class LCAAnalyzer:
         impact += (total_mass / 1000) * transport_distance * transport_factor
 
         return impact
+
+    def perform_full_lca(
+        self,
+        material_inputs: Dict[str, float],
+        energy_consumption: float,
+        lifetime_years: float,
+        annual_energy_generation: float,
+        grid_carbon_intensity: float,
+        recycling_rates: Dict[str, float],
+        transport_distance: float,
+    ) -> LifeCycleImpact:
+        """Perform comprehensive lifecycle assessment."""
+        try:
+            # Manufacturing phase impact
+            manufacturing_impact = self.calculate_manufacturing_impact(
+                material_inputs, energy_consumption
+            )
+
+            # Use phase impact
+            use_phase_impact = self._calculate_use_phase_impact(
+                annual_energy_generation, lifetime_years, grid_carbon_intensity
+            )
+
+            # End of life impact
+            end_of_life_impact = self.calculate_end_of_life_impact(
+                material_inputs, recycling_rates, transport_distance
+            )
+
+            return LifeCycleImpact(
+                manufacturing_impact=manufacturing_impact,
+                use_phase_impact=use_phase_impact,
+                end_of_life_impact=end_of_life_impact,
+            )
+
+        except Exception as e:
+            self.logger.error(f"Error performing LCA: {str(e)}")
+            return LifeCycleImpact(0.0, 0.0, 0.0)
+
+    def _aggregate_material_inputs(
+        self, material_data: pd.DataFrame
+    ) -> Dict[str, float]:
+        """
+        Aggregate material quantities by type.
+
+        Args:
+            material_data: DataFrame containing material flow data
+
+        Returns:
+            Dict mapping material types to total quantities
+        """
+        if material_data.empty:
+            return {}
+
+        try:
+            material_totals = material_data.groupby("material_type")[
+                "quantity_used"
+            ].sum()
+            return material_totals.to_dict()
+        except Exception as e:
+            self.logger.error(f"Error aggregating material inputs: {str(e)}")
+            return {}
+
+    def calculate_recycling_rates(
+        self, material_data: pd.DataFrame
+    ) -> Dict[str, float]:
+        """
+        Calculate recycling rates from material flow data.
+
+        Args:
+            material_data: DataFrame containing material flow data
+
+        Returns:
+            Dict mapping material types to recycling rates
+        """
+        if material_data.empty:
+            return {}
+
+        try:
+            recycling_rates = {}
+            for material_type in material_data["material_type"].unique():
+                material_subset = material_data[
+                    material_data["material_type"] == material_type
+                ]
+                waste = material_subset["waste_generated"].sum()
+                recycled = material_subset["recycled_amount"].sum()
+
+                if waste > 0:
+                    recycling_rates[material_type] = recycled / waste
+                else:
+                    recycling_rates[material_type] = 0.0
+
+            return recycling_rates
+        except Exception as e:
+            self.logger.error(f"Error calculating recycling rates: {str(e)}")
+            return {}
+
+    def calculate_energy_generation(self, material_inputs: Dict[str, float]) -> float:
+        """
+        Calculate expected annual energy generation.
+
+        Args:
+            material_inputs: Dictionary of material quantities
+
+        Returns:
+            float: Expected annual energy generation in kWh
+        """
+        try:
+            # Estimate panel area from glass weight
+            glass_weight = material_inputs.get("solar_glass", 0.0)
+            panel_area = glass_weight / 10.0  # Approximate conversion
+
+            # Apply standard efficiency factors
+            solar_irradiance = 1000.0  # kWh/m²/year
+            panel_efficiency = 0.20  # 20% efficiency
+
+            return panel_area * solar_irradiance * panel_efficiency
+        except Exception as e:
+            self.logger.error(f"Error calculating energy generation: {str(e)}")
+            return 0.0
+
+    def save_results(
+        self,
+        impact: LifeCycleImpact,
+        batch_id: Optional[str] = None,
+        output_dir: Optional[Path] = None,
+    ) -> None:
+        """Save LCA results to file."""
+        try:
+            if output_dir is None:
+                run_dir = get_run_directory()
+                reports_dir = run_dir / "reports"
+            else:
+                reports_dir = output_dir
+
+            reports_dir.mkdir(parents=True, exist_ok=True)
+
+            filename = f"lca_impact_{batch_id}.xlsx" if batch_id else "lca_impact.xlsx"
+            file_path = reports_dir / filename
+
+            pd.DataFrame([impact.to_dict()]).to_excel(file_path, index=False)
+
+            self.logger.info(f"Saved LCA results to {file_path}")
+        except Exception as e:
+            self.logger.error(f"Error saving LCA results: {str(e)}")
+            raise

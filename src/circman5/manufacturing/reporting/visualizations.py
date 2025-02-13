@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
+from circman5.utils.result_paths import get_run_directory
 from ...utils.logging_config import setup_logger
 from ...utils.errors import DataError, ManufacturingError, ProcessError
 from ..visualization_utils import VisualizationConfig
@@ -27,56 +28,69 @@ class ManufacturingVisualizer:
         self, production_data: pd.DataFrame, save_path: Optional[str] = None
     ) -> None:
         """Enhanced production efficiency and output trends visualization with xlim handling."""
-        if production_data.empty:
-            self.logger.warning("No production data available for visualization")
-            raise DataError("No production data available for visualization")
+        try:
+            if production_data.empty:
+                self.logger.warning("No production data available for visualization")
+                return
 
-        # Ensure timestamps are unique and sorted
-        production_data = production_data.sort_values("timestamp")
+            # Ensure timestamps are unique and sorted
+            production_data = production_data.sort_values("timestamp")
 
-        fig = plt.figure(figsize=(12, 8))
+            fig = plt.figure(figsize=(12, 8))
 
-        # Daily output plot with explicit xlim
-        plt.subplot(2, 2, 1)
-        daily_output = production_data.groupby(pd.Grouper(key="timestamp", freq="D"))[
-            "output_amount"
-        ].sum()
-        if len(daily_output) > 1:  # Only plot if we have multiple points
-            daily_output.plot(style=".-", title="Daily Production Output")
-            plt.xlim(daily_output.index.min(), daily_output.index.max())
-        plt.ylabel("Output Amount")
+            # Daily output plot with explicit xlim
+            plt.subplot(2, 2, 1)
+            daily_output = production_data.groupby(
+                pd.Grouper(key="timestamp", freq="D")
+            )["output_amount"].sum()
+            if len(daily_output) > 1:  # Only plot if we have multiple points
+                daily_output.plot(style=".-", title="Daily Production Output")
+                plt.xlim(daily_output.index.min(), daily_output.index.max())
+            plt.ylabel("Output Amount")
 
-        # Yield rate distribution
-        plt.subplot(2, 2, 2)
-        sns.histplot(data=production_data, x="yield_rate", bins=20, stat="count")
-        plt.title("Yield Rate Distribution")
-        plt.xlabel("Yield Rate (%)")
+            # Yield rate distribution
+            plt.subplot(2, 2, 2)
+            sns.histplot(data=production_data, x="yield_rate", bins=20, stat="count")
+            plt.title("Yield Rate Distribution")
+            plt.xlabel("Yield Rate (%)")
 
-        # Efficiency trend with explicit xlim
-        plt.subplot(2, 2, 3)
-        efficiency_trend = (
-            production_data.set_index("timestamp")["yield_rate"]
-            .rolling("7D", min_periods=1)
-            .mean()
-        )
-        if len(efficiency_trend) > 1:  # Only plot if we have multiple points
-            efficiency_trend.plot(title="7-Day Rolling Average Efficiency")
-            plt.xlim(efficiency_trend.index.min(), efficiency_trend.index.max())
-        plt.ylabel("Efficiency (%)")
+            # Efficiency trend with explicit xlim
+            plt.subplot(2, 2, 3)
+            efficiency_trend = (
+                production_data.set_index("timestamp")["yield_rate"]
+                .rolling("7D", min_periods=1)
+                .mean()
+            )
+            if len(efficiency_trend) > 1:  # Only plot if we have multiple points
+                efficiency_trend.plot(title="7-Day Rolling Average Efficiency")
+                plt.xlim(efficiency_trend.index.min(), efficiency_trend.index.max())
+            plt.ylabel("Efficiency (%)")
 
-        # Cycle times by production line
-        plt.subplot(2, 2, 4)
-        if len(production_data["production_line"].unique()) > 1:
-            sns.boxplot(data=production_data, y="cycle_time", x="production_line")
-        plt.title("Cycle Times by Production Line")
+            # Cycle times by production line
+            plt.subplot(2, 2, 4)
+            if len(production_data["production_line"].unique()) > 1:
+                sns.boxplot(data=production_data, y="cycle_time", x="production_line")
+            plt.title("Cycle Times by Production Line")
 
-        plt.tight_layout()
+            plt.tight_layout()
 
-        if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
-            plt.close()
-        else:
-            plt.show()
+            if save_path:
+                # Get visualization directory from result_paths
+                run_dir = get_run_directory()
+                viz_dir = run_dir / "visualizations"
+                viz_dir.mkdir(exist_ok=True)
+                full_path = viz_dir / save_path
+                plt.savefig(str(full_path), dpi=300, bbox_inches="tight")
+                plt.close()
+                self.logger.info(
+                    f"Saved production trends visualization to {full_path}"
+                )
+            else:
+                plt.show()
+
+        except Exception as e:
+            self.logger.error(f"Error creating visualization: {str(e)}")
+            raise
 
     def visualize_quality_metrics(
         self, quality_data: pd.DataFrame, analyzer=None, save_path: Optional[str] = None
@@ -237,52 +251,62 @@ class ManufacturingVisualizer:
         self, monitor_data: Dict[str, pd.DataFrame], save_path: Optional[str] = None
     ) -> None:
         """Create comprehensive performance dashboard."""
-        fig = plt.figure(figsize=(15, 12))
-        gs = fig.add_gridspec(3, 2)
+        try:
+            fig = plt.figure(figsize=(15, 12))
+            gs = fig.add_gridspec(3, 2)
 
-        ax1 = fig.add_subplot(gs[0, 0])  # Efficiency
-        ax2 = fig.add_subplot(gs[0, 1])  # Quality
-        ax3 = fig.add_subplot(gs[1, :])  # Resource Usage
-        ax4 = fig.add_subplot(gs[2, :])  # Combined Trends
+            ax1 = fig.add_subplot(gs[0, 0])  # Efficiency
+            ax2 = fig.add_subplot(gs[0, 1])  # Quality
+            ax3 = fig.add_subplot(gs[1, :])  # Resource Usage
+            ax4 = fig.add_subplot(gs[2, :])  # Combined Trends
 
-        # Efficiency Plot
-        efficiency_data = monitor_data["efficiency"]
-        sns.lineplot(data=efficiency_data, x="timestamp", y="production_rate", ax=ax1)
-        ax1.set_title("Production Efficiency")
+            # Efficiency Plot
+            efficiency_data = monitor_data["efficiency"]
+            sns.lineplot(
+                data=efficiency_data, x="timestamp", y="production_rate", ax=ax1
+            )
+            ax1.set_title("Production Efficiency")
 
-        # Quality Plot
-        quality_data = monitor_data["quality"]
-        sns.lineplot(data=quality_data, x="timestamp", y="quality_score", ax=ax2)
-        ax2.set_title("Quality Metrics")
+            # Quality Plot - Using test_timestamp instead of timestamp
+            quality_data = monitor_data["quality"]
+            sns.lineplot(
+                data=quality_data, x="test_timestamp", y="quality_score", ax=ax2
+            )
+            ax2.set_title("Quality Metrics")
 
-        # Resource Usage
-        resource_data = monitor_data["resources"]
-        resource_columns = ["material_consumption"]
-        resource_data.plot(x="timestamp", y=resource_columns, ax=ax3)
-        ax3.set_title("Resource Utilization")
+            # Resource Usage
+            resource_data = monitor_data["resources"]
+            resource_columns = ["material_consumption"]
+            resource_data.plot(x="timestamp", y=resource_columns, ax=ax3)
+            ax3.set_title("Resource Utilization")
 
-        # Combined Performance Indicators
-        combined_metrics = pd.DataFrame(
-            {
-                "timestamp": efficiency_data["timestamp"],
-                "efficiency": efficiency_data["production_rate"]
-                / efficiency_data["production_rate"].max(),
-                "quality": quality_data["quality_score"] / 100,
-                "resource_efficiency": resource_data["resource_efficiency"],
-            }
-        )
+            # Combined Performance Indicators - Aligning timestamps
+            combined_metrics = pd.DataFrame(
+                {
+                    "timestamp": efficiency_data["timestamp"],
+                    "efficiency": efficiency_data["production_rate"]
+                    / efficiency_data["production_rate"].max(),
+                    "quality": quality_data["quality_score"] / 100,
+                    "resource_efficiency": resource_data["resource_efficiency"],
+                }
+            )
 
-        combined_metrics.plot(x="timestamp", ax=ax4)
-        ax4.set_title("Combined Performance Indicators")
-        ax4.set_ylim(0, 1)
+            combined_metrics.plot(x="timestamp", ax=ax4)
+            ax4.set_title("Combined Performance Indicators")
+            ax4.set_ylim(0, 1)
 
-        plt.tight_layout()
+            plt.tight_layout()
 
-        if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            if save_path:
+                VisualizationConfig.save_figure(fig, save_path)
+                plt.close()
+            else:
+                plt.show()
+
+        except Exception as e:
+            self.logger.error(f"Error creating performance dashboard: {str(e)}")
             plt.close()
-        else:
-            plt.show()
+            raise
 
     def create_kpi_dashboard(
         self, metrics_data: Dict[str, float], save_path: Optional[str] = None
@@ -426,14 +450,14 @@ class ManufacturingVisualizer:
         sns.histplot(data=quality_data, x="quality_score", ax=axes[0, 0])
         axes[0, 0].set_title("Quality Score Distribution")
 
-        # Defect rate over time
+        # Defect rate over time - Using test_timestamp
         if "defect_rate" in quality_data.columns:
-            quality_data.plot(x="timestamp", y="defect_rate", ax=axes[0, 1])
+            quality_data.plot(x="test_timestamp", y="defect_rate", ax=axes[0, 1])
             axes[0, 1].set_title("Defect Rate Over Time")
 
-        # Quality metrics over time
+        # Quality metrics over time - Using test_timestamp
         if "quality_score" in quality_data.columns:
-            quality_data.plot(x="timestamp", y="quality_score", ax=axes[1, 0])
+            quality_data.plot(x="test_timestamp", y="quality_score", ax=axes[1, 0])
             axes[1, 0].set_title("Quality Score Over Time")
 
         plt.tight_layout()
