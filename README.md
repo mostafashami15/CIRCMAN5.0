@@ -1,222 +1,196 @@
+Here's the updated `README.md`:
+
+```markdown
 # CIRCMAN5.0
 **Human-Centered AI-aided Framework for the Photovoltaic (PV) Manufacturing Industry**
 
 ## Overview
-CIRCMAN5.0 integrates **AI-driven analytics** with **circular manufacturing principles** to optimize **PV production**, reduce waste, and enhance sustainability through comprehensive lifecycle assessment.
+CIRCMAN5.0 integrates **AI-driven analytics**, **digital twin technology**, and **human-centric interfaces** with **circular manufacturing principles** to optimize **PV production**, reduce waste, and enhance sustainability through comprehensive lifecycle assessment.
 
 ## Project Goals
-- **AI-driven modeling** for circular manufacturing.
-- **Process optimization** using **machine learning**.
-- **Real-time monitoring** and **control systems**.
-- **Circular economy** principles for **waste reduction**.
-- **Digital Product/Material Passport** implementation.
-- **Life Cycle Assessment (LCA)** for environmental impact.
+- **AI-driven optimization** for circular manufacturing
+- **Digital Twin implementation** for real-time simulation
+- **Human-centric interface** for operator interaction
+- **Process optimization** using machine learning
+- **Real-time monitoring** and control systems
+- **Circular economy** principles for waste reduction
+- **Digital Product/Material Passport** implementation
+- **Life Cycle Assessment (LCA)** for environmental impact
 
-## Features
+## Core Features
 
-### **Current Implementation**
-✅ **Manufacturing Process Tracking**
-- Batch processing and monitoring.
-- Resource utilization tracking.
-- Production efficiency analysis.
-- Real-time data processing (r2: 0.99).
+### ✅ Manufacturing Process Control
+- Batch processing and monitoring
+- Resource utilization tracking
+- Production efficiency analysis
+- Real-time data processing (r2: 0.99)
+- AI-driven optimization
 
-✅ **Quality Control System**
-- Real-time quality monitoring.
-- Defect detection and analysis.
-- Performance metrics calculation.
-- AI-driven quality assessment.
+### ✅ Quality Control System
+- Real-time quality monitoring
+- AI-powered defect detection
+- Performance metrics calculation
+- Predictive quality assessment
+- Root cause analysis
 
-✅ **Circularity Metrics**
-- Material efficiency tracking.
-- Water reuse monitoring.
-- Waste reduction analysis.
-- Environmental impact tracking.
+### ✅ Circularity Metrics
+- Material efficiency tracking
+- Water reuse monitoring
+- Waste reduction analysis
+- Environmental impact tracking
+- Resource optimization
 
-✅ **Advanced Analytics**
-- Performance visualization.
-- Trend analysis.
-- Optimization recommendations.
-- AI-powered predictions.
+### ✅ Advanced Analytics
+- Performance visualization
+- Trend analysis
+- Optimization recommendations
+- AI-powered predictions
+- Real-time monitoring
 
-### **In Progress**
-🔄 **AI/ML Integration**
-- Basic predictive analytics implemented.
-- Initial process optimization framework.
-- Synthetic data validation complete.
-- Real data integration pending.
+## In-Progress Features
 
-🔄 **LCA Development**
-- Environmental impact assessment.
-- Resource impact calculations.
-- Lifecycle phase tracking.
-- Carbon footprint analysis.
+### 🔄 Digital Twin Development
+- State synchronization system
+- Real-time process simulation
+- Virtual factory modeling
+- What-if analysis capabilities
+- Performance optimization
 
-### **Planned Features**
-🚀 **Digital Twin Development**
-- Real-time simulation for PV manufacturing.
-- Process modeling for optimization.
-- Scenario-based **What-if analysis**.
+### 🔄 Human Interface
+- Operator dashboard
+- Control interface
+- Alert management
+- Decision support
+- Training modules
 
-🚀 **Enhanced Circularity**
-- Advanced Life Cycle Assessment (LCA).
-- Digital Product Passport implementation.
-- Optimized resource management.
+### 🔄 Advanced AI Integration
+- Enhanced predictive analytics
+- Process optimization framework
+- Real-time learning system
+- Advanced quality prediction
+- Resource optimization
 
-## Project Structure
+### 🔄 LCA Enhancement
+- Environmental impact assessment
+- Resource impact calculations
+- Lifecycle phase tracking
+- Carbon footprint analysis
+- Circular economy integration
+
+## System Architecture
+
+### Core Components
 ```plaintext
-CIRCMAN5.0/
-├── data/
-│   ├── processed/
-│   ├── raw/
-│   └── synthetic/
-│   └── synthetic
-│       ├── test_energy_data.csv
-│       ├── test_material_data.csv
-│       ├── test_process_data.csv
-│       └── test_production_data.csv
-├── docs/
-│   ├── api/
-│   │   └── README.md (empty)
-│   ├── diagrams/
-│   │   └── architecture.md (empty)
-│   └── guides/
-│       ├── development_roadmap.md
-│       ├── implementation_details.md
-│       ├── system_analysis.md
-│       └── system_documentation.md
-├── logs/
-├── examples/
-│   └── demo_script.py
-├── notebooks/
-│   └── requirements.txt
-├── src/
-│   └── utils/
-│   │   ├── cleanup.py
-│   │   └── results_paths.py
-│   └── circman5/
-│       ├── ai/
-│       │   ├── optimization_base.py
-│       │   ├── optimization_core.py
-│       │   ├── optimization_prediction.py
-│       │   ├── optimization_training.py
-│       │   └── optimization_types.py
-│       ├── analysis/
-│       │   └── lca/
-│       │   │   ├── core.py
-│       │   │   └── impact_factors.py
-│       │   ├── efficiency.py
-│       │   ├── quality.py
-│       │   └── sustainability.py
-│       ├── config/
-│       │   └── project_paths.py
-│       ├── visualization/
-│       │   ├── lca_visualizer.py
-│       │   └── manufacturing_visualizer.py
-│       ├── constants.py
-│       ├── data_types.py
-│       ├── errors.py
-│       ├── logging_config.py
-│       ├── monitoring.py
-│       ├── solitek_manufacturing.py
-│       ├── test_data_generator.py
-│       └── test_framework.py
-├── tests/
-│   ├── ai/
-│   │   └── test_optimization.py
-│   ├── integration/
-│   │   ├── test_data_pipeline.py
-│   │   ├── test_data_saving.py
-│   │   ├── test_manufacturing_optimization.py
-│   │   └── test_system_integration.py
-│   ├── performance/
-│   │   └── test_performance.py
-│   ├── results/
-│   │   ├── archive/
-│   │   ├── latest/
-│   │   └── runs/
-│   └── unit/
-│   │   └── test_lca_core.py
-│   ├── test_data_generator.py
-│   ├── test_data_generator.py
-│   ├── test_efficiency_analyzer.py
-│   ├── test_lca_data_generator.py
-│   ├── test_lca_integration.py
-│   ├── test_lca_visualization.py
-│   ├── test_logging_config.py
-│   ├── test_manufacturing.py
-│   ├── test_monitoring.py
-│   ├── test_production_data.py
-│   ├── test_project_paths.py
-│   ├── test_quality_analyzer.py
-│   ├── test_solitek_manufacturing.py
-│   ├── test_sustainability_analyzer.py
-│   ├──test_project_imports.py
-│   └── test_visualization.py
-├── poetry.lock
-├── pyproject.toml
-├── pyrightconfig.json
-├── pytest.ini
-├── LICENSE
-├── README.md
-├── setup.py
-├── .pre-commit-config.yaml
-├── .env
-└── .gitignore
-
+src/circman5/
+├── manufacturing/
+│   ├── core.py
+│   ├── monitoring.py
+│   └── visualization.py
+├── digital_twin/
+│   ├── twin_core.py
+│   ├── simulation.py
+│   └── state_manager.py
+├── human_interface/
+│   ├── dashboard/
+│   ├── control/
+│   └── training/
+├── ai/
+│   ├── prediction/
+│   ├── optimization/
+│   └── training/
+└── lifecycle/
+    ├── impact_analysis/
+    ├── resource_tracking/
+    └── visualization/
 ```
+
 ## Technology Stack
 - **Python 3.11+**
-- **Pandas** for data processing
+- **Pandas & NumPy** for data processing
+- **TensorFlow & PyTorch** for AI/ML
 - **Matplotlib & Seaborn** for visualization
 - **Scikit-learn** for machine learning
 - **Poetry** for package management
-- **Pytest** for testing framework
-- **Openpyxl** for report generation
+- **Pytest** for testing
+- **Docker** for containerization
 
 ## Installation & Setup
 
-### **1️⃣ Clone the Repository**
+### 1️⃣ Clone Repository
 ```bash
 git clone https://github.com/mostafashami15/CIRCMAN5.0.git
 cd CIRCMAN5.0
 ```
 
-### **2️⃣ Install Dependencies Using Poetry**
+### 2️⃣ Install Dependencies
 ```bash
 poetry install
 ```
 
-### **3️⃣ Activate the Virtual Environment**
+### 3️⃣ Environment Setup
 ```bash
 poetry shell
 ```
 
-### **4️⃣ Run Tests**
+### 4️⃣ Run Tests
 ```bash
 poetry run pytest tests/
 ```
 
-### **5️⃣ Start Using the System**
+### 5️⃣ Start System
 ```python
-from circman5.solitek_manufacturing import SoliTekManufacturingAnalysis
+from circman5.manufacturing import SoliTekManufacturing
 
-# Initialize analyzer
-analyzer = SoliTekManufacturingAnalysis()
+# Initialize system
+system = SoliTekManufacturing()
 
-# Generate analysis with synthetic data
-analyzer.generate_comprehensive_report("analysis_report.xlsx")
+# Generate analysis
+system.generate_comprehensive_report()
 ```
 
-## Documentation**
-For detailed documentation and API reference, see the docs/ folder or visit:
-🔗 GitHub Wiki (under constructuion)
+## System Requirements
+
+### Development
+- Python 3.11+
+- 16GB+ RAM
+- Multi-core CPU
+- GPU (optional)
+- Linux/Unix environment
+
+### Production
+- Dedicated server
+- 32GB+ RAM
+- High-performance CPU
+- GPU support
+- Enterprise Linux
+
+## Documentation
+- Detailed documentation in `/docs`
+- API reference in `/docs/api`
+- Implementation guides in `/docs/guides`
+- System analysis in `/docs/analysis`
+
+## Success Metrics
+- AI model accuracy > 95%
+- Real-time processing < 100ms
+- System uptime > 99.9%
+- Resource optimization > 20%
+- Waste reduction > 15%
+- User satisfaction > 90%
 
 ## Contributing
-1. Fork the repository.
-2. Create a new branch (feature-branch).
-3. Commit your changes.
-4. Push to your branch and create a PR.
+1. Fork repository
+2. Create feature branch
+3. Implement changes
+4. Add tests
+5. Submit pull request
 
 ## License
-This project is licensed under the **MIT** License. See **LICENSE** for details.
+MIT License - See LICENSE for details
+
+## Project Status
+- Core System: ✅ Complete
+- Digital Twin: 🔄 In Progress
+- Human Interface: 🔄 In Progress
+- Advanced AI: 🔄 In Progress
+- Documentation: 🔄 Ongoing
