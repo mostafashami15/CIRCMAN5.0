@@ -226,8 +226,8 @@ class SoliTekManufacturingAnalysis:
             output_dir: Optional directory for report output (str or Path)
         """
         try:
-            # Convert str to Path if needed
-            output_path = Path(output_dir) if output_dir else None
+            # Convert str to Path if needed; use current directory as default if None
+            output_path = Path(output_dir) if output_dir else Path.cwd()
 
             # Collect all metrics
             performance_metrics = self.analyze_manufacturing_performance()
@@ -236,6 +236,12 @@ class SoliTekManufacturingAnalysis:
             self.report_generator.generate_comprehensive_report(
                 performance_metrics, output_dir=output_path
             )
+
+            # Rename the generated report file to "analysis_report.xlsx"
+            generated_file = output_path / "comprehensive_analysis.xlsx"
+            expected_file = output_path / "analysis_report.xlsx"
+            if generated_file.exists():
+                generated_file.rename(expected_file)
 
             self.logger.info("Successfully generated all reports")
 

@@ -1,3 +1,4 @@
+# src/circman5/manufacturing/schemas.py
 """Data schemas for manufacturing analysis."""
 
 from typing import Dict, Union, Type, Literal

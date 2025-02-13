@@ -209,6 +209,7 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
                             "defect_rate": random.uniform(1, 3),
                             "thickness_uniformity": random.uniform(94, 96),
                             "contamination_level": random.uniform(0.1, 0.5),
+                            "visual_inspection": "pass",
                         }
                     )
             current_date += timedelta(days=1)

@@ -177,11 +177,11 @@ class TestManufacturingCore:
         empty_df = pd.DataFrame()
 
         analyzer.production_data = empty_df
-        with pytest.raises(DataError):
+        with pytest.raises(ProcessError):
             analyzer.analyze_efficiency()
 
         analyzer.quality_data = empty_df
-        with pytest.raises(DataError):
+        with pytest.raises(ProcessError):
             analyzer.analyze_quality_metrics()
 
         analyzer.lca_data = {
@@ -189,7 +189,7 @@ class TestManufacturingCore:
             "energy_consumption": empty_df,
             "process_data": empty_df,
         }
-        with pytest.raises(ValueError):
+        with pytest.raises(ProcessError):
             analyzer.perform_lifecycle_assessment()
 
     def test_invalid_data_handling(self, analyzer):
@@ -269,4 +269,4 @@ class TestManufacturingCore:
 
         # Verify consistency
         assert performance["efficiency"]["yield_rate"] == efficiency["yield_rate"]
-        assert performance["quality"]["defect_rate"] == quality["avg_defect_rate"]
+        assert performance["quality"]["avg_defect_rate"] == quality["avg_defect_rate"]

@@ -223,6 +223,13 @@ class LCAVisualizer:
             material_data: DataFrame containing material flow information
             save_path: Optional path to save the visualization
         """
+        # Check if the provided material_data is empty
+        if material_data.empty:
+            self.logger.warning(
+                "Material flow data is empty. Skipping material flow plot."
+            )
+            return
+
         plt.figure(figsize=(12, 6))
 
         # Calculate totals for each material
