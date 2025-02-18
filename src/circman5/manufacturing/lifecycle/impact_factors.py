@@ -1,3 +1,4 @@
+# src/circman5/manufacturing/lifecycle/impact_factors.py
 """
 Standard impact factors for PV manufacturing LCA calculations.
 Values based on published literature and industry standards.
