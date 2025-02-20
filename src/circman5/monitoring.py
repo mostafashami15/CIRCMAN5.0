@@ -1,3 +1,4 @@
+# src/circman5/monitoring.py
 """
 Manufacturing monitoring and metrics tracking system.
 Tracks key performance indicators (KPIs) for PV manufacturing processes.
@@ -8,8 +9,8 @@ import numpy as np
 from datetime import datetime
 from typing import Dict, List, Optional
 from pathlib import Path
-from .config.project_paths import project_paths
 from .utils.logging_config import setup_logger
+from .utils.results_manager import results_manager
 
 
 class ManufacturingMonitor:
@@ -145,16 +146,24 @@ class ManufacturingMonitor:
         if metric_type not in self.metrics_history:
             raise ValueError(f"Invalid metric type: {metric_type}")
 
+        metrics_df = self.metrics_history[metric_type]
+
+        # Create temporary file and save using results_manager
+        temp_file = f"{metric_type}_metrics.csv"
+        metrics_df.to_csv(temp_file, index=False)
+
         if save_path is None:
-            run_dir = project_paths.get_run_directory()
-            save_path = run_dir / "reports" / f"{metric_type}_metrics.csv"
+            # Use results_manager to save to metrics directory
+            saved_path = results_manager.save_file(temp_file, "metrics")
+        else:
+            # If explicit path provided, save there
+            metrics_df.to_csv(save_path, index=False)
+            saved_path = save_path
 
-        # Ensure directory exists
-        save_path.parent.mkdir(parents=True, exist_ok=True)
+        # Clean up temporary file
+        Path(temp_file).unlink()
 
-        # Save metrics
-        self.metrics_history[metric_type].to_csv(save_path, index=False)
-        self.logger.info(f"Saved {metric_type} metrics to: {save_path}")
+        self.logger.info(f"Saved {metric_type} metrics to: {saved_path}")
 
     def get_batch_summary(self, batch_id: str) -> Dict:
         """Generate batch summary and save to reports directory."""
@@ -164,12 +173,17 @@ class ManufacturingMonitor:
             "resources": self._summarize_resources(batch_id),
         }
 
-        run_dir = project_paths.get_run_directory()
-        summary_file = run_dir / "reports" / f"batch_{batch_id}_summary.xlsx"
-
-        with pd.ExcelWriter(summary_file) as writer:
+        # Create temporary Excel file
+        temp_file = f"batch_{batch_id}_summary.xlsx"
+        with pd.ExcelWriter(temp_file) as writer:
             for metric_type, data in summary.items():
                 pd.DataFrame([data]).to_excel(writer, sheet_name=metric_type)
+
+        # Save using results_manager
+        results_manager.save_file(temp_file, "reports")
+
+        # Clean up temporary file
+        Path(temp_file).unlink()
 
         return summary
 

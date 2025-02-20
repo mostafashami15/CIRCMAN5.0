@@ -5,9 +5,8 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 import pandas as pd
 from pathlib import Path
-from circman5.utils.result_paths import get_run_directory
+from circman5.utils.results_manager import results_manager
 from ...utils.logging_config import setup_logger
-from ...config.project_paths import project_paths
 from .impact_factors import (
     MATERIAL_IMPACT_FACTORS,
     ENERGY_IMPACT_FACTORS,
@@ -64,6 +63,10 @@ class LCAAnalyzer:
 
     def __init__(self):
         self.logger = setup_logger("lca_analyzer")
+
+        # Initialize with ResultsManager paths
+        self.results_dir = results_manager.get_run_dir()
+        self.lca_results_dir = results_manager.get_path("lca_results")
 
     def calculate_manufacturing_impact(
         self, material_inputs: Dict[str, float], energy_consumption: float
@@ -283,12 +286,9 @@ class LCAAnalyzer:
         """Save LCA results to file."""
         try:
             if output_dir is None:
-                run_dir = get_run_directory()
-                reports_dir = run_dir / "reports"
+                reports_dir = results_manager.get_path("reports")
             else:
                 reports_dir = output_dir
-
-            reports_dir.mkdir(parents=True, exist_ok=True)
 
             filename = f"lca_impact_{batch_id}.xlsx" if batch_id else "lca_impact.xlsx"
             file_path = reports_dir / filename

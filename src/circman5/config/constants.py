@@ -1,4 +1,4 @@
-# src/circman5/config/cconstants.py
+# src/circman5/config/constants.py
 
 MANUFACTURING_STAGES = {
     "silicon_purification": {

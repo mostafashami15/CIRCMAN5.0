@@ -1,11 +1,11 @@
-# src/circman5/utils/logging_config.py
+"""Logging configuration module for the CIRCMAN5 system."""
 
 import logging
 import os
 from datetime import datetime
 from typing import Optional
 from pathlib import Path
-from circman5.config.project_paths import project_paths
+from ..utils.results_manager import results_manager
 
 
 def setup_logger(
@@ -14,15 +14,23 @@ def setup_logger(
     file_level: int = logging.DEBUG,
     console_level: int = logging.INFO,
 ) -> logging.Logger:
-    """Configure logging system with file and console handlers."""
-    try:
-        # Get log directory
-        if log_dir is None:
-            log_dir = project_paths.get_path("LOGS_DIR")
+    """Configure logging system with file and console handlers.
 
-        # Ensure log directory exists
-        log_dir_path = Path(log_dir)
-        log_dir_path.mkdir(parents=True, exist_ok=True)
+    Args:
+        name: Name of the logger
+        log_dir: Optional custom log directory path
+        file_level: Logging level for file output
+        console_level: Logging level for console output
+
+    Returns:
+        logging.Logger: Configured logger instance
+    """
+    try:
+        # Get log directory from results_manager if not specified
+        if log_dir is None:
+            log_dir_path = results_manager.get_path("LOGS_DIR")
+        else:
+            log_dir_path = Path(log_dir)
 
         # Remove existing handlers from logger if it exists
         logger = logging.getLogger(name)

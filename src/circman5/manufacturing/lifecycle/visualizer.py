@@ -15,7 +15,7 @@ import os
 from typing import Dict, Optional, List, Sequence, Union
 from pathlib import Path
 from circman5.utils.logging_config import setup_logger
-from circman5.utils.result_paths import get_run_directory
+from circman5.utils.results_manager import results_manager
 
 
 class LCAVisualizer:
@@ -23,10 +23,9 @@ class LCAVisualizer:
 
     def __init__(self):
         """Initialize visualization settings."""
-        self.logger = setup_logger("lca_visualizer")  # Remove duplicate line
-        self.run_dir = get_run_directory()
-        self.viz_dir = self.run_dir / "visualizations"
-        self.viz_dir.mkdir(parents=True, exist_ok=True)
+        self.logger = setup_logger("lca_visualizer")
+        # Replace run_dir and viz_dir initialization
+        self.viz_dir = results_manager.get_path("visualizations")
 
         # Configure plot styles
         plt.style.use("default")
@@ -314,11 +313,9 @@ class LCAVisualizer:
             self.logger.error(f"Error plotting energy consumption trends: {str(e)}")
             raise
 
-    def _get_visualization_path(self, viz_dir: Union[str, Path], filename: str) -> str:
+    def _get_visualization_path(self, filename: str) -> str:
         """Get the proper path for saving visualizations."""
-        viz_path = Path(viz_dir) / filename
-        viz_path.parent.mkdir(parents=True, exist_ok=True)
-        return str(viz_path)  # Convert Path to string
+        return str(self.viz_dir / filename)
 
     def _ensure_save_path(self, filename: str, batch_id: Optional[str] = None) -> str:
         """
@@ -336,9 +333,7 @@ class LCAVisualizer:
             base_name, ext = os.path.splitext(filename)
             filename = f"{base_name}_{batch_id}{ext}"
 
-        # Always save to visualization directory
-        save_path = self.viz_dir / filename
-        return str(save_path)
+        return str(self.viz_dir / filename)
 
     def create_comprehensive_report(
         self,
@@ -350,7 +345,8 @@ class LCAVisualizer:
     ) -> None:
         """Generate all LCA-related visualizations."""
         try:
-            viz_dir = Path(output_dir)
+            # Use provided output directory or fall back to results_manager
+            viz_dir = Path(output_dir) if output_dir else self.viz_dir
             viz_dir.mkdir(parents=True, exist_ok=True)
 
             # Impact distribution plot (no time series)

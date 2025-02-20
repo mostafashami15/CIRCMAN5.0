@@ -5,40 +5,10 @@
 import pytest
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from circman5.manufacturing.optimization.model import ManufacturingModel
 from circman5.manufacturing.optimization.types import MetricsDict, PredictionDict
-
-
-@pytest.fixture
-def test_data():
-    """Generate test data for model validation."""
-    np.random.seed(42)
-    production_data = pd.DataFrame(
-        {
-            "input_amount": np.random.uniform(90, 110, 100),
-            "energy_used": np.random.uniform(140, 160, 100),
-            "cycle_time": np.random.uniform(45, 55, 100),
-            "output_amount": np.random.uniform(85, 105, 100),
-            "batch_id": [f"BATCH_{i:03d}" for i in range(100)],
-        }
-    )
-
-    quality_data = pd.DataFrame(
-        {
-            "efficiency": np.random.uniform(20, 22, 100),
-            "defect_rate": np.random.uniform(1, 3, 100),
-            "thickness_uniformity": np.random.uniform(94, 96, 100),
-            "batch_id": [f"BATCH_{i:03d}" for i in range(100)],
-        }
-    )
-
-    return {"production": production_data, "quality": quality_data}
-
-
-@pytest.fixture
-def model():
-    """Create a test model instance."""
-    return ManufacturingModel()
+from circman5.utils.results_manager import results_manager
 
 
 def test_model_initialization(model):
@@ -50,7 +20,7 @@ def test_model_initialization(model):
     assert model.target_scaler is not None
 
 
-def test_model_training(model, test_data):
+def test_model_training(model, test_data, metrics_dir):
     """Test model training and metrics calculation."""
     metrics = model.train_optimization_model(
         test_data["production"], test_data["quality"]
@@ -62,8 +32,12 @@ def test_model_training(model, test_data):
     assert metrics["r2"] >= 0
     assert model.is_trained
 
+    # Verify metrics file was saved
+    metrics_file = metrics_dir / "training_metrics.json"
+    assert metrics_file.exists()
 
-def test_prediction(model, test_data):
+
+def test_prediction(model, test_data, test_output_dir):
     """Test predictions with trained model."""
     # Train the model first
     model.train_optimization_model(test_data["production"], test_data["quality"])
@@ -75,12 +49,54 @@ def test_prediction(model, test_data):
         "efficiency": 21.0,
         "defect_rate": 2.0,
         "thickness_uniformity": 95.0,
+        "output_amount": 90.0,
     }
 
     predictions = model.predict_batch_outcomes(test_params)
     assert isinstance(predictions, dict)
     assert "predicted_output" in predictions
     assert "predicted_quality" in predictions
+    assert "confidence_score" in predictions
+
+    # Verify predictions file was saved
+    predictions_file = test_output_dir / "latest_predictions.json"
+    assert predictions_file.exists()
+
+
+def test_process_optimization(optimizer, test_data, test_output_dir):
+    """Test process parameter optimization."""
+    optimizer.model.train_optimization_model(
+        test_data["production"], test_data["quality"]
+    )
+
+    current_params = {
+        "input_amount": 100.0,
+        "energy_used": 150.0,
+        "cycle_time": 50.0,
+        "efficiency": 21.0,
+        "defect_rate": 2.0,
+        "thickness_uniformity": 95.0,
+        "output_amount": 90.0,  # Add estimated output amount
+    }
+
+
+def test_model_saving(model, test_data, test_output_dir):
+    """Test model saving functionality."""
+    # Train the model first
+    model.train_optimization_model(test_data["production"], test_data["quality"])
+
+    # Save the model
+    model.save_model("test_model")
+
+    # Verify saved files exist in the correct location
+    saved_files = [
+        test_output_dir / "test_model_model.joblib",
+        test_output_dir / "test_model_scalers.joblib",
+        test_output_dir / "test_model_config.json",
+    ]
+
+    for file_path in saved_files:
+        assert file_path.exists(), f"Expected file {file_path} not found"
 
 
 def test_error_handling(model):
@@ -92,8 +108,35 @@ def test_error_handling(model):
         "efficiency": 21.0,
         "defect_rate": 2.0,
         "thickness_uniformity": 95.0,
+        "output_amount": 95.0,  # Added for calculated features
     }
 
     # Test prediction without training
     with pytest.raises(ValueError):
         model.predict_batch_outcomes(test_params)
+
+    # Test saving without training
+    with pytest.raises(ValueError):
+        model.save_model("test_model")
+
+
+def test_empty_data_handling(model):
+    """Test handling of empty input data."""
+    empty_df = pd.DataFrame()
+
+    with pytest.raises(ValueError):
+        model.train_optimization_model(empty_df, empty_df)
+
+
+def test_model_training_with_invalid_data(model):
+    """Test model training with invalid or incomplete data."""
+    invalid_production_data = pd.DataFrame(
+        {"input_amount": [100.0], "batch_id": ["BATCH_001"]}
+    )
+
+    invalid_quality_data = pd.DataFrame(
+        {"efficiency": [95.0], "batch_id": ["BATCH_001"]}
+    )
+
+    with pytest.raises(Exception):  # Should raise some form of error
+        model.train_optimization_model(invalid_production_data, invalid_quality_data)

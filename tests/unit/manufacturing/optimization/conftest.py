@@ -1,6 +1,9 @@
+# tests/unit/manufacturing/optimization/conftest.py
+
 import pytest
 import numpy as np
 import pandas as pd
+from circman5.utils.results_manager import results_manager
 
 
 @pytest.fixture
@@ -43,3 +46,22 @@ def optimizer():
     from circman5.manufacturing.optimization.optimizer import ProcessOptimizer
 
     return ProcessOptimizer()
+
+
+@pytest.fixture
+def test_output_dir():
+    """Get test output directory from ResultsManager."""
+    return results_manager.get_path("lca_results")
+
+
+# Add fixtures for other required directories
+@pytest.fixture
+def metrics_dir():
+    """Get metrics directory."""
+    return results_manager.get_path("metrics")
+
+
+@pytest.fixture
+def reports_dir():
+    """Get reports directory."""
+    return results_manager.get_path("reports")

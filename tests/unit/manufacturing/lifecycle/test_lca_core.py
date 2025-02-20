@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from circman5.manufacturing.lifecycle import LCAAnalyzer, LifeCycleImpact
+from circman5.utils.results_manager import results_manager
 from circman5.manufacturing.lifecycle.impact_factors import (
     MATERIAL_IMPACT_FACTORS,
     ENERGY_IMPACT_FACTORS,
@@ -133,7 +134,7 @@ def test_lifecycle_impact_total_calculation():
     )
 
 
-def test_lca_results_saving(lca_analyzer, test_run_dir):
+def test_lca_results_saving(lca_analyzer):
     """Test saving LCA results to file."""
     impact = LifeCycleImpact(
         manufacturing_impact=100.0,
@@ -142,21 +143,22 @@ def test_lca_results_saving(lca_analyzer, test_run_dir):
     )
 
     batch_id = "TEST_001"
-    reports_dir = test_run_dir / "reports"
-    reports_dir.mkdir(exist_ok=True)
+
+    # Get reports directory from ResultsManager
+    reports_dir = results_manager.get_path("reports")
 
     # Save results with explicit output directory
     lca_analyzer.save_results(
         impact,
         batch_id=batch_id,
-        output_dir=reports_dir,  # Pass the reports directory explicitly
+        output_dir=reports_dir,
     )
 
     # Verify file exists in correct location
     expected_path = reports_dir / f"lca_impact_{batch_id}.xlsx"
     assert expected_path.exists()
 
-    # Optional: Verify file contents
+    # Verify file contents
     df = pd.read_excel(expected_path)
     assert "Manufacturing Impact" in df.columns
     assert "Use Phase Impact" in df.columns

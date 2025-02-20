@@ -1,35 +1,32 @@
 # tests/unit/manufacturing/analyzers/conftest.py
+
 """Shared test fixtures for analyzer tests."""
 
 import numpy as np
 import pandas as pd
 import pytest
 from pathlib import Path
-from circman5.utils.result_paths import get_run_directory
+from circman5.utils.results_manager import results_manager
 
 
 @pytest.fixture
 def test_output_dir():
     """Create and return test output directory."""
-    run_dir = get_run_directory()
+    run_dir = results_manager.get_run_dir()
     print(f"Test output directory: {run_dir}")  # Debug print
     return run_dir
 
 
 @pytest.fixture
-def reports_dir(test_output_dir):
+def reports_dir():
     """Get reports directory for current test run."""
-    reports_dir = test_output_dir / "reports"
-    reports_dir.mkdir(exist_ok=True)
-    return reports_dir
+    return results_manager.get_path("reports")
 
 
 @pytest.fixture
-def visualizations_dir(test_output_dir):
+def visualizations_dir():
     """Get visualizations directory for current test run."""
-    viz_dir = test_output_dir / "visualizations"
-    viz_dir.mkdir(exist_ok=True)
-    return viz_dir
+    return results_manager.get_path("visualizations")
 
 
 @pytest.fixture

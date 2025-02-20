@@ -4,8 +4,11 @@
 from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from typing import Dict, List, Optional
 from ...utils.logging_config import setup_logger
+from ...utils.results_manager import results_manager
+from circman5.manufacturing.visualization_utils import VisualizationConfig
 
 
 class QualityAnalyzer:
@@ -81,34 +84,75 @@ class QualityAnalyzer:
     def plot_trends(
         self, trends: Dict[str, List[float]], save_path: Optional[str] = None
     ) -> None:
-        """
-        Plot quality trends visualization.
-
-        Args:
-            trends: Dictionary containing trend data
-            save_path: Optional path to save visualization
-        """
+        """Plot quality trends visualization."""
         try:
-            plt.figure(figsize=(12, 8))
+            VisualizationConfig.setup_style()
 
-            # Plot each trend line
-            for trend_name, trend_data in trends.items():
-                plt.plot(trend_data, label=trend_name.replace("_", " ").title())
+            # Create 2x2 subplot grid
+            fig, axes = plt.subplots(
+                2, 2, figsize=VisualizationConfig.DEFAULT_STYLE["figure.figsize"]
+            )
 
-            plt.title("Quality Metrics Trends")
-            plt.xlabel("Time Period")
-            plt.ylabel("Value")
-            plt.legend()
-            plt.grid(True)
+            # Plot defect trend
+            if "defect_trend" in trends:
+                x_points = range(len(trends["defect_trend"]))
+                axes[0, 0].plot(
+                    x_points,
+                    trends["defect_trend"],
+                    marker="o",
+                    color=VisualizationConfig.COLOR_PALETTE[0],
+                )
+                axes[0, 0].set_title("Defect Rate Trend")
+                axes[0, 0].set_ylabel("Defect Rate (%)")
+                axes[0, 0].set_xlabel("Time Period")
+                axes[0, 0].grid(True)
+
+            # Plot efficiency trend
+            if "efficiency_trend" in trends:
+                x_points = range(len(trends["efficiency_trend"]))
+                axes[0, 1].plot(
+                    x_points,
+                    trends["efficiency_trend"],
+                    marker="o",
+                    color=VisualizationConfig.COLOR_PALETTE[1],
+                )
+                axes[0, 1].set_title("Efficiency Trend")
+                axes[0, 1].set_ylabel("Efficiency (%)")
+                axes[0, 1].set_xlabel("Time Period")
+                axes[0, 1].grid(True)
+
+            # Plot uniformity trend
+            if "uniformity_trend" in trends:
+                x_points = range(len(trends["uniformity_trend"]))
+                axes[1, 0].plot(
+                    x_points,
+                    trends["uniformity_trend"],
+                    marker="o",
+                    color=VisualizationConfig.COLOR_PALETTE[2],
+                )
+                axes[1, 0].set_title("Thickness Uniformity Trend")
+                axes[1, 0].set_ylabel("Uniformity (%)")
+                axes[1, 0].set_xlabel("Time Period")
+                axes[1, 0].grid(True)
+
+            # Remove empty subplot
+            fig.delaxes(axes[1, 1])
+
+            plt.tight_layout()
 
             if save_path:
                 plt.savefig(save_path, dpi=300, bbox_inches="tight")
                 plt.close()
+                self.logger.info(f"Quality trends plot saved to {save_path}")
             else:
-                plt.show()
-
-            self.logger.info(f"Quality trends plot generated successfully")
+                temp_path = Path("quality_trends.png")
+                plt.savefig(str(temp_path), dpi=300, bbox_inches="tight")
+                plt.close()
+                if temp_path.exists():
+                    results_manager.save_file(temp_path, "visualizations")
+                    temp_path.unlink()
 
         except Exception as e:
             self.logger.error(f"Error plotting quality trends: {str(e)}")
+            plt.close()
             raise

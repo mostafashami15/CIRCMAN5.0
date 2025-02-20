@@ -5,7 +5,7 @@ from matplotlib.figure import Figure
 import seaborn as sns
 from pathlib import Path
 from typing import Optional
-from circman5.config.project_paths import project_paths
+from ..utils.results_manager import results_manager
 
 
 class VisualizationConfig:
@@ -33,7 +33,7 @@ class VisualizationConfig:
 
     @staticmethod
     def save_figure(
-        fig: Figure,  # Changed type hint to use imported Figure
+        fig: Figure,
         filename: str,
         save_path: Optional[str] = None,
         subdir: str = "visualizations",
@@ -51,9 +51,7 @@ class VisualizationConfig:
             str: Path where figure was saved
         """
         if save_path is None:
-            run_dir = project_paths.get_run_directory()
-            viz_dir = run_dir / subdir
-            viz_dir.mkdir(parents=True, exist_ok=True)
+            viz_dir = results_manager.get_path("visualizations")
             save_path = str(viz_dir / filename)
 
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
@@ -62,7 +60,4 @@ class VisualizationConfig:
     @staticmethod
     def get_visualization_path(filename: str, subdir: str = "visualizations") -> Path:
         """Get standardized path for visualizations."""
-        run_dir = project_paths.get_run_directory()
-        viz_dir = run_dir / subdir
-        viz_dir.mkdir(parents=True, exist_ok=True)
-        return viz_dir / filename
+        return results_manager.get_path("visualizations") / filename

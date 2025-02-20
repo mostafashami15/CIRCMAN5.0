@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from circman5.utils.errors import ProcessError
+from circman5.utils.results_manager import results_manager
 
 
 def test_lca_data_loading(
@@ -67,15 +68,15 @@ def test_lca_report_generation(
     """Test generation of LCA report."""
     manufacturing_analyzer.lca_data = sample_lca_data
 
-    # First generate LCA report
+    # Generate LCA report using ResultsManager paths
     impact = manufacturing_analyzer.perform_lifecycle_assessment()
     manufacturing_analyzer.lca_analyzer.save_results(impact, output_dir=lca_results_dir)
+
     lca_report_path = lca_results_dir / "lca_impact.xlsx"
     assert lca_report_path.exists()
 
-    # Then generate comprehensive report
+    # Generate comprehensive report
     manufacturing_analyzer.generate_reports(output_dir=reports_dir)
-    # Updated expected filename:
     report_path = reports_dir / "analysis_report.xlsx"
     assert report_path.exists()
 
@@ -97,7 +98,7 @@ def test_batch_specific_assessment(
 
     # Perform assessment for specific batch
     impact = manufacturing_analyzer.perform_lifecycle_assessment(
-        batch_id=test_batch, output_dir=lca_results_dir  # Add output directory
+        batch_id=test_batch, output_dir=lca_results_dir
     )
 
     # Verify results

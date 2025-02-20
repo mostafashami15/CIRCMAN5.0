@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-from circman5.utils.result_paths import get_run_directory
+from ...utils.results_manager import results_manager
 from ...utils.logging_config import setup_logger
 from ...utils.errors import DataError, ManufacturingError, ProcessError
 from ..visualization_utils import VisualizationConfig
@@ -20,7 +20,7 @@ class ManufacturingVisualizer:
     def __init__(self):
         """Initialize visualization settings."""
         self.logger = setup_logger("manufacturing_visualizer")
-        self.path_manager = VisualizationPathManager()
+        self.viz_dir = results_manager.get_path("visualizations")
         VisualizationConfig.setup_style()
         self.colors = VisualizationConfig.COLOR_PALETTE
 
@@ -93,16 +93,13 @@ class ManufacturingVisualizer:
             plt.tight_layout()
 
             if save_path:
-                # Get visualization directory from result_paths
-                run_dir = get_run_directory()
-                viz_dir = run_dir / "visualizations"
-                viz_dir.mkdir(exist_ok=True)
-                full_path = viz_dir / save_path
+                full_path = self.viz_dir / save_path
                 plt.savefig(str(full_path), dpi=300, bbox_inches="tight")
                 plt.close()
                 self.logger.info(
                     f"Saved production trends visualization to {full_path}"
                 )
+
             else:
                 plt.show()
 
@@ -394,8 +391,7 @@ class ManufacturingVisualizer:
         try:
             # Get proper save path if none provided
             if save_path is None:
-                save_path = str(self.path_manager.get_visualization_path(metric_type))
-
+                save_path = f"{metric_type}_visualization.png"
             if metric_type == "production":
                 self.visualize_production_trends(data, save_path)
             elif metric_type == "energy":
@@ -425,11 +421,7 @@ class ManufacturingVisualizer:
             raise DataError("No efficiency data available for visualization")
 
         if save_path is None:
-            save_path = str(
-                self.path_manager.get_visualization_path(
-                    "efficiency", "efficiency_trends.png"
-                )
-            )
+            save_path = "efficiency_trends.png"
 
         fig, axes = plt.subplots(2, 1, figsize=(12, 8))
 

@@ -10,8 +10,7 @@ from typing import Dict
 from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.manufacturing.lifecycle import LCAAnalyzer
 from circman5.manufacturing.core import SoliTekManufacturingAnalysis
-from circman5.utils.cleanup import cleanup_old_runs
-from circman5.utils.result_paths import get_run_directory
+from circman5.utils.results_manager import results_manager
 from circman5.config.project_paths import project_paths
 
 
@@ -27,45 +26,37 @@ def debug_directory_contents(directory: Path, pattern: str = "*") -> None:
 
 # Directory Structure Fixtures
 @pytest.fixture(scope="session")
-def test_run_dir(tmp_path_factory):
+def test_run_dir():
     """Create and get test run directory."""
-    run_dir = get_run_directory()
+    run_dir = results_manager.get_run_dir()
     debug_directory_contents(run_dir)
     yield run_dir
-    # Optional: Clean up old runs
-    cleanup_old_runs(run_dir.parent, keep_last=5)
+    # Optional: Clean up old runs after tests
+    results_manager.cleanup_old_runs(keep_last=5)
 
 
 @pytest.fixture
-def visualizations_dir(test_run_dir):
-    """Get visualizations directory for current test run."""
-    viz_dir = test_run_dir / "visualizations"
-    viz_dir.mkdir(exist_ok=True)
-    return viz_dir
+def visualizations_dir():
+    """Get visualizations directory."""
+    return results_manager.get_path("visualizations")
 
 
 @pytest.fixture
-def reports_dir(test_run_dir):
-    """Get reports directory for current test run."""
-    reports_dir = test_run_dir / "reports"
-    reports_dir.mkdir(exist_ok=True)
-    return reports_dir
+def reports_dir():
+    """Get reports directory."""
+    return results_manager.get_path("reports")
 
 
 @pytest.fixture
-def input_data_dir(test_run_dir):
-    """Get input data directory for current test run."""
-    data_dir = test_run_dir / "input_data"
-    data_dir.mkdir(exist_ok=True)
-    return data_dir
+def input_data_dir():
+    """Get input data directory."""
+    return results_manager.get_path("input_data")
 
 
 @pytest.fixture
-def lca_results_dir(test_run_dir):
-    """Get LCA results directory for current test run."""
-    lca_dir = test_run_dir / "lca_results"
-    lca_dir.mkdir(exist_ok=True)
-    return lca_dir
+def lca_results_dir():
+    """Get LCA results directory."""
+    return results_manager.get_path("lca_results")
 
 
 # Data Generation Fixtures
@@ -196,7 +187,7 @@ def complete_test_data(test_data_generator):
 @pytest.fixture
 def setup_synthetic_data(test_data_generator) -> Dict[str, Path]:
     """Setup synthetic data files in the correct location."""
-    synthetic_dir = project_paths.get_path("SYNTHETIC_DATA")
+    synthetic_dir = results_manager.get_path("SYNTHETIC_DATA")
     Path(synthetic_dir).mkdir(parents=True, exist_ok=True)
 
     # Generate and save test files

@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import random
 from typing import Dict, List
 from pathlib import Path
-from circman5.config.project_paths import project_paths
+from circman5.utils.results_manager import results_manager
 
 from circman5.manufacturing.lifecycle.impact_factors import (
     MATERIAL_IMPACT_FACTORS,
@@ -267,12 +267,8 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
     def save_generated_data(self) -> None:
         """Save all generated test data to the synthetic data directory."""
         try:
-            # Get and ensure synthetic data directory exists
-            synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
-            synthetic_dir.mkdir(parents=True, exist_ok=True)
-
-            # Get parent directory directly from synthetic_dir
-            root_dir = synthetic_dir.parent.parent
+            # Get synthetic data directory from results_manager
+            synthetic_dir = results_manager.get_path("SYNTHETIC_DATA")
 
             # Define all files to save
             data_files = {
@@ -282,20 +278,17 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
                 "test_production_data.csv": self.generate_production_data(),
             }
 
-            # Clean up any existing files in root directory
-            for filename in data_files.keys():
-                root_file = root_dir / filename
-                if root_file.exists():
-                    root_file.unlink()
-
             # Save each file to synthetic directory
             for filename, data in data_files.items():
-                file_path = synthetic_dir / filename
-                data.to_csv(file_path, index=False)
+                # Create temporary file
+                temp_path = Path(filename)
+                data.to_csv(temp_path, index=False)
 
-                # Verify file was created in correct location
-                if not file_path.exists():
-                    raise IOError(f"Failed to save {filename} to {synthetic_dir}")
+                # Save using results_manager
+                results_manager.save_file(temp_path, "SYNTHETIC_DATA")
+
+                # Clean up temporary file
+                temp_path.unlink()
 
         except Exception as e:
             raise IOError(f"Error saving test data: {str(e)}")

@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, Optional, Union
 from circman5.utils.logging_config import setup_logger
 from circman5.utils.errors import ValidationError, DataError
-from circman5.config.project_paths import project_paths
+from circman5.utils.results_manager import results_manager
 from .schemas import (
     PRODUCTION_SCHEMA,
     ENERGY_SCHEMA,
@@ -47,8 +47,8 @@ class ManufacturingDataLoader:
     ) -> pd.DataFrame:
         """Load and validate production data."""
         if file_path is None:
-            file_path = project_paths.get_synthetic_data_path(
-                "test_production_data.csv"
+            file_path = (
+                results_manager.get_path("SYNTHETIC_DATA") / "test_production_data.csv"
             )
 
         return self._load_and_validate_csv(
@@ -60,7 +60,9 @@ class ManufacturingDataLoader:
     ) -> pd.DataFrame:
         """Load and validate energy consumption data."""
         if file_path is None:
-            file_path = project_paths.get_synthetic_data_path("test_energy_data.csv")
+            file_path = (
+                results_manager.get_path("SYNTHETIC_DATA") / "test_energy_data.csv"
+            )
 
         return self._load_and_validate_csv(file_path, self.energy_schema, "energy")
 
@@ -69,7 +71,9 @@ class ManufacturingDataLoader:
     ) -> pd.DataFrame:
         """Load and validate quality metrics data."""
         if file_path is None:
-            file_path = project_paths.get_synthetic_data_path("test_quality_data.csv")
+            file_path = (
+                results_manager.get_path("SYNTHETIC_DATA") / "test_quality_data.csv"
+            )
 
         return self._load_and_validate_csv(file_path, self.quality_schema, "quality")
 
@@ -78,7 +82,9 @@ class ManufacturingDataLoader:
     ) -> pd.DataFrame:
         """Load and validate material flow data."""
         if file_path is None:
-            file_path = project_paths.get_synthetic_data_path("test_material_data.csv")
+            file_path = (
+                results_manager.get_path("SYNTHETIC_DATA") / "test_material_data.csv"
+            )
 
         return self._load_and_validate_csv(file_path, self.material_schema, "material")
 
@@ -108,6 +114,14 @@ class ManufacturingDataLoader:
                 lca_data["process_data"] = self._load_and_validate_csv(
                     process_data_path, self.lca_process_schema, "lca_process"
                 )
+
+            # Save loaded data to input_data directory
+            for data_type, df in lca_data.items():
+                if not df.empty:
+                    csv_path = f"lca_{data_type}.csv"
+                    df.to_csv(csv_path, index=False)
+                    results_manager.save_file(csv_path, "input_data")
+                    Path(csv_path).unlink()  # Clean up temporary file
 
             self.logger.info("Successfully loaded LCA data")
             return lca_data
@@ -193,6 +207,12 @@ class ManufacturingDataLoader:
                     raise ValidationError(
                         f"Invalid data type for {col} in {data_type} data: {str(e)}"
                     )
+
+            # Save copy of validated data to input_data directory
+            csv_path = f"{data_type}_data.csv"
+            data.to_csv(csv_path, index=False)
+            results_manager.save_file(csv_path, "input_data")
+            Path(csv_path).unlink()  # Clean up temporary file
 
             self.logger.info(f"Successfully loaded {len(data)} {data_type} records")
             return data

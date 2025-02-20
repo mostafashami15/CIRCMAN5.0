@@ -7,15 +7,21 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from circman5.manufacturing.reporting.visualizations import ManufacturingVisualizer
 from circman5.utils.errors import DataError
-from circman5.utils.result_paths import get_run_directory
+from circman5.utils.results_manager import results_manager
 
 
 @pytest.fixture(scope="module")
 def test_run_dir():
     """Create and return test run directory."""
-    run_dir = get_run_directory()
+    run_dir = results_manager.get_run_dir()
     print(f"\nTest outputs will be saved in: {run_dir}")
     return run_dir
+
+
+@pytest.fixture(scope="module")
+def viz_dir():
+    """Get visualizations directory."""
+    return results_manager.get_path("visualizations")
 
 
 @pytest.fixture
@@ -45,7 +51,7 @@ def sample_quality_data():
     dates = pd.date_range(start="2024-01-01", periods=10, freq="D")
     return pd.DataFrame(
         {
-            "timestamp": dates,  # Using timestamp as required
+            "timestamp": dates,
             "efficiency": np.random.uniform(85, 95, 10),
             "defect_rate": np.random.uniform(1, 5, 10),
             "thickness_uniformity": np.random.uniform(90, 98, 10),
@@ -68,17 +74,17 @@ def sample_resource_data():
     )
 
 
-def test_visualize_production_trends(visualizer, sample_production_data, test_run_dir):
+def test_visualize_production_trends(visualizer, sample_production_data, viz_dir):
     """Test production trends visualization."""
-    save_path = test_run_dir / "visualizations" / "production_trends.png"
+    save_path = viz_dir / "production_trends.png"
     visualizer.visualize_production_trends(sample_production_data, str(save_path))
     assert save_path.exists()
     print(f"\nProduction trends visualization saved to: {save_path}")
 
 
-def test_visualize_quality_metrics(visualizer, sample_quality_data, test_run_dir):
+def test_visualize_quality_metrics(visualizer, sample_quality_data, viz_dir):
     """Test quality metrics visualization."""
-    save_path = test_run_dir / "visualizations" / "quality_metrics.png"
+    save_path = viz_dir / "quality_metrics.png"
     visualizer.visualize_quality_metrics(sample_quality_data, None, str(save_path))
     assert save_path.exists()
     print(f"\nQuality metrics visualization saved to: {save_path}")
@@ -96,7 +102,7 @@ def test_create_performance_dashboard(
     sample_production_data,
     sample_quality_data,
     sample_resource_data,
-    test_run_dir,
+    viz_dir,
 ):
     """Test performance dashboard creation."""
     monitor_data = {
@@ -104,37 +110,37 @@ def test_create_performance_dashboard(
         "quality": sample_quality_data,
         "resources": sample_resource_data,
     }
-    save_path = test_run_dir / "visualizations" / "performance_dashboard.png"
+    save_path = viz_dir / "performance_dashboard.png"
     visualizer.create_performance_dashboard(monitor_data, str(save_path))
     assert save_path.exists()
     print(f"\nPerformance dashboard saved to: {save_path}")
 
 
-def test_plot_efficiency_trends(visualizer, sample_production_data, test_run_dir):
+def test_plot_efficiency_trends(visualizer, sample_production_data, viz_dir):
     """Test efficiency trends plotting."""
-    save_path = test_run_dir / "visualizations" / "efficiency_trends.png"
+    save_path = viz_dir / "efficiency_trends.png"
     visualizer.plot_efficiency_trends(sample_production_data, str(save_path))
     assert save_path.exists()
     print(f"\nEfficiency trends plot saved to: {save_path}")
 
 
-def test_plot_quality_metrics(visualizer, sample_quality_data, test_run_dir):
+def test_plot_quality_metrics(visualizer, sample_quality_data, viz_dir):
     """Test quality metrics plotting."""
-    save_path = test_run_dir / "visualizations" / "quality_metrics_plot.png"
+    save_path = viz_dir / "quality_metrics_plot.png"
     visualizer.plot_quality_metrics(sample_quality_data, str(save_path))
     assert save_path.exists()
     print(f"\nQuality metrics plot saved to: {save_path}")
 
 
-def test_plot_resource_usage(visualizer, sample_resource_data, test_run_dir):
+def test_plot_resource_usage(visualizer, sample_resource_data, viz_dir):
     """Test resource usage plotting."""
-    save_path = test_run_dir / "visualizations" / "resource_usage.png"
+    save_path = viz_dir / "resource_usage.png"
     visualizer.plot_resource_usage(sample_resource_data, str(save_path))
     assert save_path.exists()
     print(f"\nResource usage plot saved to: {save_path}")
 
 
-def test_create_kpi_dashboard(visualizer, test_run_dir):
+def test_create_kpi_dashboard(visualizer, viz_dir):
     """Test KPI dashboard creation."""
     metrics_data = {
         "efficiency": 95.5,
@@ -142,7 +148,7 @@ def test_create_kpi_dashboard(visualizer, test_run_dir):
         "resource_efficiency": 92.5,
         "energy_efficiency": 94.0,
     }
-    save_path = test_run_dir / "visualizations" / "kpi_dashboard.png"
+    save_path = viz_dir / "kpi_dashboard.png"
     visualizer.create_kpi_dashboard(metrics_data, str(save_path))
     assert save_path.exists()
     print(f"\nKPI dashboard saved to: {save_path}")

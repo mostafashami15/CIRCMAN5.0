@@ -3,7 +3,7 @@
 import pandas as pd
 from typing import Dict, Optional, Union
 from pathlib import Path
-from ...config.project_paths import project_paths
+from ...utils.results_manager import results_manager
 from ...utils.logging_config import setup_logger
 from ...utils.errors import ProcessError
 
@@ -11,9 +11,7 @@ from ...utils.errors import ProcessError
 class ReportGenerator:
     def __init__(self):
         self.logger = setup_logger("manufacturing_reports")
-        self.current_run_dir = project_paths.get_run_directory()
-        self.reports_dir = self.current_run_dir / "reports"
-        self.reports_dir.mkdir(exist_ok=True)
+        self.reports_dir = results_manager.get_path("reports")
 
     def generate_comprehensive_report(
         self, metrics: Dict, output_dir: Optional[Path] = None

@@ -16,6 +16,7 @@ from .reporting.visualizations import ManufacturingVisualizer
 from .reporting.reports import ReportGenerator
 from .lifecycle.lca_analyzer import LCAAnalyzer, LifeCycleImpact
 from .lifecycle.visualizer import LCAVisualizer
+from ..utils.results_manager import results_manager
 from .lifecycle.impact_factors import (
     MATERIAL_IMPACT_FACTORS,
     ENERGY_IMPACT_FACTORS,
@@ -226,20 +227,23 @@ class SoliTekManufacturingAnalysis:
             output_dir: Optional directory for report output (str or Path)
         """
         try:
-            # Convert str to Path if needed; use current directory as default if None
-            output_path = Path(output_dir) if output_dir else Path.cwd()
+            # Use results_manager if no output_dir specified
+            if output_dir is None:
+                output_dir = results_manager.get_path("reports")
+            else:
+                output_dir = Path(output_dir)
 
             # Collect all metrics
             performance_metrics = self.analyze_manufacturing_performance()
 
             # Generate reports using report generator
             self.report_generator.generate_comprehensive_report(
-                performance_metrics, output_dir=output_path
+                performance_metrics, output_dir=output_dir
             )
 
             # Rename the generated report file to "analysis_report.xlsx"
-            generated_file = output_path / "comprehensive_analysis.xlsx"
-            expected_file = output_path / "analysis_report.xlsx"
+            generated_file = output_dir / "comprehensive_analysis.xlsx"
+            expected_file = output_dir / "analysis_report.xlsx"
             if generated_file.exists():
                 generated_file.rename(expected_file)
 
@@ -260,7 +264,11 @@ class SoliTekManufacturingAnalysis:
         """Generate all LCA-related visualizations."""
         try:
             # Use provided output directory or fall back to default
-            viz_dir = Path(output_dir) if output_dir else self.lca_visualizer.viz_dir
+            viz_dir = (
+                Path(output_dir)
+                if output_dir
+                else results_manager.get_path("visualizations")
+            )
             viz_dir.mkdir(parents=True, exist_ok=True)
 
             # Create visualization filename with batch_id if provided
@@ -520,12 +528,17 @@ class SoliTekManufacturingAnalysis:
             output_path: Optional path for report output (str or Path)
         """
         try:
-            # Convert str to Path if needed
-            path = Path(output_path) if output_path else None
+            # Use results_manager if no output_path specified
+            if output_path is None:
+                output_path = (
+                    results_manager.get_path("reports") / "analysis_report.xlsx"
+                )
+            else:
+                output_path = Path(output_path)
 
             metrics = self.analyze_manufacturing_performance()
             self.report_generator.generate_comprehensive_report(
-                metrics, output_dir=path
+                metrics, output_dir=output_path.parent
             )
             self.logger.info(f"Successfully exported analysis report to {output_path}")
         except Exception as e:
@@ -557,9 +570,15 @@ class SoliTekManufacturingAnalysis:
             self.logger.error(f"Error generating visualization: {str(e)}")
             raise ProcessError(f"Visualization generation failed: {str(e)}")
 
-    def generate_comprehensive_report(self, output_path: str) -> None:
+    def generate_comprehensive_report(self, output_path: Optional[str] = None) -> None:
         """Generate a comprehensive analysis report including all metrics."""
         try:
+            # Use results_manager if no output_path specified
+            if output_path is None:
+                output_path = str(
+                    results_manager.get_path("reports") / "comprehensive_report.xlsx"
+                )
+
             # Collect all metrics
             metrics = {
                 "efficiency_metrics": self.analyze_efficiency(),

@@ -6,7 +6,7 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
-from circman5.config import project_paths
+from .utils.results_manager import results_manager
 
 
 def ensure_directories_exist():
@@ -47,13 +47,13 @@ def ensure_directories_exist():
 
 def test_framework():
     """Comprehensive test of the SoliTek manufacturing analysis framework."""
-    directories = ensure_directories_exist()
-
     print("Starting SoliTek Manufacturing Analysis Framework Test")
     print("-" * 50)
 
-    # Create log file
-    log_path = os.path.join(directories["results"], "test_log.txt")
+    # Get paths from results_manager
+    results_dir = results_manager.get_path("metrics")
+    log_path = results_dir / "test_log.txt"
+
     with open(log_path, "w") as log_file:
 
         def log_print(message):
@@ -74,18 +74,19 @@ def test_framework():
             material_data = generator.generate_material_flow_data()
 
             # Save test data files
-            data_dir = directories["data"]
-            production_path = os.path.join(data_dir, "test_production_data.csv")
-            production_data.to_csv(production_path, index=False)
+            data_dir = results_manager.get_path("input_data")
 
-            energy_path = os.path.join(data_dir, "test_energy_data.csv")
-            energy_data.to_csv(energy_path, index=False)
-
-            quality_path = os.path.join(data_dir, "test_quality_data.csv")
-            quality_data.to_csv(quality_path, index=False)
-
-            material_path = os.path.join(data_dir, "test_material_data.csv")
-            material_data.to_csv(material_path, index=False)
+            # Save each dataset
+            for name, data in {
+                "test_production_data.csv": production_data,
+                "test_energy_data.csv": energy_data,
+                "test_quality_data.csv": quality_data,
+                "test_material_data.csv": material_data,
+            }.items():
+                temp_path = Path(name)
+                data.to_csv(temp_path, index=False)
+                results_manager.save_file(temp_path, "input_data")
+                temp_path.unlink()
 
             # Initialize analysis framework
             log_print("\nInitializing analysis framework...")
@@ -93,10 +94,12 @@ def test_framework():
 
             # Test data loading
             log_print("\nTesting data loading capabilities...")
-            analyzer.load_data(production_path=production_path)
-            analyzer.energy_data = energy_data
-            analyzer.quality_data = quality_data
-            analyzer.material_flow = material_data
+            analyzer.load_data(
+                production_path=str(data_dir / "test_production_data.csv"),
+                energy_path=str(data_dir / "test_energy_data.csv"),
+                quality_path=str(data_dir / "test_quality_data.csv"),
+                material_path=str(data_dir / "test_material_data.csv"),
+            )
             log_print("All test data loaded successfully")
 
             # Test efficiency analysis
@@ -107,9 +110,6 @@ def test_framework():
             log_print("Efficiency Metrics:")
             if "yield_rate" in efficiency_metrics:
                 log_print(f"Average Yield: {efficiency_metrics['yield_rate']:.2f}%")
-            if "cycle_time_stats" in efficiency_metrics:
-                log_print("Cycle Time Statistics:")
-                log_print(str(efficiency_metrics["cycle_time_stats"]))
 
             # Test sustainability metrics
             log_print("\nTesting sustainability calculations...")
@@ -124,42 +124,19 @@ def test_framework():
             log_print("\nTesting quality metrics analysis...")
             quality_metrics = analyzer.analyze_manufacturing_performance()["quality"]
             log_print("Quality Metrics:")
-            if "average_efficiency" in quality_metrics:
-                log_print(
-                    f"Average Efficiency: {quality_metrics['average_efficiency']:.2f}%"
-                )
+            for metric, value in quality_metrics.items():
+                log_print(f"{metric}: {value}")
 
             # Test visualization generation
             log_print("\nTesting visualization capabilities...")
             for metric_type in ["production", "energy", "quality", "sustainability"]:
-                viz_path = os.path.join(
-                    directories["viz"], f"{metric_type}_analysis.png"
-                )
-                # This depends on the metric_type, but you can use the internal methods:
-                if metric_type == "production":
-                    analyzer.visualizer.visualize_production_trends(
-                        analyzer.production_data, save_path=viz_path
-                    )
-                elif metric_type == "quality":
-                    analyzer.visualizer.visualize_quality_metrics(
-                        analyzer.quality_data,
-                        analyzer=analyzer.quality_analyzer,
-                        save_path=viz_path,
-                    )
-                elif metric_type == "sustainability":
-                    analyzer.visualizer.visualize_sustainability_indicators(
-                        analyzer.material_flow, analyzer.energy_data, save_path=viz_path
-                    )
-                elif metric_type == "energy":
-                    analyzer.visualizer.visualize_energy_patterns(
-                        analyzer.energy_data, save_path=viz_path
-                    )
+                viz_path = f"{metric_type}_analysis.png"
+                analyzer.generate_visualization(metric_type, viz_path)
                 log_print(f"Generated visualization for {metric_type}")
 
             # Test report generation
             log_print("\nTesting report generation...")
-            report_path = os.path.join(directories["reports"], "analysis_report.xlsx")
-            analyzer.generate_reports(output_dir=Path(report_path).parent)
+            analyzer.generate_reports()
             log_print("Analysis report generated successfully")
 
         except Exception as e:
@@ -170,7 +147,7 @@ def test_framework():
             log_print(
                 "\nTest completed at: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             )
-            log_print(f"\nTest results saved in: {directories['results']}")
+            log_print(f"\nTest results saved in: {results_dir}")
 
 
 if __name__ == "__main__":

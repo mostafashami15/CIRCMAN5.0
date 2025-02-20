@@ -1,13 +1,15 @@
 # src/circman5/manufacturing/analyzers/efficiency.py
 
-"""
-Efficiency analyzer for manufacturing processes.
-"""
+"""Efficiency analyzer for manufacturing processes."""
+from pathlib import Path
 from matplotlib import pyplot as plt
+import numpy as np
 import pandas as pd
 from typing import Dict, Optional
 from ...utils.logging_config import setup_logger
-from circman5.utils.errors import ValidationError
+from ...utils.results_manager import results_manager
+from ...utils.errors import ValidationError
+from circman5.manufacturing.visualization_utils import VisualizationConfig
 
 
 class EfficiencyAnalyzer:
@@ -112,16 +114,10 @@ class EfficiencyAnalyzer:
     def plot_efficiency_trends(
         self, efficiency_data: pd.DataFrame, save_path: Optional[str] = None
     ) -> None:
-        """
-        Plot efficiency metrics trends visualization.
-
-        Args:
-            efficiency_data: DataFrame containing efficiency metrics
-            save_path: Optional path to save visualization
-        """
+        """Plot efficiency metrics trends visualization."""
         try:
             if efficiency_data.empty:
-                print("No efficiency data to plot")  # Replace logger with print for now
+                self.logger.warning("No efficiency data to plot")
                 return
 
             fig, axes = plt.subplots(2, 2, figsize=(12, 8))
@@ -131,18 +127,15 @@ class EfficiencyAnalyzer:
                 daily_yield = efficiency_data.groupby(
                     pd.Grouper(key="timestamp", freq="D")
                 )["yield_rate"].mean()
-                daily_yield.plot(ax=axes[0, 0], title="Daily Yield Rate")
+                daily_yield.plot(
+                    ax=axes[0, 0],
+                    title="Daily Yield Rate",
+                    color=VisualizationConfig.COLOR_PALETTE[0],
+                    marker="o",
+                )
                 axes[0, 0].set_ylabel("Yield Rate (%)")
                 axes[0, 0].grid(True)
 
-                # Add padding to prevent identical ymin/ymax
-                ymin, ymax = axes[0, 0].get_ylim()
-                if ymin == ymax:
-                    ymin -= 1
-                    ymax += 1
-                axes[0, 0].set_ylim(ymin, ymax)
-
-            # Repeat similar adjustments for other plots
             # Output vs Input plot
             if (
                 "input_amount" in efficiency_data.columns
@@ -151,35 +144,55 @@ class EfficiencyAnalyzer:
                 axes[0, 1].scatter(
                     efficiency_data["input_amount"],
                     efficiency_data["output_amount"],
-                    alpha=0.5,
+                    alpha=0.7,
+                    color=VisualizationConfig.COLOR_PALETTE[1],
+                )
+                # Add trend line
+                z = np.polyfit(
+                    efficiency_data["input_amount"], efficiency_data["output_amount"], 1
+                )
+                p = np.poly1d(z)
+                axes[0, 1].plot(
+                    efficiency_data["input_amount"],
+                    p(efficiency_data["input_amount"]),
+                    "r--",
+                    alpha=0.8,
                 )
                 axes[0, 1].set_title("Output vs Input Amount")
                 axes[0, 1].set_xlabel("Input Amount")
                 axes[0, 1].set_ylabel("Output Amount")
                 axes[0, 1].grid(True)
 
-                # Add padding to X and Y axis limits
-                xmin, xmax = axes[0, 1].get_xlim()
-                ymin, ymax = axes[0, 1].get_ylim()
-                if xmin == xmax:
-                    xmin -= 1
-                    xmax += 1
-                if ymin == ymax:
-                    ymin -= 1
-                    ymax += 1
-                axes[0, 1].set_xlim(xmin, xmax)
-                axes[0, 1].set_ylim(ymin, ymax)
+            # Energy efficiency if available
+            if "energy_efficiency" in efficiency_data.columns:
+                efficiency_data.plot(
+                    x="timestamp",
+                    y="energy_efficiency",
+                    ax=axes[1, 0],
+                    title="Energy Efficiency Trend",
+                    color=VisualizationConfig.COLOR_PALETTE[2],
+                    marker="o",
+                )
+                axes[1, 0].set_ylabel("Energy Efficiency")
+                axes[1, 0].grid(True)
+
+            # Remove unused subplot
+            fig.delaxes(axes[1, 1])
 
             plt.tight_layout()
 
             if save_path:
-                plt.savefig(save_path, dpi=300, bbox_inches="tight")
-                plt.close()
+                VisualizationConfig.save_figure(fig, Path(save_path).name)
             else:
-                plt.show()
+                temp_path = Path("efficiency_trends.png")
+                VisualizationConfig.save_figure(fig, temp_path.name)
+
+            plt.close()
 
         except Exception as e:
-            print(f"Error plotting efficiency trends: {str(e)}")
+            self.logger.error(f"Error plotting efficiency trends: {str(e)}")
+            plt.close()
+            raise
 
     def test_efficiency_visualization(analyzer, sample_production_data, visualizations_dir):  # type: ignore
         """Test efficiency visualization functionality."""
