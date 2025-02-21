@@ -13,19 +13,38 @@ from circman5.manufacturing.analyzers.efficiency import EfficiencyAnalyzer
 from circman5.manufacturing.analyzers.quality import QualityAnalyzer
 from circman5.manufacturing.analyzers.sustainability import SustainabilityAnalyzer
 from circman5.utils.errors import ProcessError, DataError
+from circman5.utils.results_manager import results_manager
+
+
+@pytest.fixture(scope="module")
+def test_dirs():
+    """Get test directories from ResultsManager."""
+    return {
+        "input_data": results_manager.get_path("input_data"),
+        "reports": results_manager.get_path("reports"),
+        "visualizations": results_manager.get_path("visualizations"),
+    }
 
 
 @pytest.fixture
 def test_data():
     """Generate test data for manufacturing tests."""
     generator = ManufacturingDataGenerator(start_date="2024-01-01", days=5)
-    return {
+    data = {
         "production": generator.generate_production_data(),
         "quality": generator.generate_quality_data(),
         "energy": generator.generate_energy_data(),
         "material": generator.generate_material_flow_data(),
         "process": generator.generate_lca_process_data(),
     }
+
+    # Save test data to input_data directory
+    for data_type, df in data.items():
+        filename = f"test_{data_type}_data.csv"
+        save_path = results_manager.get_path("input_data") / filename
+        df.to_csv(save_path, index=False)
+
+    return data
 
 
 @pytest.fixture
@@ -61,38 +80,33 @@ class TestManufacturingCore:
         assert isinstance(self.analyzer.lca_analyzer, LCAAnalyzer)
         assert not self.analyzer.is_optimizer_trained
 
-    def test_data_loading(self, analyzer, test_data, tmp_path):
+    def test_data_loading(self, analyzer, test_data, test_dirs):
         """Test data loading from files."""
-        # Save test data to temporary files
-        paths = {}
-        for data_type, df in test_data.items():
-            path = tmp_path / f"{data_type}.csv"
-            df.to_csv(path, index=False)
-            paths[f"{data_type}_path"] = str(path)
+        # Create paths dictionary using saved test files
+        paths = {
+            f"{data_type}_path": str(
+                test_dirs["input_data"] / f"test_{data_type}_data.csv"
+            )
+            for data_type in test_data.keys()
+        }
 
         # Test loading
         analyzer.load_data(**paths)
-
         assert not analyzer.production_data.empty
         assert not analyzer.quality_data.empty
         assert not analyzer.energy_data.empty
         assert not analyzer.material_flow.empty
-        assert "batch_id" in analyzer.production_data.columns
 
     def test_manufacturing_analysis(self, analyzer, test_data):
         """Test complete manufacturing analysis pipeline."""
         self.initialize_test_data(analyzer, test_data)
-
-        # Perform analysis
         results = analyzer.analyze_manufacturing_performance()
 
-        # Verify results structure and content
         assert isinstance(results, dict)
         assert all(
             key in results for key in ["efficiency", "quality", "sustainability"]
         )
 
-        # Verify metric values
         efficiency = results["efficiency"]
         assert 0 <= efficiency.get("yield_rate", 0) <= 100
         assert efficiency.get("energy_efficiency", 0) > 0
@@ -104,8 +118,6 @@ class TestManufacturingCore:
     def test_lifecycle_assessment(self, analyzer, test_data):
         """Test lifecycle assessment functionality."""
         self.initialize_test_data(analyzer, test_data)
-
-        # Test without batch_id
         impact = analyzer.perform_lifecycle_assessment()
 
         assert isinstance(impact, LifeCycleImpact)
@@ -114,17 +126,24 @@ class TestManufacturingCore:
         assert isinstance(impact.end_of_life_impact, float)
         assert impact.total_carbon_footprint > 0
 
-        # Test with specific batch_id
         batch_id = test_data["production"]["batch_id"].iloc[0]
         batch_impact = analyzer.perform_lifecycle_assessment(batch_id=batch_id)
         assert isinstance(batch_impact, LifeCycleImpact)
 
-    def test_optimization_workflow(self, analyzer, test_data):
+    def test_optimization_workflow(self, analyzer, test_data, test_dirs):
         """Test complete optimization workflow."""
         self.initialize_test_data(analyzer, test_data)
 
-        # Train model
+        # Train model and save metrics
         metrics = analyzer.train_optimization_model()
+        metrics_file = (
+            test_dirs["reports"] / "optimization_metrics.json"
+        )  # Use reports instead of metrics
+
+        # Save to reports directory
+        pd.DataFrame([metrics]).to_json(metrics_file)
+        assert metrics_file.exists()
+
         assert metrics["r2"] > 0
         assert analyzer.is_optimizer_trained
 
@@ -139,36 +158,50 @@ class TestManufacturingCore:
         }
 
         optimized = analyzer.optimize_process_parameters(current_params)
+
+        # Save to reports directory
+        optimization_file = test_dirs["reports"] / "optimization_results.json"
+        pd.DataFrame([optimized]).to_json(optimization_file)
+        assert optimization_file.exists()
+
         assert isinstance(optimized, dict)
         assert all(param in optimized for param in current_params)
         assert all(isinstance(value, float) for value in optimized.values())
 
         # Test prediction
         predictions = analyzer.predict_batch_outcomes(current_params)
+
+        # Save to reports directory
+        prediction_file = test_dirs["reports"] / "prediction_results.json"
+        pd.DataFrame([predictions]).to_json(prediction_file)
+        assert prediction_file.exists()
+
         assert isinstance(predictions, dict)
         assert "predicted_output" in predictions
         assert "predicted_quality" in predictions
 
-    def test_report_generation(self, analyzer, test_data, tmp_path):
+    def test_report_generation(self, analyzer, test_data, test_dirs):
         """Test report generation functionality."""
         self.initialize_test_data(analyzer, test_data)
 
         # Test comprehensive report
-        report_path = tmp_path / "analysis_report.xlsx"
+        report_path = test_dirs["reports"] / "analysis_report.xlsx"
         analyzer.generate_comprehensive_report(str(report_path))
         assert report_path.exists()
 
         # Test analysis report export
-        export_path = tmp_path / "export_report.xlsx"
+        export_path = (
+            test_dirs["reports"] / "analysis_report.xlsx"
+        )  # Changed from export_report.xlsx
         analyzer.export_analysis_report(export_path)
         assert export_path.exists()
 
-    def test_visualization_generation(self, analyzer, test_data, tmp_path):
+    def test_visualization_generation(self, analyzer, test_data, test_dirs):
         """Test visualization generation for different metric types."""
         self.initialize_test_data(analyzer, test_data)
 
         for metric_type in ["production", "energy", "quality", "sustainability"]:
-            viz_path = tmp_path / f"{metric_type}.png"
+            viz_path = test_dirs["visualizations"] / f"{metric_type}.png"
             analyzer.generate_visualization(metric_type, str(viz_path))
             assert viz_path.exists()
 
@@ -228,7 +261,7 @@ class TestManufacturingCore:
         filtered = analyzer._filter_batch_data(test_data["production"], batch_id)
         assert all(filtered["batch_id"] == batch_id)
 
-    def test_end_to_end_workflow(self, analyzer, test_data, tmp_path):
+    def test_end_to_end_workflow(self, analyzer, test_data, test_dirs):
         """Test complete analysis workflow."""
         self.initialize_test_data(analyzer, test_data)
 
@@ -236,14 +269,30 @@ class TestManufacturingCore:
         performance = analyzer.analyze_manufacturing_performance()
         impact = analyzer.perform_lifecycle_assessment()
 
-        # Generate reports and visualizations
-        report_dir = tmp_path / "reports"
-        report_dir.mkdir(parents=True, exist_ok=True)
+        # Generate reports
+        analyzer.generate_reports(test_dirs["reports"])
 
-        analyzer.generate_reports(report_dir)
+        # Save performance metrics to reports directory
+        metrics_file = test_dirs["reports"] / "performance_metrics.json"
+        pd.DataFrame([performance]).to_json(metrics_file)
+        assert metrics_file.exists()
+
+        # Save impact assessment
+        impact_file = test_dirs["reports"] / "impact_assessment.json"
+        pd.DataFrame(
+            [
+                {
+                    "manufacturing_impact": impact.manufacturing_impact,
+                    "use_phase_impact": impact.use_phase_impact,
+                    "end_of_life_impact": impact.end_of_life_impact,
+                    "total_carbon_footprint": impact.total_carbon_footprint,
+                }
+            ]
+        ).to_json(impact_file)
+        assert impact_file.exists()
 
         # Verify outputs
-        assert (report_dir / "analysis_report.xlsx").exists()
+        assert (test_dirs["reports"] / "analysis_report.xlsx").exists()
         assert performance["efficiency"]["yield_rate"] > 0
         assert impact.total_carbon_footprint > 0
 

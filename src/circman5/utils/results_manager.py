@@ -65,6 +65,7 @@ class ResultsManager:
             "reports": self.current_run / "reports",
             "lca_results": self.current_run / "lca_results",
             "metrics": self.current_run / "metrics",
+            "temp": self.current_run / "temp",
         }
 
         for dir in self.run_dirs.values():
@@ -111,7 +112,8 @@ class ResultsManager:
         source = Path(file_path)
         dest = dest_dir / source.name
 
-        if source.exists():
+        # Only copy if source and destination are different paths
+        if source != dest and source.exists():
             shutil.copy2(source, dest)
         return dest
 
@@ -122,6 +124,19 @@ class ResultsManager:
             for old_run in runs[:-keep_last]:
                 archive_path = self.paths["RESULTS_ARCHIVE"] / old_run.name
                 shutil.move(str(old_run), str(archive_path))
+
+    def save_to_path(self, file_path: Union[str, Path], target_path_key: str) -> Path:
+        """Save file to a specified path from self.paths."""
+        if target_path_key not in self.paths:
+            raise ValueError(f"Invalid path key: {target_path_key}")
+
+        dest_dir = self.paths[target_path_key]
+        source = Path(file_path)
+        dest = dest_dir / source.name
+
+        if source.exists():
+            shutil.copy2(source, dest)
+        return dest
 
 
 # Create global instance

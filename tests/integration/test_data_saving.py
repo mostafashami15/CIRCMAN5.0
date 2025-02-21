@@ -1,3 +1,4 @@
+# tests/integration/test_data_saving.py
 """Test data generation and saving locations."""
 import pytest
 import pandas as pd
@@ -7,8 +8,8 @@ from datetime import datetime, timedelta
 from circman5.manufacturing.reporting.visualizations import ManufacturingVisualizer
 from circman5.manufacturing.lifecycle import LCAAnalyzer, LifeCycleImpact
 from circman5.monitoring import ManufacturingMonitor
-from circman5.config.project_paths import project_paths
 from circman5.test_data_generator import ManufacturingDataGenerator
+from circman5.utils.results_manager import results_manager  # Updated import
 
 
 @pytest.fixture(scope="module")
@@ -31,10 +32,11 @@ def generated_test_data(test_generator):
 
 @pytest.fixture(scope="module")
 def test_run_dir():
-    """Create and maintain a single run directory for the entire test module."""
-    run_dir = project_paths.get_run_directory()
+    """Create and maintain a single run directory for the entire test module using ResultsManager."""
+    run_dir = results_manager.get_run_dir()  # Updated to use ResultsManager
 
-    # Create required subdirectories
+    # Ensure required subdirectories exist (they are normally created by ResultsManager,
+    # but this guarantees they are present for the tests)
     (run_dir / "reports").mkdir(exist_ok=True)
     (run_dir / "visualizations").mkdir(exist_ok=True)
 
@@ -80,14 +82,18 @@ def test_all_components_saving(test_run_dir):
         recycling_rates={"silicon": 0.8, "glass": 0.9},
         transport_distance=100.0,
     )
-    output_path = test_run_dir / "reports" / "lca_impact_TEST_001.xlsx"
-    lca.save_results(impact, "TEST_001", output_path)
-    assert output_path.exists()
+    # Pass the output directory rather than a full file path with the filename.
+    output_dir = test_run_dir / "reports"
+    lca.save_results(impact, "TEST_001", output_dir)
+    expected_file = output_dir / "lca_impact_TEST_001.xlsx"
+    assert expected_file.exists()
 
 
 def test_data_generator_saving(test_generator, test_run_dir):
     """Test data generator's save functionality."""
-    synthetic_dir = Path(project_paths.get_path("SYNTHETIC_DATA"))
+    synthetic_dir = results_manager.get_path(
+        "SYNTHETIC_DATA"
+    )  # Updated to use ResultsManager
     synthetic_dir.mkdir(parents=True, exist_ok=True)
 
     # Define expected files outside try block
@@ -161,10 +167,11 @@ def test_generated_data_integration(generated_test_data, test_run_dir):
         recycling_rates={"silicon": 0.8, "glass": 0.9},
         transport_distance=100.0,
     )
-
-    output_path = test_run_dir / "reports" / "lca_impact_TEST_002.xlsx"
-    lca.save_results(impact, "TEST_002", output_path)
-    assert output_path.exists()
+    # Again, pass the output directory instead of a full file path.
+    output_dir = test_run_dir / "reports"
+    lca.save_results(impact, "TEST_002", output_dir)
+    expected_file = output_dir / "lca_impact_TEST_002.xlsx"
+    assert expected_file.exists()
 
 
 def test_data_validation(generated_test_data):

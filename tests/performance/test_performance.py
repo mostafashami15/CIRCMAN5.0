@@ -1,3 +1,4 @@
+# tests/performance/test_performance.py
 """Performance tests for the CIRCMAN5.0 system."""
 
 import pytest
@@ -9,9 +10,8 @@ import logging
 
 from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.manufacturing.core import SoliTekManufacturingAnalysis
-from circman5.config.project_paths import project_paths
+from circman5.utils.results_manager import results_manager  # Updated import
 from circman5.utils.logging_config import setup_logger
-
 
 # Setup logging
 logger = setup_logger("performance_tests")
@@ -32,8 +32,8 @@ def large_data_generator():
 
 @pytest.fixture(scope="module")
 def test_run_dir():
-    """Create test run directory."""
-    run_dir = project_paths.get_run_directory()
+    """Create test run directory using ResultsManager."""
+    run_dir = results_manager.get_run_dir()  # Updated to use ResultsManager
     viz_dir = run_dir / "visualizations"
     viz_dir.mkdir(exist_ok=True)
     return run_dir

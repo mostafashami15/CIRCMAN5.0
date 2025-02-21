@@ -1,7 +1,0 @@
-CIRCMAN5.0 Analysis Results Summary
-====================================
-Generated on: 2025-02-18 17:35:23
-
-Reports:
--------------------
-- lca_impact.xlsx

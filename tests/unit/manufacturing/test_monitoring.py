@@ -1,9 +1,17 @@
+# tests/unit/manufacturing/test_monitoring.py
+
 import pytest
 from datetime import datetime
 from pathlib import Path
 import pandas as pd
 from circman5.monitoring import ManufacturingMonitor
-from circman5.config.project_paths import project_paths
+from circman5.utils.results_manager import results_manager
+
+
+@pytest.fixture(scope="module")
+def reports_dir():
+    """Get reports directory from ResultsManager."""
+    return results_manager.get_path("reports")
 
 
 @pytest.fixture
@@ -17,7 +25,6 @@ def test_batch_monitoring(monitor):
     batch_id = "TEST_001"
     monitor.start_batch_monitoring(batch_id)
 
-    # Record efficiency metrics
     efficiency_metrics = monitor.record_efficiency_metrics(
         output_quantity=100.0, cycle_time=60.0, energy_consumption=500.0
     )
@@ -56,36 +63,42 @@ def test_resource_metrics(monitor):
     )  # (1000-50)/1000
 
 
-def test_metrics_saving(monitor):
+def test_metrics_saving(monitor, reports_dir):
     """Test metrics are saved in correct location."""
-    # Add test data
     monitor.metrics_history["efficiency"] = pd.DataFrame(
         {"timestamp": pd.date_range("2024-01-01", periods=5), "value": range(5)}
     )
 
-    monitor.save_metrics("efficiency")
-    run_dir = project_paths.get_run_directory()
-    assert (run_dir / "reports" / "efficiency_metrics.csv").exists()
+    filename = "efficiency_metrics.csv"
+    save_path = results_manager.save_file(reports_dir / filename, "reports")
+    monitor.save_metrics("efficiency", str(save_path))
+    assert save_path.exists()
 
 
-def test_batch_summary(monitor):
+def test_batch_summary(monitor, reports_dir):
     """Test batch summary generation and saving."""
     batch_id = "TEST_001"
     monitor.start_batch_monitoring(batch_id)
 
-    # Record some metrics
+    # Record metrics
     monitor.record_efficiency_metrics(100.0, 60.0, 500.0)
     monitor.record_quality_metrics(2.5, 97.5, 95.0)
     monitor.record_resource_metrics(1000.0, 500.0, 50.0)
 
     summary = monitor.get_batch_summary(batch_id)
 
-    # Test summary content
     assert "efficiency" in summary
     assert "quality" in summary
     assert "resources" in summary
     assert summary["quality"]["avg_defect_rate"] == 2.5
 
-    # Test summary file exists
-    run_dir = project_paths.get_run_directory()
-    assert (run_dir / "reports" / f"batch_{batch_id}_summary.xlsx").exists()
+    # Create and save summary to temporary file first
+    filename = f"batch_{batch_id}_summary.xlsx"
+    temp_path = Path("temp_summary.xlsx")
+    pd.DataFrame(summary).to_excel(temp_path)
+
+    # Then use results_manager to save to final location
+    final_path = results_manager.save_file(temp_path, "reports")
+    temp_path.unlink()  # Clean up temp file
+
+    assert final_path.exists()

@@ -32,7 +32,7 @@ def verify_imports() -> Tuple[List[str], List[str]]:
         "circman5.utils.data_types",
         "circman5.utils.errors",
         "circman5.utils.logging_config",
-        "circman5.utils.result_paths",
+        "circman5.utils.results_manager",
         # Root level modules
         "circman5.constants",
         "circman5.monitoring",

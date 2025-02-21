@@ -1,3 +1,4 @@
+# src/circman5/manufacturing/reporting/visualization_paths.py
 """Visualization path management module."""
 
 from pathlib import Path

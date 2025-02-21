@@ -1,11 +1,12 @@
 # src/circman5/manufacturing/reporting/visualizations.py
 
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import seaborn as sns
-from typing import Dict, Optional
 import pandas as pd
 import numpy as np
 from pathlib import Path
+from typing import Dict, Optional, Union
 
 from ...utils.results_manager import results_manager
 from ...utils.logging_config import setup_logger
@@ -23,6 +24,27 @@ class ManufacturingVisualizer:
         self.viz_dir = results_manager.get_path("visualizations")
         VisualizationConfig.setup_style()
         self.colors = VisualizationConfig.COLOR_PALETTE
+
+    def _save_visualization(self, fig: Figure, save_path: Union[str, Path]) -> None:
+        """Save visualization to the specified path."""
+        try:
+            # Convert save_path to a Path object
+            save_path = Path(save_path)
+
+            # If save_path is not absolute, treat it as relative to the dedicated visualizations directory
+            if not save_path.is_absolute():
+                save_path = self.viz_dir / save_path
+
+            # Ensure the parent directory exists
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # Save the figure to the final location
+            fig.savefig(str(save_path), dpi=300, bbox_inches="tight")
+            self.logger.info(f"Saved visualization to {save_path}")
+
+        except Exception as e:
+            self.logger.error(f"Error saving visualization: {str(e)}")
+            raise
 
     def _add_plot_padding(self, ax, padding=0.05):
         """Add padding to plot limits to avoid singular transformations."""
@@ -47,7 +69,7 @@ class ManufacturingVisualizer:
         try:
             if production_data.empty:
                 self.logger.warning("No production data available for visualization")
-                return
+                raise DataError("No production data available for visualization")
 
             # Ensure timestamps are unique and sorted
             production_data = production_data.sort_values("timestamp")
@@ -93,11 +115,10 @@ class ManufacturingVisualizer:
             plt.tight_layout()
 
             if save_path:
-                full_path = self.viz_dir / save_path
-                plt.savefig(str(full_path), dpi=300, bbox_inches="tight")
+                self._save_visualization(fig, save_path)
                 plt.close()
                 self.logger.info(
-                    f"Saved production trends visualization to {full_path}"
+                    f"Saved production trends visualization to {save_path}"
                 )
 
             else:
@@ -144,7 +165,7 @@ class ManufacturingVisualizer:
         plt.tight_layout()
 
         if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            self._save_visualization(fig, save_path)
             plt.close()
         else:
             plt.show()
@@ -208,7 +229,7 @@ class ManufacturingVisualizer:
         plt.tight_layout()
 
         if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            self._save_visualization(fig, save_path)
             plt.close()
         else:
             plt.show()
@@ -257,7 +278,7 @@ class ManufacturingVisualizer:
         plt.tight_layout()
 
         if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            self._save_visualization(fig, save_path)
             plt.close()
         else:
             plt.show()
@@ -311,7 +332,7 @@ class ManufacturingVisualizer:
             plt.tight_layout()
 
             if save_path:
-                VisualizationConfig.save_figure(fig, save_path)
+                self._save_visualization(fig, save_path)
                 plt.close()
             else:
                 plt.show()
@@ -357,7 +378,7 @@ class ManufacturingVisualizer:
         plt.tight_layout()
 
         if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            self._save_visualization(fig, save_path)
             plt.close()
         else:
             plt.show()
@@ -389,9 +410,10 @@ class ManufacturingVisualizer:
     ) -> None:
         """Create visualizations for different metric types."""
         try:
-            # Get proper save path if none provided
+            # If no save_path provided, default to a file inside the dedicated visualizations directory.
             if save_path is None:
-                save_path = f"{metric_type}_visualization.png"
+                save_path = str(self.viz_dir / f"{metric_type}_visualization.png")
+
             if metric_type == "production":
                 self.visualize_production_trends(data, save_path)
             elif metric_type == "energy":
@@ -439,7 +461,7 @@ class ManufacturingVisualizer:
         plt.tight_layout()
 
         if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            self._save_visualization(fig, save_path)
             plt.close()
         else:
             plt.show()
@@ -471,7 +493,7 @@ class ManufacturingVisualizer:
         plt.tight_layout()
 
         if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            self._save_visualization(fig, save_path)
             plt.close()
         else:
             plt.show()
@@ -504,7 +526,7 @@ class ManufacturingVisualizer:
         plt.tight_layout()
 
         if save_path:
-            VisualizationConfig.save_figure(fig, save_path)
+            self._save_visualization(fig, save_path)
             plt.close()
         else:
             plt.show()

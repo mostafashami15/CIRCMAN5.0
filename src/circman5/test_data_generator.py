@@ -1,3 +1,5 @@
+# src/circman5/test_data_generator.py
+
 """Test data generator for manufacturing analysis system."""
 
 import pandas as pd
@@ -267,8 +269,8 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
     def save_generated_data(self) -> None:
         """Save all generated test data to the synthetic data directory."""
         try:
-            # Get synthetic data directory from results_manager
-            synthetic_dir = results_manager.get_path("SYNTHETIC_DATA")
+            # Get temporary directory from results_manager
+            temp_dir = results_manager.get_path("temp")
 
             # Define all files to save
             data_files = {
@@ -278,14 +280,14 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
                 "test_production_data.csv": self.generate_production_data(),
             }
 
-            # Save each file to synthetic directory
+            # Save each file
             for filename, data in data_files.items():
-                # Create temporary file
-                temp_path = Path(filename)
+                # Save to temp directory first
+                temp_path = temp_dir / filename
                 data.to_csv(temp_path, index=False)
 
-                # Save using results_manager
-                results_manager.save_file(temp_path, "SYNTHETIC_DATA")
+                # Save to synthetic data directory
+                results_manager.save_to_path(temp_path, "SYNTHETIC_DATA")
 
                 # Clean up temporary file
                 temp_path.unlink()

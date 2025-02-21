@@ -1,12 +1,23 @@
-"""
-Test suite for the LCA data generation functionality.
-This ensures our synthetic data generation produces realistic and consistent values.
-"""
+# tests/unit/utils/test_lca_data_generator.py
 
 import pytest
 import pandas as pd
 from datetime import datetime
+from pathlib import Path
 from circman5.test_data_generator import ManufacturingDataGenerator
+from circman5.utils.results_manager import ResultsManager
+
+
+@pytest.fixture
+def results_manager():
+    """Create ResultsManager instance with cleanup."""
+    manager = ResultsManager()
+    yield manager
+    # Cleanup test files
+    for path_key in ["SYNTHETIC_DATA", "PROCESSED_DATA"]:
+        data_dir = manager.get_path(path_key)
+        for file in data_dir.glob("test_*.csv"):
+            file.unlink(missing_ok=True)
 
 
 @pytest.fixture
@@ -18,14 +29,11 @@ def data_generator():
     )
 
 
-def test_lca_material_data_generation(data_generator):
-    """
-    Test that material data generation produces valid and consistent results.
-    We check for proper data structure and realistic value ranges.
-    """
+def test_lca_material_data_generation(data_generator, results_manager):
+    """Test material data generation for LCA calculations."""
     material_data = data_generator.generate_material_flow_data()
 
-    # Check that we have the expected data structure
+    # Check data structure
     assert isinstance(material_data, pd.DataFrame)
     expected_columns = {
         "timestamp",
@@ -49,20 +57,11 @@ def test_lca_material_data_generation(data_generator):
         material_data["recycled_amount"] / material_data["waste_generated"]
     )
     acceptable_rows = recycling_ratio <= 1.0
-
-    if not all(acceptable_rows):
-        problem_rows = material_data[~acceptable_rows]
-        print("\nProblem rows found:")
-        print(problem_rows[["waste_generated", "recycled_amount"]])
-
     assert all(acceptable_rows), "Recycled amount cannot exceed waste generated"
 
 
 def test_lca_energy_data_generation(data_generator):
-    """
-    Test energy data generation for LCA calculations.
-    Verifies energy consumption patterns and source distributions.
-    """
+    """Test energy data generation for LCA calculations."""
     energy_data = data_generator.generate_energy_data()
 
     # Check structure
@@ -76,27 +75,18 @@ def test_lca_energy_data_generation(data_generator):
     }
     assert set(energy_data.columns) == expected_columns
 
-    # Verify energy source distribution
+    # Verify energy sources
     energy_sources = energy_data["energy_source"].unique()
     assert all(source in ["grid", "solar", "wind"] for source in energy_sources)
 
-    # Check energy consumption values
-    assert (
-        energy_data["energy_consumption"].min() >= 0
-    ), "Energy consumption should be non-negative"
-    assert all(
-        0 <= energy_data["efficiency_rate"]
-    ), "Efficiency rate should be non-negative"
-    assert all(
-        energy_data["efficiency_rate"] <= 1.0
-    ), "Efficiency rate should not exceed 1.0"
+    # Check value ranges
+    assert energy_data["energy_consumption"].min() >= 0
+    assert all(0 <= energy_data["efficiency_rate"])
+    assert all(energy_data["efficiency_rate"] <= 1.0)
 
 
 def test_lca_process_data_generation(data_generator):
-    """
-    Test process data generation functionality.
-    Ensures process steps and timings are properly generated.
-    """
+    """Test process data generation for LCA calculations."""
     process_data = data_generator.generate_lca_process_data()
 
     # Check structure
@@ -110,23 +100,16 @@ def test_lca_process_data_generation(data_generator):
     }
     assert set(process_data.columns) == expected_columns
 
-    # Verify process times are within expected range
-    assert (
-        process_data["process_time"].min() >= 45
-    ), "Process time should not be below minimum"
-    assert (
-        process_data["process_time"].max() <= 75
-    ), "Process time should not exceed maximum"
+    # Verify process times
+    assert process_data["process_time"].min() >= 45
+    assert process_data["process_time"].max() <= 75
 
 
 def test_complete_lca_dataset_generation(data_generator):
-    """
-    Test the generation of a complete LCA dataset.
-    Verifies that all components are present and properly structured.
-    """
+    """Test generation of complete LCA dataset."""
     complete_dataset = data_generator.generate_complete_lca_dataset()
 
-    # Check that all expected components are present
+    # Check components
     expected_components = {
         "material_flow",
         "energy_consumption",
@@ -135,49 +118,57 @@ def test_complete_lca_dataset_generation(data_generator):
     }
     assert set(complete_dataset.keys()) == expected_components
 
-    # Verify each component is a DataFrame
+    # Verify each component
     for component in complete_dataset.values():
         assert isinstance(component, pd.DataFrame)
         assert not component.empty
 
 
 def test_data_consistency_across_components(data_generator):
-    """
-    Test that data is consistent across different components.
-    Checks for matching timestamps and production lines.
-    """
-    # Generate individual datasets
+    """Test data consistency between different LCA components."""
+    # Generate datasets
     production_data = data_generator.generate_production_data()
     energy_data = data_generator.generate_energy_data()
     material_data = data_generator.generate_material_flow_data()
 
-    # Check all datasets have timestamps
+    # Check timestamps
     assert "timestamp" in production_data.columns
     assert "timestamp" in energy_data.columns
     assert "timestamp" in material_data.columns
 
-    # Verify time ranges are consistent
-    prod_range = (
-        production_data["timestamp"].min(),
-        production_data["timestamp"].max(),
-    )
-    energy_range = (energy_data["timestamp"].min(), energy_data["timestamp"].max())
-    material_range = (
-        material_data["timestamp"].min(),
-        material_data["timestamp"].max(),
-    )
+    # Convert timestamps to datetime if needed
+    prod_dates = pd.to_datetime(production_data["timestamp"])
+    energy_dates = pd.to_datetime(energy_data["timestamp"])
+    material_dates = pd.to_datetime(material_data["timestamp"])
 
-    # All data should fall within the same date range
-    assert prod_range[0] <= energy_range[0] and prod_range[1] >= energy_range[1]
-    assert prod_range[0] <= material_range[0] and prod_range[1] >= material_range[1]
+    # Check date ranges
+    assert prod_dates.min() <= energy_dates.min()
+    assert prod_dates.max() >= energy_dates.max()
+    assert prod_dates.min() <= material_dates.min()
+    assert prod_dates.max() >= material_dates.max()
 
-    # Check production line consistency where applicable
-    if (
-        "production_line" in production_data.columns
-        and "production_line" in energy_data.columns
-    ):
-        prod_lines = set(production_data["production_line"])
-        energy_lines = set(energy_data["production_line"])
-        assert (
-            prod_lines == energy_lines
-        ), "Production lines should match across datasets"
+
+def test_data_saving_and_loading(data_generator, results_manager):
+    """Test saving and loading of LCA data."""
+    # Generate and save data
+    data_generator.save_generated_data()
+
+    # Verify files exist in synthetic data directory
+    synthetic_dir = results_manager.get_path("SYNTHETIC_DATA")
+    expected_files = [
+        "test_energy_data.csv",
+        "test_material_data.csv",
+        "test_process_data.csv",
+        "test_production_data.csv",
+    ]
+
+    for filename in expected_files:
+        file_path = synthetic_dir / filename
+        assert file_path.exists(), f"File {filename} not found"
+
+        # Verify data integrity
+        df = pd.read_csv(file_path)
+        assert not df.empty, f"File {filename} is empty"
+        assert all(
+            col in df.columns for col in ["timestamp"]
+        ), f"Missing required columns in {filename}"

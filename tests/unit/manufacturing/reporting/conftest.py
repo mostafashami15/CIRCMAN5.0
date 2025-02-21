@@ -5,12 +5,25 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
+from circman5.utils.results_manager import results_manager
 
 
 @pytest.fixture(scope="session")
-def test_data_dir(tmp_path_factory):
-    """Create temporary directory for test data."""
-    return tmp_path_factory.mktemp("test_data")
+def test_data_dir():
+    """Get input data directory from ResultsManager."""
+    return results_manager.get_path("input_data")
+
+
+@pytest.fixture(scope="module")
+def viz_dir():
+    """Get visualization directory from ResultsManager."""
+    return results_manager.get_path("visualizations")
+
+
+@pytest.fixture(scope="module")
+def reports_dir():
+    """Get reports directory from ResultsManager."""
+    return results_manager.get_path("reports")
 
 
 @pytest.fixture
@@ -75,4 +88,3 @@ def sample_monitor_data():
 def cleanup_test_files():
     """Cleanup temporary test files after tests."""
     yield
-    # Add cleanup code if needed

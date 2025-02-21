@@ -1,3 +1,4 @@
+# tests/integration/test_system_integration.py
 """Integration tests for visualization system."""
 
 import pytest
@@ -8,7 +9,7 @@ from pathlib import Path
 from circman5.manufacturing.reporting.visualizations import ManufacturingVisualizer
 from circman5.manufacturing.lifecycle import LCAVisualizer
 from circman5.test_data_generator import ManufacturingDataGenerator
-from circman5.config.project_paths import project_paths
+from circman5.utils.results_manager import results_manager  # Updated import
 from circman5.manufacturing.lifecycle import LCAAnalyzer
 
 
@@ -27,8 +28,8 @@ def test_data():
 
 @pytest.fixture(scope="module")
 def test_run_dir():
-    """Create and maintain test run directory."""
-    run_dir = project_paths.get_run_directory()
+    """Create and maintain test run directory using ResultsManager."""
+    run_dir = results_manager.get_run_dir()  # Updated to use results_manager
 
     # Create all required directories
     for subdir in ["visualizations", "reports", "input_data"]:
@@ -69,7 +70,7 @@ def test_manufacturing_visualization(manufacturing_viz, test_data, test_run_dir)
 
     # Test quality metrics visualization
     quality_data = test_data["quality"].copy()
-    # Rename timestamp to timestamp for consistency
+    # (Renaming timestamp here is redundant but kept for consistency)
     quality_data = quality_data.rename(columns={"timestamp": "timestamp"})
     # Add quality score for visualization
     quality_data["quality_score"] = 100 - quality_data["defect_rate"]
@@ -175,7 +176,7 @@ def test_comprehensive_visualization(
         impact_data={
             "Manufacturing Impact": 45.2,
             "Use Phase Impact": -120.5,
-            "End of Life Impact": 15.8,  # supply a value for End of Life Impact as well
+            "End of Life Impact": 15.8,
         },
         material_data=test_data["material"],
         energy_data=test_data["energy"],
