@@ -6,7 +6,7 @@ import pandas as pd
 import json
 from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import KFold, train_test_split, cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from typing import Dict, Union, List, Tuple, Optional, cast
 import joblib
@@ -22,12 +22,12 @@ class ManufacturingModel:
         self.logger = setup_logger("manufacturing_model")
 
         # Use more robust model configuration
-        self.model = RandomForestRegressor(
-            n_estimators=200,  # More trees
-            max_depth=10,  # Control overfitting
-            min_samples_split=5,
-            min_samples_leaf=2,
-            n_jobs=-1,  # Use all available cores
+        self.model = GradientBoostingRegressor(
+            n_estimators=100,
+            max_depth=5,  # Reduced from 10
+            min_samples_split=10,  # Increased from 5
+            min_samples_leaf=4,  # Increased from 2
+            subsample=0.8,  # Add subsampling
             random_state=42,
         )
 
@@ -68,8 +68,6 @@ class ManufacturingModel:
         try:
             # Prepare data with feature engineering
             features = self._prepare_features(production_data, quality_data)
-
-            # Add engineered features
             features = cast(pd.DataFrame, self._add_engineered_features(features))
 
             X = features[self.config["feature_columns"]].to_numpy()
@@ -79,37 +77,51 @@ class ManufacturingModel:
             X_scaled = self.feature_scaler.fit_transform(X)
             y_scaled = self.target_scaler.fit_transform(y)
 
-            # Cross-validation
-            cv_scores = cross_val_score(
-                self.model,
-                X_scaled,
-                y_scaled.ravel(),
-                cv=self.config["cv_folds"],
-                scoring="r2",
+            # Implement k-fold cross validation
+            kf = KFold(n_splits=5, shuffle=True, random_state=42)
+            cv_scores = []
+            fold_predictions = []
+
+            for train_idx, val_idx in kf.split(X_scaled):
+                X_train, X_val = X_scaled[train_idx], X_scaled[val_idx]
+                y_train, y_val = y_scaled[train_idx], y_scaled[val_idx]
+
+                self.model.fit(X_train, y_train.ravel())
+                score = self.model.score(X_val, y_val)
+                cv_scores.append(score)
+
+                # Store predictions as numpy array with consistent shape
+                pred = self.model.predict(X_val)
+                fold_predictions.append(pred.reshape(-1))
+
+            # Final training on full dataset
+            self.model.fit(X_scaled, y_scaled.ravel())
+            y_pred = self.model.predict(X_scaled)
+
+            # Convert to numpy array with padding to handle varying lengths
+            max_len = max(len(p) for p in fold_predictions)
+            fold_predictions_padded = np.array(
+                [
+                    np.pad(
+                        p,
+                        (0, max_len - len(p)),
+                        mode="constant",
+                        constant_values=np.nan,
+                    )
+                    for p in fold_predictions
+                ]
             )
-
-            # Split data
-            X_train, X_test, y_train, y_test = train_test_split(
-                X_scaled,
-                y_scaled,
-                test_size=self.config["test_size"],
-                random_state=self.config["random_state"],
-            )
-
-            # Train model
-            self.model.fit(X_train, y_train.ravel())
-
-            # Predictions for metrics
-            y_pred = self.model.predict(X_test)
+            prediction_std = np.nanstd(fold_predictions_padded, axis=0)
 
             # Calculate comprehensive metrics
             metrics: MetricsDict = {
-                "mse": float(mean_squared_error(y_test, y_pred)),
-                "rmse": float(np.sqrt(mean_squared_error(y_test, y_pred))),
-                "mae": float(mean_absolute_error(y_test, y_pred)),
-                "r2": float(r2_score(y_test, y_pred)),
+                "mse": float(mean_squared_error(y_scaled, y_pred)),
+                "rmse": float(np.sqrt(mean_squared_error(y_scaled, y_pred))),
+                "mae": float(mean_absolute_error(y_scaled, y_pred)),
+                "r2": float(r2_score(y_scaled, y_pred)),
                 "cv_r2_mean": float(np.mean(cv_scores)),
                 "cv_r2_std": float(np.std(cv_scores)),
+                "mean_uncertainty": float(np.mean(prediction_std)),
                 "feature_importance": {
                     feat: float(imp)
                     for feat, imp in zip(
@@ -242,13 +254,18 @@ class ManufacturingModel:
                 ][0]
             )
 
-            # Calculate confidence
+            # Calculate confidence score
             confidence_score = self._calculate_prediction_confidence(process_params)
+
+            # For GradientBoostingRegressor, we can estimate uncertainty using staged_predict
+            staged_predictions = list(self.model.staged_predict(scaled_params))
+            uncertainty = float(np.std(staged_predictions))
 
             predictions: PredictionDict = {
                 "predicted_output": prediction_actual,
                 "predicted_quality": prediction_actual * confidence_score,
                 "confidence_score": confidence_score,
+                "uncertainty": uncertainty,
             }
 
             # Save predictions to file

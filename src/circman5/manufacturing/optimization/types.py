@@ -27,6 +27,7 @@ class PredictionDict(TypedDict):
     predicted_output: float
     predicted_quality: float
     confidence_score: float
+    uncertainty: float
 
 
 class MetricsDict(TypedDict):
@@ -38,6 +39,7 @@ class MetricsDict(TypedDict):
     r2: float  # R-squared score
     cv_r2_mean: float  # Cross-validation R2 mean
     cv_r2_std: float  # Cross-validation R2 standard deviation
+    mean_uncertainty: float  # Mean prediction uncertainty
     feature_importance: Mapping[str, Union[float, str]]  # Feature importance scores
 
 

@@ -8,6 +8,7 @@ import numpy as np
 from pathlib import Path
 from circman5.manufacturing.optimization.model import ManufacturingModel
 from circman5.manufacturing.optimization.types import MetricsDict, PredictionDict
+from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.utils.results_manager import results_manager
 
 
@@ -140,3 +141,51 @@ def test_model_training_with_invalid_data(model):
 
     with pytest.raises(Exception):  # Should raise some form of error
         model.train_optimization_model(invalid_production_data, invalid_quality_data)
+
+
+def test_model_overfitting():
+    """Test that model does not overfit with new validation approach."""
+    model = ManufacturingModel()
+
+    # Generate synthetic data
+    data_generator = ManufacturingDataGenerator()
+    production_data = data_generator.generate_production_data()
+    quality_data = data_generator.generate_quality_data()
+
+    # Train model
+    metrics = model.train_optimization_model(production_data, quality_data)
+
+    # Assert cross-validation stability
+    assert metrics["cv_r2_std"] < 0.1, "Cross-validation scores show high variance"
+    assert metrics["cv_r2_mean"] > 0.7, "Model shows poor generalization"
+    assert (
+        abs(metrics["r2"] - metrics["cv_r2_mean"]) < 0.15
+    ), "Model shows signs of overfitting"
+
+
+def test_uncertainty_quantification():
+    """Test uncertainty estimation capabilities."""
+    model = ManufacturingModel()
+
+    # Generate synthetic data and train model
+    data_generator = ManufacturingDataGenerator()
+    production_data = data_generator.generate_production_data()
+    quality_data = data_generator.generate_quality_data()
+    model.train_optimization_model(production_data, quality_data)
+
+    # Define test parameters
+    test_params = {
+        "input_amount": 100.0,
+        "energy_used": 150.0,
+        "cycle_time": 50.0,
+        "efficiency": 21.0,
+        "defect_rate": 2.0,
+        "thickness_uniformity": 95.0,
+        "output_amount": 90.0,
+    }
+
+    predictions = model.predict_batch_outcomes(test_params)
+    assert isinstance(predictions, dict)
+    assert "uncertainty" in predictions
+    assert isinstance(predictions["uncertainty"], float)
+    assert 0 <= predictions["uncertainty"] <= 10.0  # Reasonable range for uncertainty

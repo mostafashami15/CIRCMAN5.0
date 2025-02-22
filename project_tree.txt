@@ -1,18 +1,22 @@
 .
 ├── LICENSE
+├── Project Tree.txt
 ├── README.md
 ├── data
 │   ├── processed
+│   │   └── test_file.txt
 │   ├── raw
+│   │   └── test_file.txt
 │   └── synthetic
 │       ├── test_energy_data.csv
+│       ├── test_file.txt
 │       ├── test_material_data.csv
 │       ├── test_process_data.csv
 │       ├── test_production_data.csv
 │       └── test_quality_data.csv
 ├── docs
 │   ├── api
-│   │   └── README.md
+│   │   └── API_documentation.md
 │   ├── diagrams
 │   │   └── architecture.md
 │   └── guides
@@ -21,16 +25,17 @@
 │       ├── system_analysis.md
 │       └── system_documentation.md
 ├── examples
-│   ├── demo_analysis.py
-│   ├── demo_script.py
-│   ├── test_runner.py
-│   └── visualize_optimization.py
+│   ├── complete_demo.py
+│   ├── demo_analysis.py
+│   ├── demo_script.py
+│   ├── test_runner.py
+│   └── visualize_optimization.py
 ├── logs
 │   ├── archive
 ├── notebooks
 │   └── requirements.txt
-├── output.txt
 ├── poetry.lock
+├── project_tree.txt
 ├── pyproject.toml
 ├── pyrightconfig.json
 ├── pytest.ini
@@ -72,9 +77,9 @@
 │   │   │   │   └── types.py
 │   │   │   ├── reporting
 │   │   │   │   ├── __init__.py
+│   │   │   │   ├── optimization_visualizer.py
 │   │   │   │   ├── reports.py
 │   │   │   │   ├── visualization_paths.py
-│   │   │   │   ├── optimization_visualizer.py
 │   │   │   │   └── visualizations.py
 │   │   │   ├── schemas.py
 │   │   │   └── visualization_utils.py
@@ -88,60 +93,12 @@
 │   │       ├── errors.py
 │   │       ├── logging_config.py
 │   │       └── results_manager.py
-│   └── circman5_backup
-│       ├── __init__.py
-│       ├── ai
-│       │   ├── __init__.py
-│       │   ├── optimization_base.py
-│       │   ├── optimization_base.py.bak
-│       │   ├── optimization_core.py
-│       │   ├── optimization_prediction.py
-│       │   ├── optimization_training.py
-│       │   └── optimization_types.py
-│       ├── analysis
-│       │   ├── __init__.py
-│       │   ├── efficiency.py
-│       │   ├── lca
-│       │   │   ├── core.py
-│       │   │   ├── impact_factors.py
-│       │   │   └── init.py
-│       │   ├── quality.py
-│       │   └── sustainability.py
-│       ├── config
-│       │   ├── __init__.py
-│       │   ├── constants.py
-│       │   └── project_paths.py
-│       ├── lca
-│       │   └── __init__.py
-│       ├── manufacturing
-│       │   ├── __init__.py
-│       │   ├── analyzers
-│       │   │   ├── __init__.py
-│       │   │   ├── efficiency.py
-│       │   │   ├── quality.py
-│       │   │   └── sustainability.py
-│       │   ├── core.py
-│       │   ├── core.py.bak
-│       │   ├── data_loader.py
-│       │   ├── lifecycle
-│       │   └── reporting
-│       │       └── __init__.py
-│       ├── monitoring.py
-│       ├── solitek_manufacturing.py.backup
-│       ├── test_data_generator.py
-│       ├── test_framework.py
-│       ├── utils
-│       │   ├── __init__.py
-│       │   ├── data_types.py
-│       │   ├── errors.py
-│       │   └── logging_config.py
-│       └── visualization
-│           ├── __init__.py
-│           ├── lca_visualizer.py
-│           └── manufacturing_visualizer.py
+│   └── circman5_backup/
 └── tests
     ├── README.md
     ├── __init__.py
+    ├── __pycache__
+    │   ├── __init__.cpython-311.pyc
     │   └── __init__.py
     ├── integration
     │   ├── __init__.py
@@ -152,7 +109,6 @@
     │   │   └── test_script.py
     │   ├── test_data_pipeline.py
     │   ├── test_data_saving.py
-    │   ├── test_manufacturing_optimization.py
     │   └── test_system_integration.py
     ├── performance
     │   ├── __init__.py
@@ -160,14 +116,47 @@
     ├── results
     │   ├── __init__.py
     │   ├── archive
-    │   ├── latest -> /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_174443
+    │   ├── latest -> /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250222_182636
     │   └── runs
-    │       ├── run_20250213_174439
-    │       │   ├── input_data
-    │       │   ├── lca_results
-    │       │   ├── reports
-    │       │   ├── results
-    │       │   └── visualizations
+    │       └── run_20250222_182636
+    │           ├── input_data
+    │           │   ├── energy_data.csv
+    │           │   ├── material_data.csv
+    │           │   ├── production_data.csv
+    │           │   └── quality_data.csv
+    │           ├── lca_results
+    │           │   ├── latest_predictions.json
+    │           │   └── optimization_results.json
+    │           ├── metrics
+    │           │   ├── efficiency_metrics.csv
+    │           │   ├── optimization_potential.json
+    │           │   ├── quality_metrics.csv
+    │           │   ├── resources_metrics.csv
+    │           │   └── training_metrics.json
+    │           ├── reports
+    │           │   ├── analysis_report.xlsx
+    │           │   ├── batch_BATCH_001_summary.xlsx
+    │           │   └── lca_impact.xlsx
+    │           ├── temp
+    │           └── visualizations
+    │               ├── convergence_history.png
+    │               ├── efficiency_trends_detailed.png
+    │               ├── energy_patterns.png
+    │               ├── energy_trends.png
+    │               ├── feature_importance.png
+    │               ├── kpi_dashboard.png
+    │               ├── lifecycle_comparison.png
+    │               ├── material_flow.png
+    │               ├── optimization_dashboard.png
+    │               ├── optimization_impact.png
+    │               ├── parameter_comparison.png
+    │               ├── performance_dashboard.png
+    │               ├── production_trends.png
+    │               ├── quality_metrics.png
+    │               ├── quality_metrics_detailed.png
+    │               ├── resource_usage_detailed.png
+    │               ├── sustainability_indicators.png
+    │               └── sustainability_metrics.png
     └── unit
         ├── __init__.py
         ├── manufacturing
@@ -191,9 +180,9 @@
         │   ├── reporting
         │   │   ├── __init__.py
         │   │   ├── conftest.py
+        │   │   ├── test_optimization_visualizer.py
         │   │   ├── test_reports.py
         │   │   ├── test_visualization_paths.py
-        │   │   ├── test_optimization_visualizer.py
         │   │   └── test_visualizations.py
         │   ├── test_core.py
         │   ├── test_monitoring.py
@@ -204,4 +193,4 @@
             ├── test_data_generator.py
             ├── test_lca_data_generator.py
             ├── test_logging_config.py
-            └── test_project_paths.py
+            └── test_results_manager.py

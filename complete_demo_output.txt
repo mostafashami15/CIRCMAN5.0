@@ -1,0 +1,120 @@
+Starting CIRCMAN5.0 Complete Demonstration
+--------------------------------------------------
+
+1. Generating Test Data...
+
+Generating synthetic data files...
+Created: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_production_data.csv
+Created: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_quality_data.csv
+Created: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_energy_data.csv
+Created: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_material_data.csv
+
+2. Initializing Analysis System...
+
+3. Loading Data...
+
+4. Running Manufacturing Analysis...
+
+Performance Metrics:
+
+EFFICIENCY METRICS:
+  yield_rate: 91.75
+  output_amount: 91.41
+  input_amount: 99.63
+  cycle_time_efficiency: 1.83
+  energy_efficiency: 0.61
+
+QUALITY METRICS:
+  avg_defect_rate: 2.04
+  efficiency_score: 20.98
+  uniformity_score: 95.00
+
+SUSTAINABILITY METRICS:
+  carbon_footprint_total: 5699.96
+  carbon_footprint_per_unit: 7.92
+  material_efficiency_material_efficiency: 89.96
+  material_efficiency_recycling_rate: 75.22
+  material_efficiency_waste_reduction: 89.96
+  sustainability_score_overall: 72.05
+
+5. Running Lifecycle Assessment...
+
+LCA Results:
+{'Manufacturing Impact': np.float64(17982.51647453868), 'Use Phase Impact': -0.0, 'End of Life Impact': np.float64(4467.355816609076), 'Total Carbon Footprint': np.float64(22449.872291147756)}
+
+6. Running AI Optimization Analysis...
+
+Training AI Model...
+
+AI Model Training Metrics:
+R2 Score: 0.938
+RMSE: 0.165
+MAE: 0.120
+
+Feature Importance:
+input_amount: 0.832
+energy_used: 0.084
+cycle_time: 0.075
+efficiency: 0.003
+defect_rate: 0.003
+thickness_uniformity: 0.003
+
+Analyzing Optimization Potential...
+
+Optimization Potential Analysis:
+input_amount: 0.00%
+energy_used: 0.00%
+cycle_time: 0.00%
+efficiency: 0.00%
+defect_rate: 0.00%
+thickness_uniformity: 0.00%
+
+Running Sample Predictions...
+
+Sample Prediction Results:
+Predicted Output: 94.79
+Predicted Quality: 88.28
+Confidence Score: 0.93
+
+Optimizing Process Parameters...
+
+Optimized Parameters:
+input_amount: 100.00
+energy_used: 150.00
+cycle_time: 50.00
+efficiency: 21.00
+defect_rate: 2.00
+thickness_uniformity: 95.00
+output_amount: 90.00
+efficiency_rate: 0.90
+energy_efficiency: 0.60
+efficiency_quality: 0.00
+
+6. Running Monitoring Analysis...
+
+Batch Performance Summary:
+
+EFFICIENCY METRICS:
+  avg_production_rate: 1.83
+  total_energy_consumption: 49.95
+  avg_energy_efficiency: 1.83
+
+QUALITY METRICS:
+  avg_defect_rate: 2.04
+  final_yield_rate: 91.73
+  avg_quality_score: 94.88
+
+RESOURCES METRICS:
+  total_material_consumption: 1000.75
+  total_waste_generated: 100.44
+  avg_resource_efficiency: 0.90
+
+7. Running Visualization Analysis...
+
+7. Generating Reports...
+
+Results saved in:
+Reports: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250222_225339/reports
+Visualizations: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250222_225339/visualizations
+LCA Results: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250222_225339/lca_results
+AI Metrics: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250222_225339/metrics
