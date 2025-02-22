@@ -1,70 +1,99 @@
-# examples/demo_analysis.py
+"""
+CIRCMAN5.0 Demonstration Script
+"""
 
-import sys
-from pathlib import Path
 import pandas as pd
-
-# Add src directory to Python path
-src_path = Path(__file__).parent.parent / "src"
-sys.path.append(str(src_path))
-
+from pathlib import Path
 from circman5.manufacturing.core import SoliTekManufacturingAnalysis
 from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.utils.results_manager import results_manager
 
 
-def run_comprehensive_demo():
-    """Run comprehensive manufacturing analysis demo."""
-    print("Starting CIRCMAN5.0 Demo Analysis...")
+def run_complete_demonstration():
+    print("Starting CIRCMAN5.0 Demonstration...")
 
-    # Initialize the manufacturing analysis system
+    # 1. Generate Test Data
+    print("\n1. Generating Synthetic Manufacturing Data...")
+    data_generator = ManufacturingDataGenerator(days=30)
+
+    # Generate all required datasets
+    production_data = data_generator.generate_production_data()
+    quality_data = data_generator.generate_quality_data()
+    energy_data = data_generator.generate_energy_data()
+    material_data = data_generator.generate_material_flow_data()
+
+    # Save generated data
+    data_generator.save_generated_data()
+
+    # 2. Initialize Analysis System
+    print("\n2. Initializing Manufacturing Analysis System...")
     analyzer = SoliTekManufacturingAnalysis()
 
-    # Generate and load test data
-    generator = ManufacturingDataGenerator(start_date="2024-01-01", days=30)
-    dataset = generator.generate_complete_lca_dataset()
-
-    analyzer.production_data = dataset["production_data"]
-    analyzer.energy_data = dataset["energy_consumption"]
-    analyzer.quality_data = generator.generate_quality_data()
-    analyzer.material_flow = dataset["material_flow"]
-    analyzer.lca_data = dataset
-
-    # Run comprehensive analysis
-    print("\nPerforming manufacturing analysis...")
-    performance_metrics = analyzer.analyze_manufacturing_performance()
-
-    # Generate all visualizations
-    print("\nGenerating visualizations...")
-    viz_dir = results_manager.get_path("visualizations")
-    analyzer.generate_visualization(
-        "production", str(viz_dir / "production_trends.png")
+    # 3. Load Data with Verification
+    print("\n3. Loading Data...")
+    production_path = (
+        results_manager.get_path("SYNTHETIC_DATA") / "test_production_data.csv"
     )
-    analyzer.generate_visualization("quality", str(viz_dir / "quality_metrics.png"))
-    analyzer.generate_visualization("energy", str(viz_dir / "energy_patterns.png"))
-    analyzer.generate_visualization(
-        "sustainability", str(viz_dir / "sustainability_indicators.png")
+    quality_path = results_manager.get_path("SYNTHETIC_DATA") / "test_quality_data.csv"
+    energy_path = results_manager.get_path("SYNTHETIC_DATA") / "test_energy_data.csv"
+    material_path = (
+        results_manager.get_path("SYNTHETIC_DATA") / "test_material_data.csv"
     )
 
-    # Perform lifecycle assessment
-    print("\nPerforming lifecycle assessment...")
-    lca_results = analyzer.perform_lifecycle_assessment(
-        output_dir=results_manager.get_run_directory()
+    # Verify files exist
+    print(f"Verifying data files...")
+    for path in [production_path, quality_path, energy_path, material_path]:
+        if not path.exists():
+            print(f"Missing data file: {path}")
+            return
+        print(f"Found: {path}")
+
+    # Load data with explicit paths
+    analyzer.load_data(
+        production_path=str(production_path),
+        quality_path=str(quality_path),
+        energy_path=str(energy_path),
+        material_path=str(material_path),
     )
 
-    # Generate comprehensive report
-    print("\nGenerating comprehensive report...")
-    report_path = results_manager.get_path("reports") / "comprehensive_analysis.xlsx"
-    analyzer.generate_comprehensive_report(str(report_path))
+    # 4. Manufacturing Performance Analysis
+    print("\n4. Analyzing Manufacturing Performance...")
+    try:
+        performance_metrics = analyzer.analyze_manufacturing_performance()
+        print("\nEfficiency Metrics:", performance_metrics["efficiency"])
+        print("\nQuality Metrics:", performance_metrics["quality"])
+        print("\nSustainability Metrics:", performance_metrics["sustainability"])
+    except Exception as e:
+        print(f"Error in performance analysis: {str(e)}")
 
-    # Generate results summary
-    results_manager.generate_summary(performance_metrics)
+    # 5. Process Optimization Analysis
+    print("\n5. Analyzing Process Optimization Potential...")
+    try:
+        optimization_results = analyzer.analyze_optimization_potential()
+        print("\nOptimization Potential:", optimization_results)
+    except Exception as e:
+        print(f"Error in optimization analysis: {str(e)}")
 
-    print(f"\nAnalysis complete!")
-    print(f"Results saved in: {results_manager.get_run_directory()}")
+    # 6. Lifecycle Assessment
+    print("\n6. Performing Lifecycle Assessment...")
+    try:
+        lca_results = analyzer.perform_lifecycle_assessment()
+        print("\nLCA Results:", lca_results.to_dict())
+    except Exception as e:
+        print(f"Error in LCA analysis: {str(e)}")
 
-    return performance_metrics, lca_results
+    # 7. Generate Comprehensive Report
+    print("\n7. Generating Comprehensive Analysis Report...")
+    try:
+        analyzer.generate_comprehensive_report()
+    except Exception as e:
+        print(f"Error generating report: {str(e)}")
+
+    print("\nResults saved in:")
+    print(f"Reports: {results_manager.get_path('reports')}")
+    print(f"Visualizations: {results_manager.get_path('visualizations')}")
+    print(f"LCA Results: {results_manager.get_path('lca_results')}")
 
 
 if __name__ == "__main__":
-    metrics, lca_results = run_comprehensive_demo()
+    run_complete_demonstration()

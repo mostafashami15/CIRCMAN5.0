@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from typing import Dict, Optional, Tuple, Union, TYPE_CHECKING, cast
+from typing import Dict, Optional, List, Union, TYPE_CHECKING, cast
 from scipy.optimize import minimize
 
 from .types import OptimizationResults
@@ -30,7 +30,7 @@ class ProcessOptimizer:
     def optimize_process_parameters(
         self,
         current_params: Dict[str, float],
-        constraints: Optional[Dict[str, Tuple[float, float]]] = None,
+        constraints: Optional[Dict[str, float]] = None,
     ) -> Dict[str, float]:
         """Optimize manufacturing process parameters."""
         try:
@@ -53,30 +53,25 @@ class ProcessOptimizer:
             enhanced_params = self.model._add_engineered_features(current_params)
             current_params = cast(Dict[str, float], enhanced_params)
 
-            # Add constraints for engineered and output features
-            if constraints is not None:
-                constraints = constraints.copy()
-                # Add constraints for output_amount
-                input_constraint = constraints.get("input_amount", (0.0, float("inf")))
-                constraints["output_amount"] = (0.0, input_constraint[1])
-                # Add constraints for engineered features
-                constraints.update(
-                    {
-                        "efficiency_rate": (0.0, 1.0),
-                        "energy_efficiency": (0.0, 1.0),
-                        "efficiency_quality": (0.0, 1.0),
-                    }
-                )
-
-            # Validate inputs after all features are added
-            self._validate_inputs(current_params, constraints)
-
             # Convert parameters to array format
             param_names = list(current_params.keys())
             initial_params = np.array([current_params[k] for k in param_names])
 
-            # Define optimization bounds
-            bounds = self._get_optimization_bounds(param_names, constraints)
+            # Create bounds list
+            bounds: List[tuple[float, float]] = []
+            for param in param_names:
+                if constraints and param in constraints:
+                    target = constraints[param]
+                    # Create bounds as ±10% of target value
+                    bound_min = max(0.0, target * 0.9)
+                    bound_max = target * 1.1
+                    bounds.append((bound_min, bound_max))
+                else:
+                    # Default bounds if no constraint provided
+                    bounds.append((0.0, float("inf")))
+
+            # Validate inputs
+            self._validate_inputs(current_params)
 
             # Define objective function for scipy.optimize
             def objective(x):
@@ -132,7 +127,6 @@ class ProcessOptimizer:
     def _validate_inputs(
         self,
         current_params: Dict[str, float],
-        constraints: Optional[Dict[str, Tuple[float, float]]],
     ) -> None:
         """Validate optimization inputs."""
         if not self.model.is_trained:
@@ -148,24 +142,6 @@ class ProcessOptimizer:
         if not required_params.issubset(current_params.keys()):
             missing = required_params - set(current_params.keys())
             raise ValueError(f"Missing required parameters: {missing}")
-
-        if constraints:
-            for param, (min_val, max_val) in constraints.items():
-                if min_val > max_val:
-                    raise ValueError(
-                        f"Invalid constraint for {param}: "
-                        f"min value {min_val} is greater than max value {max_val}"
-                    )
-
-    def _get_optimization_bounds(
-        self, param_names: list, constraints: Optional[Dict[str, Tuple[float, float]]]
-    ) -> list:
-        """Get optimization bounds from constraints."""
-        default_bounds = (None, None)
-        if constraints is None:
-            return [default_bounds] * len(param_names)
-
-        return [constraints.get(param, default_bounds) for param in param_names]
 
     def analyze_optimization_potential(
         self, production_data: pd.DataFrame, quality_data: pd.DataFrame
@@ -186,23 +162,12 @@ class ProcessOptimizer:
                 "thickness_uniformity": quality_data["thickness_uniformity"].mean(),
             }
 
-            # Add statistical bounds as constraints
+            # Use means as target values for constraints
             constraints = {
-                param: (
-                    max(data[param].mean() - 2 * data[param].std(), data[param].min()),
-                    min(data[param].mean() + 2 * data[param].std(), data[param].max()),
-                )
-                for param, data in [
-                    ("input_amount", production_data),
-                    ("energy_used", production_data),
-                    ("cycle_time", production_data),
-                    ("efficiency", quality_data),
-                    ("defect_rate", quality_data),
-                    ("thickness_uniformity", quality_data),
-                ]
+                param: float(value) for param, value in current_params.items()
             }
 
-            # Get optimized parameters with statistical constraints
+            # Get optimized parameters
             optimized_params = self.optimize_process_parameters(
                 current_params, constraints=constraints
             )
@@ -219,21 +184,12 @@ class ProcessOptimizer:
                     "optimized_value": optimized,
                     "percent_change": pct_change,
                     "absolute_change": optimized - current,
-                    "within_bounds": (
-                        constraints[param][0] <= optimized <= constraints[param][1]
-                    ),
                 }
 
             # Calculate optimization summary
             summary = {
-                "average_improvement": np.mean(
-                    [imp["percent_change"] for imp in improvements.values()]
-                ),
-                "max_improvement": max(
-                    imp["percent_change"] for imp in improvements.values()
-                ),
-                "min_improvement": min(
-                    imp["percent_change"] for imp in improvements.values()
+                "average_improvement": float(
+                    np.mean([imp["percent_change"] for imp in improvements.values()])
                 ),
                 "parameters_improved": sum(
                     1 for imp in improvements.values() if imp["percent_change"] > 0
@@ -241,28 +197,12 @@ class ProcessOptimizer:
                 "total_parameters": len(improvements),
             }
 
-            # Save enhanced analysis results
+            # Save analysis results
             analysis_results = {
                 "current_params": {k: float(v) for k, v in current_params.items()},
                 "optimized_params": {k: float(v) for k, v in optimized_params.items()},
-                "improvements": {
-                    k: {
-                        "current_value": float(v["current_value"]),
-                        "optimized_value": float(v["optimized_value"]),
-                        "percent_change": float(v["percent_change"]),
-                        "absolute_change": float(v["absolute_change"]),
-                        "within_bounds": bool(v["within_bounds"]),
-                    }
-                    for k, v in improvements.items()
-                },
-                "summary": {
-                    k: float(v) if isinstance(v, (int, float)) else v
-                    for k, v in summary.items()
-                },
-                "constraints_used": {
-                    param: {"min": float(min_val), "max": float(max_val)}
-                    for param, (min_val, max_val) in constraints.items()
-                },
+                "improvements": improvements,
+                "summary": summary,
             }
 
             analysis_file = "optimization_potential.json"
@@ -285,46 +225,4 @@ class ProcessOptimizer:
 
         except Exception as e:
             self.logger.error(f"Error in optimization potential analysis: {str(e)}")
-            raise
-
-    def _calculate_parameter_sensitivity(
-        self, base_params: Dict[str, float], param_name: str, variation: float = 0.1
-    ) -> Dict[str, float]:
-        """Calculate sensitivity of output to parameter variations."""
-        try:
-            base_prediction = self.model.predict_batch_outcomes(base_params)[
-                "predicted_output"
-            ]
-
-            # Test parameter variations
-            test_params = base_params.copy()
-            test_params[param_name] *= 1 + variation
-            upper_prediction = self.model.predict_batch_outcomes(test_params)[
-                "predicted_output"
-            ]
-
-            test_params = base_params.copy()
-            test_params[param_name] *= 1 - variation
-            lower_prediction = self.model.predict_batch_outcomes(test_params)[
-                "predicted_output"
-            ]
-
-            # Calculate sensitivity metrics
-            sensitivity = {
-                "parameter": param_name,
-                "base_value": base_params[param_name],
-                "sensitivity_score": abs(upper_prediction - lower_prediction)
-                / (2 * variation * base_prediction),
-                "upper_impact": (upper_prediction - base_prediction)
-                / base_prediction
-                * 100,
-                "lower_impact": (lower_prediction - base_prediction)
-                / base_prediction
-                * 100,
-            }
-
-            return sensitivity
-
-        except Exception as e:
-            self.logger.error(f"Error calculating parameter sensitivity: {str(e)}")
             raise

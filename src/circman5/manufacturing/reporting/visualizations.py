@@ -286,48 +286,26 @@ class ManufacturingVisualizer:
     def create_performance_dashboard(
         self, monitor_data: Dict[str, pd.DataFrame], save_path: Optional[str] = None
     ) -> None:
-        """Create comprehensive performance dashboard."""
         try:
-            fig = plt.figure(figsize=(15, 12))
-            gs = fig.add_gridspec(3, 2)
-
-            ax1 = fig.add_subplot(gs[0, 0])  # Efficiency
-            ax2 = fig.add_subplot(gs[0, 1])  # Quality
-            ax3 = fig.add_subplot(gs[1, :])  # Resource Usage
-            ax4 = fig.add_subplot(gs[2, :])  # Combined Trends
+            fig, axes = plt.subplots(3, 1, figsize=(15, 12))
 
             # Efficiency Plot
             efficiency_data = monitor_data["efficiency"]
-            sns.lineplot(
-                data=efficiency_data, x="timestamp", y="production_rate", ax=ax1
-            )
-            ax1.set_title("Production Efficiency")
+            efficiency_data.plot(x="timestamp", y="production_rate", ax=axes[0])
+            axes[0].set_title("Production Efficiency")
+            axes[0].set_ylabel("Production Rate")
 
-            # Quality Plot - Using timestamp instead of timestamp
+            # Quality Plot
             quality_data = monitor_data["quality"]
-            sns.lineplot(data=quality_data, x="timestamp", y="quality_score", ax=ax2)
-            ax2.set_title("Quality Metrics")
+            quality_data.plot(x="timestamp", y="quality_score", ax=axes[1])
+            axes[1].set_title("Quality Metrics")
+            axes[1].set_ylabel("Quality Score")
 
             # Resource Usage
             resource_data = monitor_data["resources"]
-            resource_columns = ["material_consumption"]
-            resource_data.plot(x="timestamp", y=resource_columns, ax=ax3)
-            ax3.set_title("Resource Utilization")
-
-            # Combined Performance Indicators - Aligning timestamps
-            combined_metrics = pd.DataFrame(
-                {
-                    "timestamp": efficiency_data["timestamp"],
-                    "efficiency": efficiency_data["production_rate"]
-                    / efficiency_data["production_rate"].max(),
-                    "quality": quality_data["quality_score"] / 100,
-                    "resource_efficiency": resource_data["resource_efficiency"],
-                }
-            )
-
-            combined_metrics.plot(x="timestamp", ax=ax4)
-            ax4.set_title("Combined Performance Indicators")
-            ax4.set_ylim(0, 1)
+            resource_data.plot(x="timestamp", y="quantity_used", ax=axes[2])
+            axes[2].set_title("Resource Utilization")
+            axes[2].set_ylabel("Material Usage")
 
             plt.tight_layout()
 
@@ -338,9 +316,8 @@ class ManufacturingVisualizer:
                 plt.show()
 
         except Exception as e:
-            self.logger.error(f"Error creating performance dashboard: {str(e)}")
             plt.close()
-            raise
+            raise Exception(f"Error creating performance dashboard: {str(e)}")
 
     def create_kpi_dashboard(
         self, metrics_data: Dict[str, float], save_path: Optional[str] = None
