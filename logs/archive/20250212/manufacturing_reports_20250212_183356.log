@@ -1,0 +1,2 @@
+2025-02-12 18:33:56,382 - manufacturing_reports - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250212_183356.log
+2025-02-12 18:33:58,295 - manufacturing_reports - INFO - Comprehensive report generated at: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_183356/reports/comprehensive_analysis.xlsx

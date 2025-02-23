@@ -1,0 +1,5 @@
+2025-02-08 23:46:00,068 - manufacturing_optimizer - INFO - Preparing manufacturing data for optimization
+2025-02-08 23:46:00,071 - manufacturing_optimizer - INFO - Prepared 5198 samples for training
+2025-02-08 23:46:00,071 - manufacturing_optimizer - INFO - Training optimization models
+2025-02-08 23:46:01,549 - manufacturing_optimizer - INFO - Models trained successfully. Metrics: {'mse': 0.00796381043600662, 'r2': 0.9912620699953261}
+2025-02-08 23:46:01,556 - manufacturing_optimizer - INFO - Parameter optimization completed successfully

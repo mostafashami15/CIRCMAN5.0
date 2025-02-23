@@ -1,0 +1,2 @@
+2025-02-05 23:39:42,537 - solitek_manufacturing - INFO - Loading production data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/src/test_results/run_20250205_233942/input_data/test_production_data.csv
+2025-02-05 23:39:42,539 - solitek_manufacturing - ERROR - ValidationError: Missing required columns: ['stage']

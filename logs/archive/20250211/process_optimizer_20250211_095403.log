@@ -1,0 +1,18 @@
+2025-02-11 09:54:03,614 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250211_095403.log
+2025-02-11 09:54:03,903 - process_optimizer - INFO - Parameter optimization completed successfully
+2025-02-11 09:54:03,903 - process_optimizer - INFO - Optimization potential analysis:
+input_amount: 0.8%
+energy_used: 0.4%
+cycle_time: -0.4%
+efficiency: 0.6%
+defect_rate: 2.4%
+thickness_uniformity: -0.0%
+2025-02-11 09:54:53,258 - process_optimizer - INFO - Parameter optimization completed successfully
+2025-02-11 09:54:53,308 - process_optimizer - INFO - Parameter optimization completed successfully
+2025-02-11 09:54:53,308 - process_optimizer - INFO - Optimization potential analysis:
+input_amount: 0.8%
+energy_used: 0.2%
+cycle_time: 0.3%
+efficiency: 0.7%
+defect_rate: -1.9%
+thickness_uniformity: 0.1%

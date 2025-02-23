@@ -1,0 +1,17 @@
+2025-02-13 17:06:44,082 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,083 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(1.7523693982042172), 'efficiency_score': np.float64(20.64247266089859), 'uniformity_score': np.float64(95.31476292657953)}
+2025-02-13 17:06:44,086 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,088 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:06:44,225 - quality_analyzer - INFO - Quality trends plot generated successfully
+2025-02-13 17:06:44,225 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,226 - quality_analyzer - WARNING - Empty quality data provided
+2025-02-13 17:06:44,226 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,227 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(2.1955222863328663), 'efficiency_score': np.float64(21.049612292630073), 'uniformity_score': np.float64(95.26409328497218)}
+2025-02-13 17:06:44,230 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,231 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:06:44,235 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,236 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:06:44,378 - quality_analyzer - INFO - Quality trends plot generated successfully
+2025-02-13 17:06:44,538 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,600 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log
+2025-02-13 17:06:44,610 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_170644.log

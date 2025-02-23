@@ -1,0 +1,5 @@
+2025-02-12 16:53:19,633 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250212_165319.log
+2025-02-12 16:53:19,647 - manufacturing_data_loader - INFO - Loading material data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_165319/input_data/material_data.csv
+2025-02-12 16:53:19,651 - manufacturing_data_loader - INFO - Successfully loaded 600 material records
+2025-02-12 16:53:19,651 - manufacturing_data_loader - INFO - Loading energy data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_165319/input_data/energy_data.csv
+2025-02-12 16:53:19,652 - manufacturing_data_loader - ERROR - Error loading energy data: Missing required columns in energy data: ['efficiency_rate']

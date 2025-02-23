@@ -1,0 +1,14 @@
+2025-02-13 14:50:25,035 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,040 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,043 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,046 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,050 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,053 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,057 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,060 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,069 - lca_analyzer - ERROR - Error performing LCA: Material inputs dictionary cannot be empty
+2025-02-13 14:50:25,380 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_145025/reports/lca_impact_BATCH_0083.xlsx
+2025-02-13 14:50:25,382 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:25,385 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_145025.log
+2025-02-13 14:50:26,587 - lca_analyzer - WARNING - Use phase impact calculation yielded non-negative value
+2025-02-13 14:50:27,085 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_145027/reports/lca_impact.xlsx

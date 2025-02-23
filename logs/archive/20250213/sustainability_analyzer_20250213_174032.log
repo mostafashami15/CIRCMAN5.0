@@ -1,0 +1,16 @@
+2025-02-13 17:40:32,475 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174032.log
+2025-02-13 17:40:32,478 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174032.log
+2025-02-13 17:40:32,542 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174032.log
+2025-02-13 17:40:32,545 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174032.log
+2025-02-13 17:40:32,555 - sustainability_analyzer - INFO - Carbon footprint calculated: 977.948170836832
+2025-02-13 17:40:32,555 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.97787912466507), 'recycling_rate': np.float64(76.13705678430993), 'waste_reduction': np.float64(89.97787912466507)}
+2025-02-13 17:40:32,555 - sustainability_analyzer - INFO - Carbon footprint calculated: 977.948170836832
+2025-02-13 17:40:32,555 - sustainability_analyzer - INFO - Energy efficiency calculated: 81.45% (Base: 90.28%, Carbon Impact: 0.90)
+2025-02-13 17:40:32,555 - sustainability_analyzer - INFO - Sustainability score calculated: 83.26841860131155
+2025-02-13 17:40:32,555 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(977.948170836832), 'per_unit': np.float64(8.149568090306934)}, 'material_efficiency': {'material_efficiency': 89.97787912466507, 'recycling_rate': 76.13705678430993, 'waste_reduction': 89.97787912466507}, 'sustainability_score': {'overall': 83.26841860131155}}
+2025-02-13 17:40:32,560 - sustainability_analyzer - INFO - Carbon footprint calculated: 977.948170836832
+2025-02-13 17:40:32,560 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.97787912466507), 'recycling_rate': np.float64(76.13705678430993), 'waste_reduction': np.float64(89.97787912466507)}
+2025-02-13 17:40:32,561 - sustainability_analyzer - INFO - Carbon footprint calculated: 977.948170836832
+2025-02-13 17:40:32,561 - sustainability_analyzer - INFO - Energy efficiency calculated: 81.45% (Base: 90.28%, Carbon Impact: 0.90)
+2025-02-13 17:40:32,561 - sustainability_analyzer - INFO - Sustainability score calculated: 83.26841860131155
+2025-02-13 17:40:32,561 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(977.948170836832), 'per_unit': np.float64(8.149568090306934)}, 'material_efficiency': {'material_efficiency': 89.97787912466507, 'recycling_rate': 76.13705678430993, 'waste_reduction': 89.97787912466507}, 'sustainability_score': {'overall': 83.26841860131155}}

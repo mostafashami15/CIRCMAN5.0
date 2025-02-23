@@ -1,0 +1,16 @@
+2025-02-04 13:57:29,083 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.009629199092357993, 'r2': 0.9905252267047311}
+2025-02-04 13:57:29,091 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 100.24
+energy_used: 149.08
+cycle_time: 49.84
+efficiency: 21.06
+defect_rate: 2.09
+thickness_uniformity: 95.04
+2025-02-04 13:57:29,668 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/production_analysis.png
+2025-02-04 13:57:29,982 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/energy_analysis.png
+2025-02-04 13:57:30,300 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/quality_analysis.png
+2025-02-04 13:57:30,593 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/sustainability_analysis.png
+2025-02-04 13:57:30,594 - solitek_manufacturing - ERROR - Error in efficiency analysis: 'Column not found: output_quantity'
+2025-02-04 13:57:30,595 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(1.9852552655893931), 'efficiency_score': np.float64(21.001408993506473), 'uniformity_score': np.float64(94.97471132188625)}
+2025-02-04 13:57:30,596 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(6284.711012507709), 'sustainability_score': np.float64(89.72106265342924), 'material_efficiency': np.float64(96.9521475411875), 'recycling_rate': np.float64(72.84853124865998), 'waste_reduction': np.float64(96.9521475411875)}
+2025-02-04 13:57:30,596 - solitek_manufacturing - ERROR - Error generating comprehensive report: No module named 'openpyxl'

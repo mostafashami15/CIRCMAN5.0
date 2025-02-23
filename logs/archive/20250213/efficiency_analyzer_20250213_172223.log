@@ -1,0 +1,2 @@
+2025-02-13 17:22:23,226 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_172223.log
+2025-02-13 17:22:23,293 - efficiency_analyzer - INFO - Efficiency analysis completed: {'yield_rate': 91.17928076130573, 'output_amount': 90.68184915362609, 'input_amount': 99.45444666427908, 'cycle_time_efficiency': 1.8097887334142184, 'energy_efficiency': 0.6075307606161047}

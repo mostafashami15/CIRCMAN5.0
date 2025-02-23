@@ -1,0 +1,19 @@
+2025-02-07 19:29:01,677 - demo_script - INFO - Initializing CIRCMAN5.0 Manufacturing Analysis System...
+2025-02-07 19:29:01,680 - demo_script - INFO - Generating synthetic manufacturing data...
+2025-02-07 19:29:01,718 - demo_script - INFO - Generated 720 production records.
+2025-02-07 19:29:01,718 - demo_script - INFO - Training AI optimization model...
+2025-02-07 19:29:02,981 - demo_script - INFO - Model training metrics: {'mse': 0.010139278322320488, 'r2': 0.9898877880544216}
+2025-02-07 19:29:02,981 - demo_script - INFO - Optimizing manufacturing parameters...
+2025-02-07 19:29:02,987 - demo_script - INFO - Optimization Results:
+2025-02-07 19:29:02,987 - demo_script - INFO -   input_amount: 101.58
+2025-02-07 19:29:02,987 - demo_script - INFO -   energy_used: 150.21
+2025-02-07 19:29:02,987 - demo_script - INFO -   cycle_time: 49.25
+2025-02-07 19:29:02,987 - demo_script - INFO -   efficiency: 21.04
+2025-02-07 19:29:02,987 - demo_script - INFO -   defect_rate: 2.05
+2025-02-07 19:29:02,987 - demo_script - INFO -   thickness_uniformity: 95.02
+2025-02-07 19:29:02,987 - demo_script - INFO - Generating analysis visualizations...
+2025-02-07 19:29:03,554 - demo_script - INFO -   Saved production visualization
+2025-02-07 19:29:03,949 - demo_script - INFO -   Saved energy visualization
+2025-02-07 19:29:04,303 - demo_script - INFO -   Saved quality visualization
+2025-02-07 19:29:04,596 - demo_script - INFO -   Saved sustainability visualization
+2025-02-07 19:29:04,665 - demo_script - INFO - Analysis report saved

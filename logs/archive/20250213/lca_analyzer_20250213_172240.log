@@ -1,0 +1,10 @@
+2025-02-13 17:22:40,829 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,833 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,837 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,840 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,843 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,846 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,849 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,852 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_172240.log
+2025-02-13 17:22:40,861 - lca_analyzer - ERROR - Error performing LCA: Material inputs dictionary cannot be empty
+2025-02-13 17:22:41,212 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_172241/reports/lca_impact_BATCH_0015.xlsx

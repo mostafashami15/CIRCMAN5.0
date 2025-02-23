@@ -1,0 +1,2 @@
+2025-02-13 17:19:33,011 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171933.log
+2025-02-13 17:19:33,012 - process_optimizer - ERROR - Error optimizing parameters: Model must be trained before optimization

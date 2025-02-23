@@ -1,0 +1,17 @@
+2025-02-13 16:11:04,574 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161104.log
+2025-02-13 16:11:04,578 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161104.log
+2025-02-13 16:11:04,635 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.27069853808892425, 'r2': 0.5695539136203878}
+2025-02-13 16:11:04,639 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 101.17
+energy_used: 149.44
+cycle_time: 50.39
+efficiency: 95.02
+defect_rate: 2.04
+thickness_uniformity: 97.99
+2025-02-13 16:11:04,641 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 94.19
+Predicted Quality: 84.77
+2025-02-13 16:11:04,642 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161104.log
+2025-02-13 16:11:04,645 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161104.log
+2025-02-13 16:11:04,661 - solitek_manufacturing - INFO - Comprehensive report generated at: /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-50/test_report_generation0/analysis_report.xlsx
+2025-02-13 16:11:05,856 - solitek_manufacturing - INFO - Successfully exported analysis report to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-50/test_report_generation0/export_report.xlsx

@@ -1,0 +1,76 @@
+2025-02-09 07:23:35,737 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.10652232832077944, 'r2': 0.7938333165282743}
+2025-02-09 07:23:35,742 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 100.72
+energy_used: 150.17
+cycle_time: 49.65
+efficiency: 20.92
+defect_rate: 1.91
+thickness_uniformity: 95.03
+2025-02-09 07:23:35,746 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 92.22
+Predicted Quality: 91.60
+2025-02-09 07:23:35,746 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(92.24075904127973), 'cycle_time_efficiency': np.float64(1.8556283056139558), 'energy_efficiency': np.float64(0.6214436499445027), 'output_amount': np.float64(92.66444964296923), 'input_amount': np.float64(100.4593312176669)}
+2025-02-09 07:23:35,747 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(1.922851615435876), 'efficiency_score': np.float64(21.109698942928343), 'uniformity_score': np.float64(95.03355496972667)}
+2025-02-09 07:23:35,748 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(862.9034126230707), 'sustainability_score': np.float64(91.96946329481149), 'material_efficiency': np.float64(97.12969407862914), 'recycling_rate': np.float64(79.92892479923697), 'waste_reduction': np.float64(97.12969407862914)}
+2025-02-09 07:23:35,754 - solitek_manufacturing - INFO - Comprehensive report generated at: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072335/reports/manufacturing_analysis.xlsx
+2025-02-09 07:23:36,089 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072335/visualizations/production_analysis.png
+2025-02-09 07:23:36,395 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072335/visualizations/energy_analysis.png
+2025-02-09 07:23:36,719 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072335/visualizations/quality_analysis.png
+2025-02-09 07:23:36,979 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072335/visualizations/sustainability_analysis.png
+2025-02-09 07:23:36,984 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 100.75
+energy_used: 149.52
+cycle_time: 49.22
+efficiency: 21.03
+defect_rate: 1.90
+thickness_uniformity: 95.06
+2025-02-09 07:23:36,984 - solitek_manufacturing - INFO - Optimization potential analysis:
+input_amount: 0.3%
+energy_used: 0.3%
+cycle_time: -1.4%
+efficiency: -0.4%
+defect_rate: -1.0%
+thickness_uniformity: 0.0%
+2025-02-09 07:23:39,383 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.45962845539756), 'cycle_time_efficiency': np.float64(1.8308014242282118), 'energy_efficiency': np.float64(0.6107845805842723), 'output_amount': np.float64(91.4564007197837), 'input_amount': np.float64(99.9964708629716)}
+2025-02-09 07:23:39,384 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(1.976176931253548), 'efficiency_score': np.float64(21.010841264376026), 'uniformity_score': np.float64(95.03506214689695)}
+2025-02-09 07:23:39,384 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(5917.012602258407), 'sustainability_score': np.float64(91.19220224709373), 'material_efficiency': np.float64(97.04599980163118), 'recycling_rate': np.float64(77.53334128650633), 'waste_reduction': np.float64(97.04599980163118)}
+2025-02-09 07:23:40,713 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.009395371676538896, 'r2': 0.9905015103899579}
+2025-02-09 07:23:40,720 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 100.92
+energy_used: 151.17
+cycle_time: 50.22
+efficiency: 21.05
+defect_rate: 1.97
+thickness_uniformity: 95.11
+2025-02-09 07:23:41,083 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072339/visualizations/production_analysis.png
+2025-02-09 07:23:41,453 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072339/visualizations/energy_analysis.png
+2025-02-09 07:23:41,803 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072339/visualizations/quality_analysis.png
+2025-02-09 07:23:42,079 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072339/visualizations/sustainability_analysis.png
+2025-02-09 07:23:42,162 - solitek_manufacturing - INFO - Successfully loaded LCA data
+2025-02-09 07:23:42,166 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-09 07:23:42,170 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-09 07:23:42,170 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-09 07:23:42,178 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-09 07:23:42,178 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-09 07:23:42,185 - solitek_manufacturing - INFO - LCA report generated successfully at /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-14/test_lca_report_generation0/lca_report.xlsx
+2025-02-09 07:23:42,205 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-09 07:23:42,205 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0094
+2025-02-09 07:23:42,987 - solitek_manufacturing - INFO - Loading production data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_production_data.csv
+2025-02-09 07:23:42,988 - solitek_manufacturing - INFO - Successfully loaded 5 records
+2025-02-09 07:23:42,990 - solitek_manufacturing - WARNING - No quality data available for analysis
+2025-02-09 07:23:42,992 - solitek_manufacturing - WARNING - Insufficient data for sustainability calculation
+2025-02-09 07:23:42,995 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-09 07:23:43,004 - solitek_manufacturing - ERROR - Error generating visualization: No production data available for visualization
+2025-02-09 07:23:43,023 - solitek_manufacturing - ERROR - Error generating visualization: Unknown metric type: invalid_metric
+2025-02-09 07:23:43,044 - solitek_manufacturing - INFO - Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-14/test_valid_production_data_loa0/test_production_data.csv
+2025-02-09 07:23:43,045 - solitek_manufacturing - INFO - Successfully loaded 2 records
+2025-02-09 07:23:43,046 - solitek_manufacturing - INFO - Loading production data from nonexistent_file.csv
+2025-02-09 07:23:43,047 - solitek_manufacturing - ERROR - Error loading production data: Production data file not found: nonexistent_file.csv
+2025-02-09 07:23:43,048 - solitek_manufacturing - INFO - Loading production data from test_invalid_data.csv
+2025-02-09 07:23:43,049 - solitek_manufacturing - ERROR - Error loading production data: Output amount cannot significantly exceed input amount
+2025-02-09 07:23:43,056 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-09 07:23:43,056 - solitek_manufacturing - WARNING - No quality data available for analysis
+2025-02-09 07:23:43,056 - solitek_manufacturing - WARNING - Insufficient data for sustainability calculation
+2025-02-09 07:23:43,059 - solitek_manufacturing - INFO - Analysis report exported to: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250209_072343/reports/analysis_report.xlsx
+2025-02-09 07:23:43,061 - solitek_manufacturing - INFO - Loading production data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_production_data.csv
+2025-02-09 07:23:43,062 - solitek_manufacturing - INFO - Successfully loaded 5 records

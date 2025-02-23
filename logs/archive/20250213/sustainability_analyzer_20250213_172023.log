@@ -1,0 +1,8 @@
+2025-02-13 17:20:23,546 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172023.log
+2025-02-13 17:20:23,550 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172023.log
+2025-02-13 17:20:23,559 - sustainability_analyzer - INFO - Carbon footprint calculated: 1038.5593819313713
+2025-02-13 17:20:23,559 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.82239279743992), 'recycling_rate': np.float64(76.31692538706015), 'waste_reduction': np.float64(89.82239279743992)}
+2025-02-13 17:20:23,559 - sustainability_analyzer - INFO - Carbon footprint calculated: 1038.5593819313713
+2025-02-13 17:20:23,559 - sustainability_analyzer - INFO - Energy efficiency calculated: 80.29% (Base: 89.60%, Carbon Impact: 0.90)
+2025-02-13 17:20:23,559 - sustainability_analyzer - INFO - Sustainability score calculated: 82.91114264021702
+2025-02-13 17:20:23,559 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1038.5593819313713), 'per_unit': np.float64(8.65466151609476)}, 'material_efficiency': {'material_efficiency': 89.82239279743992, 'recycling_rate': 76.31692538706015, 'waste_reduction': 89.82239279743992}, 'sustainability_score': {'overall': 82.91114264021702}}

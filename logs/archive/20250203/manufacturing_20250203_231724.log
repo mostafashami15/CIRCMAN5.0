@@ -1,0 +1,15 @@
+2025-02-03 23:17:24,163 - solitek_manufacturing - ERROR - Error in efficiency analysis: 'Column not found: output_quantity'
+2025-02-03 23:17:24,166 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.0138712474838103), 'efficiency_score': np.float64(20.97552429748777), 'uniformity_score': np.float64(95.05375221688513)}
+2025-02-03 23:17:24,168 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(2459.0102488235784), 'sustainability_score': np.float64(90.81221453769696), 'material_efficiency': np.float64(96.99698622283849), 'recycling_rate': np.float64(76.38108060570006), 'waste_reduction': np.float64(96.99698622283849)}
+2025-02-03 23:17:24,290 - solitek_manufacturing - ERROR - Error generating visualization: 'Column not found: output_quantity'
+2025-02-03 23:17:24,370 - solitek_manufacturing - ERROR - Error in efficiency analysis: 'Column not found: output_quantity'
+2025-02-03 23:17:24,562 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.1424942897285663, 'r2': 0.8537921074789168}
+2025-02-03 23:17:24,566 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 101.77
+energy_used: 150.32
+cycle_time: 50.27
+efficiency: 21.00
+defect_rate: 2.12
+thickness_uniformity: 94.95
+2025-02-03 23:17:24,569 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-03 23:17:24,588 - solitek_manufacturing - ERROR - Error generating visualization: 'Column not found: output_quantity'

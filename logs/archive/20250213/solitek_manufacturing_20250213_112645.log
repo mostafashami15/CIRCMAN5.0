@@ -1,0 +1,23 @@
+2025-02-13 11:26:45,026 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112645.log
+2025-02-13 11:26:45,030 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112645.log
+2025-02-13 11:26:45,511 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_112645/visualizations
+2025-02-13 11:26:45,611 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-13 11:26:45,729 - solitek_manufacturing - ERROR - Error generating LCA visualizations: index 0 is out of bounds for axis 0 with size 0
+2025-02-13 11:26:45,729 - solitek_manufacturing - ERROR - Error in lifecycle assessment: Visualization generation failed: index 0 is out of bounds for axis 0 with size 0
+2025-02-13 11:26:45,780 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112645.log
+2025-02-13 11:26:45,783 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112645.log
+2025-02-13 11:26:45,842 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.39851251177866204, 'r2': 0.6397818132232553}
+2025-02-13 11:26:45,846 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 99.89
+energy_used: 150.19
+cycle_time: 49.54
+efficiency: 95.08
+defect_rate: 2.08
+thickness_uniformity: 98.01
+2025-02-13 11:26:45,848 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 91.87
+Predicted Quality: 82.68
+2025-02-13 11:26:45,849 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112645.log
+2025-02-13 11:26:45,852 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112645.log
+2025-02-13 11:26:45,866 - solitek_manufacturing - INFO - Comprehensive report generated at: /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-42/test_report_generation0/analysis_report.xlsx
+2025-02-13 11:26:47,084 - solitek_manufacturing - INFO - Successfully exported analysis report to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-42/test_report_generation0/export_report.xlsx

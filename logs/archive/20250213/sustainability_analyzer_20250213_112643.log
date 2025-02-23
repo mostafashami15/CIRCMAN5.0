@@ -1,0 +1,11 @@
+2025-02-13 11:26:43,510 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_112643.log
+2025-02-13 11:26:43,515 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_112643.log
+2025-02-13 11:26:43,518 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_112643.log
+2025-02-13 11:26:43,611 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_112643.log
+2025-02-13 11:26:43,614 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_112643.log
+2025-02-13 11:26:43,624 - sustainability_analyzer - INFO - Carbon footprint calculated: 1164.878570793947
+2025-02-13 11:26:43,624 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.99979916023943), 'recycling_rate': np.float64(73.8462992175428), 'waste_reduction': np.float64(89.99979916023945)}
+2025-02-13 11:26:43,624 - sustainability_analyzer - INFO - Carbon footprint calculated: 1164.878570793947
+2025-02-13 11:26:43,624 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.57% (Base: 90.06%, Carbon Impact: 0.88)
+2025-02-13 11:26:43,624 - sustainability_analyzer - INFO - Sustainability score calculated: 82.02354763299942
+2025-02-13 11:26:43,624 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1164.878570793947), 'per_unit': np.float64(9.70732142328289)}, 'material_efficiency': {'material_efficiency': 89.99979916023943, 'recycling_rate': 73.8462992175428, 'waste_reduction': 89.99979916023945}, 'sustainability_score': {'overall': 82.02354763299942}}

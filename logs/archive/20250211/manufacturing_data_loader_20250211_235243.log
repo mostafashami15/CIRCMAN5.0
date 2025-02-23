@@ -1,0 +1,5 @@
+2025-02-11 23:52:43,295 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250211_235243.log
+2025-02-11 23:52:43,318 - manufacturing_data_loader - INFO - Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-31/test_data_loading0/production.csv
+2025-02-11 23:52:43,323 - manufacturing_data_loader - INFO - Successfully loaded 120 production records
+2025-02-11 23:52:46,430 - manufacturing_data_loader - INFO - Loading production data from /nonexistent/path.csv
+2025-02-11 23:52:46,430 - manufacturing_data_loader - ERROR - Error loading production data: production data file not found: /nonexistent/path.csv

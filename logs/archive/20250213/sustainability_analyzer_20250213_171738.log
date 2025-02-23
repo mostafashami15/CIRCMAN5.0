@@ -1,0 +1,11 @@
+2025-02-13 17:17:38,448 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171738.log
+2025-02-13 17:17:38,453 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171738.log
+2025-02-13 17:17:38,456 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171738.log
+2025-02-13 17:17:38,479 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171738.log
+2025-02-13 17:17:38,482 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171738.log
+2025-02-13 17:17:38,491 - sustainability_analyzer - INFO - Carbon footprint calculated: 986.4299689796994
+2025-02-13 17:17:38,491 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(90.4052435657741), 'recycling_rate': np.float64(73.49963532205318), 'waste_reduction': np.float64(90.4052435657741)}
+2025-02-13 17:17:38,491 - sustainability_analyzer - INFO - Carbon footprint calculated: 986.4299689796994
+2025-02-13 17:17:38,491 - sustainability_analyzer - INFO - Energy efficiency calculated: 81.02% (Base: 89.89%, Carbon Impact: 0.90)
+2025-02-13 17:17:38,491 - sustainability_analyzer - INFO - Sustainability score calculated: 82.51856706000268
+2025-02-13 17:17:38,491 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(986.4299689796994), 'per_unit': np.float64(8.220249741497495)}, 'material_efficiency': {'material_efficiency': 90.4052435657741, 'recycling_rate': 73.49963532205318, 'waste_reduction': 90.4052435657741}, 'sustainability_score': {'overall': 82.51856706000268}}

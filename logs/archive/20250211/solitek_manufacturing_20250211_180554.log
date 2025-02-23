@@ -1,0 +1,12 @@
+2025-02-11 18:05:54,871 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_180554.log
+2025-02-11 18:05:54,928 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.011808217598917488, 'r2': 0.9881140928514449}
+2025-02-11 18:05:55,840 - solitek_manufacturing - ERROR - Error generating performance visualizations: No material flow data available for visualization
+2025-02-11 18:05:55,840 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No material flow data available for visualization
+2025-02-11 18:05:55,905 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 18:05:55,905 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization
+2025-02-11 18:05:56,508 - solitek_manufacturing - ERROR - Error generating performance visualizations: No material flow data available for visualization
+2025-02-11 18:05:56,508 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No material flow data available for visualization
+2025-02-11 18:05:56,568 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.027971157520101354, 'r2': 0.9771374498760939}
+2025-02-11 18:05:56,570 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 92.87
+Predicted Quality: 83.59

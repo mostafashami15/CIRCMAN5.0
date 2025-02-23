@@ -1,0 +1,6 @@
+2025-02-13 17:22:38,324 - manufacturing_model - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_172238.log
+2025-02-13 17:22:38,328 - manufacturing_model - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_172238.log
+2025-02-13 17:22:38,382 - manufacturing_model - INFO - Model trained successfully. Metrics: {'mse': 0.45904534860765667, 'r2': 0.620671555550751}
+2025-02-13 17:22:38,388 - manufacturing_model - INFO - Generated predictions: {'predicted_output': 90.65439122521583, 'predicted_quality': 81.58895210269425}
+2025-02-13 17:22:38,391 - manufacturing_model - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_172238.log
+2025-02-13 17:22:38,394 - manufacturing_model - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_model_20250213_172238.log

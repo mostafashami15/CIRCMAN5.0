@@ -1,0 +1,5 @@
+2025-02-13 11:20:55,571 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112055.log
+2025-02-13 11:20:55,574 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112055.log
+2025-02-13 11:20:55,923 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112055.log
+2025-02-13 11:20:55,926 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_112055.log
+2025-02-13 11:20:55,929 - solitek_manufacturing - ERROR - Error generating visualization: Unknown metric type: invalid_type

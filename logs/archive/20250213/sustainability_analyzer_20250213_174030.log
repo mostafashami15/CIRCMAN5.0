@@ -1,0 +1,11 @@
+2025-02-13 17:40:30,280 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174030.log
+2025-02-13 17:40:30,284 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174030.log
+2025-02-13 17:40:30,287 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174030.log
+2025-02-13 17:40:30,310 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174030.log
+2025-02-13 17:40:30,313 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174030.log
+2025-02-13 17:40:30,322 - sustainability_analyzer - INFO - Carbon footprint calculated: 1141.328303074652
+2025-02-13 17:40:30,322 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.67527614774484), 'recycling_rate': np.float64(75.86814436040011), 'waste_reduction': np.float64(89.67527614774482)}
+2025-02-13 17:40:30,322 - sustainability_analyzer - INFO - Carbon footprint calculated: 1141.328303074652
+2025-02-13 17:40:30,322 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.98% (Base: 90.28%, Carbon Impact: 0.89)
+2025-02-13 17:40:30,322 - sustainability_analyzer - INFO - Sustainability score calculated: 82.62440479926948
+2025-02-13 17:40:30,322 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1141.328303074652), 'per_unit': np.float64(9.511069192288767)}, 'material_efficiency': {'material_efficiency': 89.67527614774484, 'recycling_rate': 75.86814436040011, 'waste_reduction': 89.67527614774482}, 'sustainability_score': {'overall': 82.62440479926948}}

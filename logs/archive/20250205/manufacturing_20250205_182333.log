@@ -1,0 +1,4 @@
+2025-02-05 18:23:34,050 - solitek_manufacturing - INFO - Calculated recycling rates for 6 materials
+2025-02-05 18:23:34,054 - solitek_manufacturing - ERROR - Error in lifecycle assessment: 'material_flow'
+2025-02-05 18:23:34,069 - solitek_manufacturing - ERROR - Error in lifecycle assessment: 'material_flow'
+2025-02-05 18:23:34,069 - solitek_manufacturing - ERROR - Error generating LCA report: 'material_flow'

@@ -1,0 +1,22 @@
+2025-02-13 17:29:38,056 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,061 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,064 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,068 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,071 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,074 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,077 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,080 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,590 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,593 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172938.log
+2025-02-13 17:29:38,602 - sustainability_analyzer - INFO - Carbon footprint calculated: 878.9696925908585
+2025-02-13 17:29:38,602 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.64643298770231), 'recycling_rate': np.float64(75.67997811861709), 'waste_reduction': np.float64(89.64643298770231)}
+2025-02-13 17:29:38,603 - sustainability_analyzer - INFO - Carbon footprint calculated: 878.9696925908585
+2025-02-13 17:29:38,603 - sustainability_analyzer - INFO - Energy efficiency calculated: 82.18% (Base: 90.09%, Carbon Impact: 0.91)
+2025-02-13 17:29:38,603 - sustainability_analyzer - INFO - Sustainability score calculated: 83.21515956378046
+2025-02-13 17:29:38,603 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(878.9696925908585), 'per_unit': np.float64(7.324747438257154)}, 'material_efficiency': {'material_efficiency': 89.64643298770231, 'recycling_rate': 75.67997811861709, 'waste_reduction': 89.64643298770231}, 'sustainability_score': {'overall': 83.21515956378046}}
+2025-02-13 17:29:40,294 - sustainability_analyzer - INFO - Carbon footprint calculated: 878.9696925908585
+2025-02-13 17:29:40,294 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.64643298770231), 'recycling_rate': np.float64(75.67997811861709), 'waste_reduction': np.float64(89.64643298770231)}
+2025-02-13 17:29:40,294 - sustainability_analyzer - INFO - Carbon footprint calculated: 878.9696925908585
+2025-02-13 17:29:40,294 - sustainability_analyzer - INFO - Energy efficiency calculated: 82.18% (Base: 90.09%, Carbon Impact: 0.91)
+2025-02-13 17:29:40,294 - sustainability_analyzer - INFO - Sustainability score calculated: 83.21515956378046
+2025-02-13 17:29:40,294 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(878.9696925908585), 'per_unit': np.float64(7.324747438257154)}, 'material_efficiency': {'material_efficiency': 89.64643298770231, 'recycling_rate': 75.67997811861709, 'waste_reduction': 89.64643298770231}, 'sustainability_score': {'overall': 83.21515956378046}}

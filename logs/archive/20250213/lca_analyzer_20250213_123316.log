@@ -1,0 +1,13 @@
+2025-02-13 12:33:16,365 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,369 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,425 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,428 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,432 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,435 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,438 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,441 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,449 - lca_analyzer - ERROR - Error performing LCA: Material inputs dictionary cannot be empty
+2025-02-13 12:33:16,614 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:16,617 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_123316.log
+2025-02-13 12:33:17,818 - lca_analyzer - WARNING - Use phase impact calculation yielded non-negative value
+2025-02-13 12:33:18,313 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123318/reports/lca_impact.xlsx

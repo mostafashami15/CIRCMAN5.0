@@ -1,0 +1,25 @@
+2025-02-07 20:36:47,872 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.95905779936503), 'cycle_time_efficiency': np.float64(1.8467282816216097), 'energy_efficiency': np.float64(0.6188543264220507), 'output_amount': np.float64(92.49693090567189), 'input_amount': np.float64(100.5849049774742)}
+2025-02-07 20:36:47,879 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(1.9673386235999482), 'efficiency_score': np.float64(21.004183491764426), 'uniformity_score': np.float64(94.97889394758795)}
+2025-02-07 20:36:47,883 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(2020.5838022168352), 'sustainability_score': np.float64(90.26911355791516), 'material_efficiency': np.float64(96.96739116305531), 'recycling_rate': np.float64(74.63979914592146), 'waste_reduction': np.float64(96.96739116305531)}
+2025-02-07 20:36:48,534 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_end_to_end_analysis0/test_visualization.png
+2025-02-07 20:36:48,545 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.51367845904053), 'cycle_time_efficiency': np.float64(1.8493754485775553), 'energy_efficiency': np.float64(0.615821319868054), 'output_amount': np.float64(92.37027007964953), 'input_amount': np.float64(100.93602577782116)}
+2025-02-07 20:36:48,733 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.1366888151181589, 'r2': 0.8255628579468023}
+2025-02-07 20:36:48,737 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 101.69
+energy_used: 149.63
+cycle_time: 50.02
+efficiency: 20.94
+defect_rate: 2.03
+thickness_uniformity: 94.97
+2025-02-07 20:36:48,740 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-07 20:36:49,147 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_visualization_integration0/test_production.png
+2025-02-07 20:36:49,451 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_visualization_integration0/test_quality.png
+2025-02-07 20:36:49,740 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_visualization_integration0/test_sustainability.png
+2025-02-07 20:36:49,839 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.6234295642366), 'cycle_time_efficiency': np.float64(1.8185667140780766), 'energy_efficiency': np.float64(0.609650884580921), 'output_amount': np.float64(91.46321808064279), 'input_amount': np.float64(99.82514135919624)}
+2025-02-07 20:36:49,840 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.011996342004896), 'efficiency_score': np.float64(21.037739468078804), 'uniformity_score': np.float64(95.03320555622209)}
+2025-02-07 20:36:49,840 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(1870.2683923933446), 'sustainability_score': np.float64(89.89859283280077), 'material_efficiency': np.float64(96.91633042510985), 'recycling_rate': np.float64(73.5238717840796), 'waste_reduction': np.float64(96.91633042510985)}
+2025-02-07 20:36:49,903 - solitek_manufacturing - INFO - Analysis report exported to: /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_data_saving0/results/analysis_report.xlsx
+2025-02-07 20:36:50,305 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_data_saving0/visualizations/production_analysis.png
+2025-02-07 20:36:50,652 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_data_saving0/visualizations/energy_analysis.png
+2025-02-07 20:36:50,953 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_data_saving0/visualizations/quality_analysis.png
+2025-02-07 20:36:51,232 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-6/test_data_saving0/visualizations/sustainability_analysis.png

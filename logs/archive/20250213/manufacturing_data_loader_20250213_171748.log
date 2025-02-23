@@ -1,0 +1,3 @@
+2025-02-13 17:17:48,833 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_171748.log
+2025-02-13 17:17:48,833 - manufacturing_data_loader - INFO - Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-60/test_valid_production_data_loa0/test_production_data.csv
+2025-02-13 17:17:48,834 - manufacturing_data_loader - INFO - Successfully loaded 2 production records

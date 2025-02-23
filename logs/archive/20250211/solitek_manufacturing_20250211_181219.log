@@ -1,0 +1,8 @@
+2025-02-11 18:12:19,327 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_181219.log
+2025-02-11 18:12:19,383 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.039329406670486886, 'r2': 0.9723413749374272}
+2025-02-11 18:12:20,801 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 18:12:20,801 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization
+2025-02-11 18:12:22,007 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.03239367603004002, 'r2': 0.9590329745157817}
+2025-02-11 18:12:22,009 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 91.29
+Predicted Quality: 82.16

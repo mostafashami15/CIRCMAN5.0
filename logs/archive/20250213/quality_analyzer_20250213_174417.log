@@ -1,0 +1,10 @@
+2025-02-13 17:44:17,339 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_174417.log
+2025-02-13 17:44:17,353 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(2.0225283662706826), 'efficiency_score': np.float64(20.92279674691296), 'uniformity_score': np.float64(95.03159856616615)}
+2025-02-13 17:44:17,706 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:44:18,527 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(2.0225283662706826), 'efficiency_score': np.float64(20.92279674691296), 'uniformity_score': np.float64(95.03159856616615)}
+2025-02-13 17:44:18,929 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:44:20,463 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:44:20,975 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(2.0225283662706826), 'efficiency_score': np.float64(20.92279674691296), 'uniformity_score': np.float64(95.03159856616615)}
+2025-02-13 17:44:21,323 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:44:22,189 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(2.0225283662706826), 'efficiency_score': np.float64(20.92279674691296), 'uniformity_score': np.float64(95.03159856616615)}
+2025-02-13 17:44:22,537 - quality_analyzer - INFO - Quality trends analyzed successfully

@@ -1,0 +1,5 @@
+2025-02-13 13:28:40,640 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_132840.log
+2025-02-13 13:28:40,646 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_132840.log
+2025-02-13 13:28:40,649 - solitek_manufacturing - ERROR - Error analyzing efficiency: No production data available for analysis
+2025-02-13 13:28:40,649 - solitek_manufacturing - ERROR - Error analyzing quality metrics: No quality data available for analysis
+2025-02-13 13:28:40,649 - solitek_manufacturing - ERROR - Error in lifecycle assessment: No material flow data available

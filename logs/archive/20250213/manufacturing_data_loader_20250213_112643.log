@@ -1,0 +1,9 @@
+2025-02-13 11:26:43,509 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_112643.log
+2025-02-13 11:26:43,514 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_112643.log
+2025-02-13 11:26:43,518 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_112643.log
+2025-02-13 11:26:43,537 - manufacturing_data_loader - INFO - Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-42/test_data_loading0/production.csv
+2025-02-13 11:26:43,545 - manufacturing_data_loader - INFO - Successfully loaded 120 production records
+2025-02-13 11:26:43,545 - manufacturing_data_loader - INFO - Loading quality data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-42/test_data_loading0/quality.csv
+2025-02-13 11:26:43,546 - manufacturing_data_loader - ERROR - Error loading quality data: Missing required columns in quality data: ['visual_inspection']
+2025-02-13 11:26:43,611 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_112643.log
+2025-02-13 11:26:43,614 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_112643.log

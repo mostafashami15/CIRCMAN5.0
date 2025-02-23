@@ -1,0 +1,7 @@
+2025-02-12 23:07:14,552 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250212_230714.log
+2025-02-12 23:07:14,571 - solitek_manufacturing - INFO - Successfully loaded all LCA data files
+2025-02-12 23:07:15,224 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 23:07:15,545 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 23:07:15,908 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0096
+2025-02-12 23:07:16,230 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 23:07:16,680 - solitek_manufacturing - ERROR - Error in lifecycle assessment: No material flow data available

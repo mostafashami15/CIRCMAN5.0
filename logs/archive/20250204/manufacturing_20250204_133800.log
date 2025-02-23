@@ -1,0 +1,30 @@
+2025-02-04 13:38:01,661 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.010935477374317744, 'r2': 0.9889475265304224}
+2025-02-04 13:38:01,668 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 101.04
+energy_used: 149.60
+cycle_time: 50.55
+efficiency: 21.02
+defect_rate: 2.03
+thickness_uniformity: 95.10
+2025-02-04 13:38:01,674 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 100.03
+energy_used: 149.64
+cycle_time: 50.58
+efficiency: 20.90
+defect_rate: 2.02
+thickness_uniformity: 94.98
+2025-02-04 13:38:01,675 - solitek_manufacturing - INFO - Optimization potential analysis:
+input_amount: 0.2%
+energy_used: -0.3%
+cycle_time: 1.2%
+efficiency: -0.4%
+defect_rate: 0.7%
+thickness_uniformity: -0.0%
+2025-02-04 13:38:02,659 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/production_analysis.png
+2025-02-04 13:38:02,971 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/energy_analysis.png
+2025-02-04 13:38:03,310 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/quality_analysis.png
+2025-02-04 13:38:03,583 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/sustainability_analysis.png
+2025-02-04 13:38:03,584 - solitek_manufacturing - ERROR - Error in efficiency analysis: 'Column not found: output_quantity'
+2025-02-04 13:38:03,585 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.0026543387521207), 'efficiency_score': np.float64(20.98281953512255), 'uniformity_score': np.float64(94.98955980084415)}
+2025-02-04 13:38:03,586 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(5756.436403518368), 'sustainability_score': np.float64(90.23379691925994), 'material_efficiency': np.float64(96.95857054545486), 'recycling_rate': np.float64(74.54265845813846), 'waste_reduction': np.float64(96.95857054545485)}
+2025-02-04 13:38:03,586 - solitek_manufacturing - ERROR - Error generating comprehensive report: No module named 'openpyxl'

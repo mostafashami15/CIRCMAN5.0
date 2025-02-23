@@ -1,0 +1,9 @@
+2025-02-05 18:32:50,258 - solitek_manufacturing - INFO - Successfully loaded LCA data
+2025-02-05 18:32:50,264 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:32:50,268 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:32:50,268 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-05 18:32:50,275 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:32:50,275 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-05 18:32:50,278 - solitek_manufacturing - ERROR - Error generating LCA report: No module named 'openpyxl'
+2025-02-05 18:32:50,349 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:32:50,349 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0041

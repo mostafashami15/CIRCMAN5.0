@@ -1,0 +1,11 @@
+2025-02-11 18:27:52,598 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_182752.log
+2025-02-11 18:27:52,605 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 18:27:52,605 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization
+2025-02-11 18:27:52,664 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 18:27:52,664 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization
+2025-02-11 18:27:52,678 - solitek_manufacturing - ERROR - Error generating visualization: No production data available for visualization
+2025-02-11 18:27:52,688 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 18:27:52,688 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization
+2025-02-11 18:27:52,688 - solitek_manufacturing - ERROR - Error generating reports: Performance analysis failed: Visualization generation failed: No production data available for visualization
+2025-02-11 18:27:52,729 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 18:27:52,729 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization

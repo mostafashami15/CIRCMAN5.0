@@ -11,6 +11,7 @@ from .impact_factors import (
     MATERIAL_IMPACT_FACTORS,
     ENERGY_IMPACT_FACTORS,
     RECYCLING_BENEFIT_FACTORS,
+    DEGRADATION_RATES,
 )
 
 
@@ -107,24 +108,57 @@ class LCAAnalyzer:
         return impact
 
     def _calculate_use_phase_impact(
-        self, annual_generation: float, lifetime: float, grid_intensity: float
+        self,
+        annual_generation: float,
+        lifetime: float,
+        grid_intensity: float,
+        degradation_rate: Optional[float] = None,
     ) -> float:
-        """Calculate use phase impact with meaningful values."""
-        # Validate physical constraints
-        if annual_generation < 0:
-            raise ValueError("Annual energy generation cannot be negative")
-        if lifetime <= 0:
-            raise ValueError("System lifetime must be positive")
-        if grid_intensity < 0:
-            raise ValueError("Grid carbon intensity cannot be negative")
+        """
+        Calculate use phase impact considering power generation and degradation.
 
-        # Calculate avoided emissions (must be meaningfully negative)
-        impact = -1.0 * annual_generation * lifetime * grid_intensity
-        if impact >= 0:
-            self.logger.warning(
-                "Use phase impact calculation yielded non-negative value"
+        Args:
+            annual_generation: Annual energy generation (kWh)
+            lifetime: System lifetime (years)
+            grid_intensity: Grid carbon intensity (kg CO2/kWh)
+            degradation_rate: Optional annual degradation rate (as decimal)
+
+        Returns:
+            float: Use phase impact in kg CO2-eq
+        """
+        try:
+            # Validate inputs
+            if annual_generation <= 0:
+                raise ValueError("Annual energy generation cannot be negative")
+            if lifetime <= 0:
+                raise ValueError("Lifetime must be positive")
+            if grid_intensity <= 0:
+                raise ValueError("Grid intensity must be positive")
+
+            if degradation_rate is not None:
+                # Apply degradation calculation
+                total_generation = sum(
+                    annual_generation * ((1 - degradation_rate) ** year)
+                    for year in range(int(lifetime))
+                )
+            else:
+                # No degradation case
+                total_generation = annual_generation * lifetime
+
+            impact = -1.0 * total_generation * grid_intensity
+
+            self.logger.info(
+                f"Years: {lifetime}, Annual Gen: {annual_generation:.2f}, "
+                f"Degradation Rate: {degradation_rate if degradation_rate else 'None'}, "
+                f"Total Gen: {total_generation:.2f}, "
+                f"Impact: {impact:.2f} kg CO2-eq"
             )
-        return impact
+
+            return float(impact)
+
+        except Exception as e:
+            self.logger.error(f"Error calculating use phase impact: {str(e)}")
+            raise
 
     def calculate_end_of_life_impact(
         self,
@@ -157,6 +191,53 @@ class LCAAnalyzer:
         impact += (total_mass / 1000) * transport_distance * transport_factor
 
         return impact
+
+    def calculate_detailed_impacts(
+        self, material_inputs: Dict[str, float], energy_consumption: float
+    ) -> Dict[str, float]:
+        """
+        Calculate detailed environmental impacts beyond carbon footprint.
+
+        Args:
+            material_inputs: Dictionary of material types and quantities
+            energy_consumption: Total energy consumed in kWh
+
+        Returns:
+            Dict[str, float]: Detailed environmental impacts
+        """
+        try:
+            impacts = {
+                "ghg_emissions": 0.0,  # kg CO2-eq
+                "water_consumption": 0.0,  # m3
+                "energy_consumption": energy_consumption,  # kWh
+                "material_intensity": sum(material_inputs.values()),  # kg
+                "waste_generation": 0.0,  # kg
+            }
+
+            # Calculate impacts for each material
+            for material, quantity in material_inputs.items():
+                # GHG emissions
+                impact_factor = MATERIAL_IMPACT_FACTORS.get(material, 0.0)
+                impacts["ghg_emissions"] += quantity * impact_factor
+
+                # Estimate water consumption (example factors)
+                water_factor = 0.1  # m3/kg (example)
+                impacts["water_consumption"] += quantity * water_factor
+
+                # Estimate waste generation (example factors)
+                waste_factor = 0.05  # 5% waste rate
+                impacts["waste_generation"] += quantity * waste_factor
+
+            # Add energy-related impacts
+            impacts["ghg_emissions"] += energy_consumption * ENERGY_IMPACT_FACTORS.get(
+                "grid_electricity", 0.5
+            )
+
+            return impacts
+
+        except Exception as e:
+            self.logger.error(f"Error calculating detailed impacts: {str(e)}")
+            raise
 
     def perform_full_lca(
         self,

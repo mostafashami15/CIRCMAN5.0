@@ -1,0 +1,12 @@
+2025-02-11 17:45:07,946 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_174507.log
+2025-02-11 17:45:08,000 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.018099353750412307, 'r2': 0.9828168342245395}
+2025-02-11 17:45:08,242 - solitek_manufacturing - ERROR - Error generating performance visualizations: Could not interpret input 'production_line'
+2025-02-11 17:45:08,242 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: Could not interpret input 'production_line'
+2025-02-11 17:45:08,365 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 17:45:08,365 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization
+2025-02-11 17:45:08,400 - solitek_manufacturing - ERROR - Error generating performance visualizations: Could not interpret input 'production_line'
+2025-02-11 17:45:08,400 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: Could not interpret input 'production_line'
+2025-02-11 17:45:08,490 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.010830690818864296, 'r2': 0.9900210019347481}
+2025-02-11 17:45:08,493 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 93.37
+Predicted Quality: 84.03

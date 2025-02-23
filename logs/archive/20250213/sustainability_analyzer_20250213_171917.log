@@ -1,0 +1,11 @@
+2025-02-13 17:19:17,112 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171917.log
+2025-02-13 17:19:17,116 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171917.log
+2025-02-13 17:19:17,119 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171917.log
+2025-02-13 17:19:17,141 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171917.log
+2025-02-13 17:19:17,144 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_171917.log
+2025-02-13 17:19:17,153 - sustainability_analyzer - INFO - Carbon footprint calculated: 1138.6725933911289
+2025-02-13 17:19:17,153 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(89.51880138855805), 'recycling_rate': np.float64(74.700753998506), 'waste_reduction': np.float64(89.51880138855805)}
+2025-02-13 17:19:17,153 - sustainability_analyzer - INFO - Carbon footprint calculated: 1138.6725933911289
+2025-02-13 17:19:17,153 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.61% (Base: 89.84%, Carbon Impact: 0.89)
+2025-02-13 17:19:17,154 - sustainability_analyzer - INFO - Sustainability score calculated: 82.09987754317915
+2025-02-13 17:19:17,154 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1138.6725933911289), 'per_unit': np.float64(9.488938278259408)}, 'material_efficiency': {'material_efficiency': 89.51880138855805, 'recycling_rate': 74.700753998506, 'waste_reduction': 89.51880138855805}, 'sustainability_score': {'overall': 82.09987754317915}}

@@ -1,0 +1,22 @@
+2025-02-13 12:33:16,365 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,369 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,425 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,428 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,432 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,434 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,438 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,441 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,614 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,617 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_123316.log
+2025-02-13 12:33:16,626 - sustainability_analyzer - INFO - Carbon footprint calculated: 1006.6776819337206
+2025-02-13 12:33:16,626 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(90.06963563530071), 'recycling_rate': np.float64(75.49625393795696), 'waste_reduction': np.float64(90.06963563530073)}
+2025-02-13 12:33:16,626 - sustainability_analyzer - INFO - Carbon footprint calculated: 1006.6776819337206
+2025-02-13 12:33:16,627 - sustainability_analyzer - INFO - Energy efficiency calculated: 80.22% (Base: 89.20%, Carbon Impact: 0.90)
+2025-02-13 12:33:16,627 - sustainability_analyzer - INFO - Sustainability score calculated: 82.74187982645438
+2025-02-13 12:33:16,627 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1006.6776819337206), 'per_unit': np.float64(8.388980682781005)}, 'material_efficiency': {'material_efficiency': 90.06963563530071, 'recycling_rate': 75.49625393795696, 'waste_reduction': 90.06963563530073}, 'sustainability_score': {'overall': 82.74187982645438}}
+2025-02-13 12:33:18,314 - sustainability_analyzer - INFO - Carbon footprint calculated: 1006.6776819337206
+2025-02-13 12:33:18,314 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(90.06963563530071), 'recycling_rate': np.float64(75.49625393795696), 'waste_reduction': np.float64(90.06963563530073)}
+2025-02-13 12:33:18,315 - sustainability_analyzer - INFO - Carbon footprint calculated: 1006.6776819337206
+2025-02-13 12:33:18,315 - sustainability_analyzer - INFO - Energy efficiency calculated: 80.22% (Base: 89.20%, Carbon Impact: 0.90)
+2025-02-13 12:33:18,315 - sustainability_analyzer - INFO - Sustainability score calculated: 82.74187982645438
+2025-02-13 12:33:18,315 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1006.6776819337206), 'per_unit': np.float64(8.388980682781005)}, 'material_efficiency': {'material_efficiency': 90.06963563530071, 'recycling_rate': 75.49625393795696, 'waste_reduction': 90.06963563530073}, 'sustainability_score': {'overall': 82.74187982645438}}

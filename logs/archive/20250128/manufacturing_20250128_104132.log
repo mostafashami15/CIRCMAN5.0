@@ -1,0 +1,6 @@
+2025-01-28 10:41:32,769 - solitek_manufacturing - INFO - Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-3/test_valid_production_data_loa0/test_production_data.csv
+2025-01-28 10:41:32,774 - solitek_manufacturing - INFO - Successfully loaded and validated 2 records from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-3/test_valid_production_data_loa0/test_production_data.csv
+2025-01-28 10:41:32,775 - solitek_manufacturing - INFO - Loading production data from nonexistent_file.csv
+2025-01-28 10:41:32,775 - solitek_manufacturing - ERROR - DataError: Production data file not found: nonexistent_file.csv
+2025-01-28 10:41:32,776 - solitek_manufacturing - INFO - Loading production data from test_invalid_data.csv
+2025-01-28 10:41:32,777 - solitek_manufacturing - ERROR - ValidationError: Output amount cannot exceed input amount

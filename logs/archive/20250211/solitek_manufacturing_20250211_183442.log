@@ -1,0 +1,4 @@
+2025-02-11 18:34:42,870 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_183442.log
+2025-02-11 18:34:43,541 - solitek_manufacturing - ERROR - Error generating visualization: Unknown metric type: invalid_metric
+2025-02-11 18:34:43,542 - solitek_manufacturing - ERROR - Error loading production data: production data file not found: /nonexistent/path/data.csv
+2025-02-11 18:34:44,815 - solitek_manufacturing - ERROR - Error exporting analysis report: Report generation failed: Cannot save file into a non-existent directory: '/private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-29/test_report_generation0/analysis_report.xlsx'

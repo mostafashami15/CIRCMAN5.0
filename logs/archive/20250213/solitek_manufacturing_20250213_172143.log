@@ -1,0 +1,9 @@
+2025-02-13 17:21:43,471 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_172143.log
+2025-02-13 17:21:43,483 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_172143.log
+2025-02-13 17:21:43,493 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_172143.log
+2025-02-13 17:21:43,968 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_172143/visualizations
+2025-02-13 17:21:43,972 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-13 17:21:43,976 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_172143.log
+2025-02-13 17:21:44,488 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_172143/visualizations
+2025-02-13 17:21:44,492 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-13 17:21:45,686 - solitek_manufacturing - INFO - Successfully generated all reports

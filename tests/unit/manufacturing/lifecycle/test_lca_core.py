@@ -1,3 +1,4 @@
+# tests/unit/manufacturing/lifecycle/test_lca_core.py
 """Unit tests for LCA analysis module."""
 
 import pytest
@@ -11,6 +12,18 @@ from circman5.manufacturing.lifecycle.impact_factors import (
     ENERGY_IMPACT_FACTORS,
     RECYCLING_BENEFIT_FACTORS,
 )
+
+
+@pytest.fixture
+def sample_material_inputs():
+    """Fixture providing sample material inputs."""
+    return {
+        "silicon_wafer": 100.0,
+        "solar_glass": 150.0,
+        "eva_sheet": 50.0,
+        "backsheet": 30.0,
+        "aluminum_frame": 80.0,
+    }
 
 
 def test_manufacturing_impact_calculation(lca_analyzer, sample_material_data):
@@ -42,15 +55,60 @@ def test_manufacturing_impact_calculation(lca_analyzer, sample_material_data):
 
 
 def test_use_phase_impact_calculation(lca_analyzer):
-    """Test use phase impact calculations."""
-    # Use the internal method name that actually exists
+    """Test use phase impact calculations without degradation."""
+    annual_generation = 1000.0
+    lifetime = 25
+    grid_intensity = 0.5
+
     impact = lca_analyzer._calculate_use_phase_impact(
-        annual_generation=1000.0, lifetime=25, grid_intensity=0.5
+        annual_generation=annual_generation,
+        lifetime=lifetime,
+        grid_intensity=grid_intensity,
     )
+
+    # Calculate expected total lifetime generation (without degradation effects)
+    total_generation = annual_generation * lifetime
+    expected_impact = -1.0 * total_generation * grid_intensity
 
     assert impact < 0  # Should be negative (environmental benefit)
     assert isinstance(impact, float)
-    assert impact == -1000.0 * 25 * 0.5  # Expected calculation
+    assert abs(impact - expected_impact) < 1.0  # Allow for small difference
+
+    # Additional validation of the calculated values
+    assert abs(impact) > abs(
+        annual_generation * grid_intensity
+    )  # Impact should exceed single year
+    assert abs(impact) <= abs(
+        annual_generation * lifetime * grid_intensity
+    )  # Impact should not exceed theoretical maximum
+
+
+def test_use_phase_impact_with_degradation(lca_analyzer):
+    """Test use phase impact calculations with degradation rates."""
+    annual_generation = 1200.0
+    lifetime = 20
+    grid_intensity = 0.4
+    degradation_rate = 0.005  # from DEGRADATION_RATES["mono_perc"]
+
+    impact = lca_analyzer._calculate_use_phase_impact(
+        annual_generation=annual_generation,
+        lifetime=lifetime,
+        grid_intensity=grid_intensity,
+        degradation_rate=degradation_rate,
+    )
+
+    # Calculate expected total generation with degradation
+    total_generation = sum(
+        annual_generation * ((1 - degradation_rate) ** year) for year in range(lifetime)
+    )
+    expected_impact = -1.0 * total_generation * grid_intensity
+
+    # Verify results
+    assert impact < 0  # Should be negative (environmental benefit)
+    assert isinstance(impact, float)
+    assert (
+        abs(impact - expected_impact) < 1.0
+    )  # Allow for small floating point differences
 
 
 def test_end_of_life_impact_calculation(lca_analyzer):
@@ -185,3 +243,47 @@ def test_error_handling(lca_analyzer):
         lca_analyzer._calculate_use_phase_impact(
             annual_generation=-1000.0, lifetime=25, grid_intensity=0.5
         )
+
+
+def test_detailed_impacts_calculation(lca_analyzer):
+    """Test detailed environmental impacts calculation."""
+    material_inputs = {
+        "silicon_wafer": 100.0,
+        "solar_glass": 150.0,
+        "aluminum_frame": 80.0,
+    }
+    energy_consumption = 1000.0
+
+    impacts = lca_analyzer.calculate_detailed_impacts(
+        material_inputs=material_inputs, energy_consumption=energy_consumption
+    )
+
+    # Verify dictionary structure
+    assert isinstance(impacts, dict)
+    expected_keys = {
+        "ghg_emissions",
+        "water_consumption",
+        "energy_consumption",
+        "material_intensity",
+        "waste_generation",
+    }
+    assert all(key in impacts for key in expected_keys)
+
+    # Verify values
+    assert impacts["energy_consumption"] == energy_consumption
+    assert impacts["material_intensity"] == sum(material_inputs.values())
+    assert impacts["ghg_emissions"] > 0
+    assert impacts["water_consumption"] > 0
+    assert impacts["waste_generation"] > 0
+
+    # Verify GHG emissions calculation
+    expected_material_emissions = sum(
+        qty * MATERIAL_IMPACT_FACTORS.get(mat, 0)
+        for mat, qty in material_inputs.items()
+    )
+    expected_energy_emissions = (
+        energy_consumption * ENERGY_IMPACT_FACTORS["grid_electricity"]
+    )
+    expected_total_emissions = expected_material_emissions + expected_energy_emissions
+
+    assert abs(impacts["ghg_emissions"] - expected_total_emissions) < 0.01

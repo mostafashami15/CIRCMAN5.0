@@ -1,0 +1,3 @@
+2025-02-03 23:27:03,043 - solitek_manufacturing - ERROR - Error in efficiency analysis: 'Column not found: output_quantity'
+2025-02-03 23:27:03,045 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(1.9982857899419697), 'efficiency_score': np.float64(21.00145300016819), 'uniformity_score': np.float64(94.99826642211721)}
+2025-02-03 23:27:03,048 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(70209.31746575571), 'sustainability_score': np.float64(90.56261810961126), 'material_efficiency': np.float64(97.0009052877403), 'recycling_rate': np.float64(75.53994802731023), 'waste_reduction': np.float64(97.00090528774028)}

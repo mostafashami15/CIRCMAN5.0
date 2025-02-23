@@ -1,0 +1,15 @@
+2025-02-08 23:46:00,058 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.5803331325025), 'cycle_time_efficiency': np.float64(1.8379801233512032), 'energy_efficiency': np.float64(0.6121513626955745), 'output_amount': np.float64(91.78262123787354), 'input_amount': np.float64(100.22088596803678)}
+2025-02-08 23:46:00,063 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.0331095644871717), 'efficiency_score': np.float64(21.01182199002708), 'uniformity_score': np.float64(94.99117059503519)}
+2025-02-08 23:46:00,065 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(6136.251493933316), 'sustainability_score': np.float64(91.27850343635087), 'material_efficiency': np.float64(97.061520393648), 'recycling_rate': np.float64(77.78479720265757), 'waste_reduction': np.float64(97.061520393648)}
+2025-02-08 23:46:01,549 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.00796381043600662, 'r2': 0.9912620699953261}
+2025-02-08 23:46:01,556 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 99.62
+energy_used: 150.51
+cycle_time: 49.39
+efficiency: 20.92
+defect_rate: 1.93
+thickness_uniformity: 94.97
+2025-02-08 23:46:01,964 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250208_234600/visualizations/production_analysis.png
+2025-02-08 23:46:02,348 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250208_234600/visualizations/energy_analysis.png
+2025-02-08 23:46:02,659 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250208_234600/visualizations/quality_analysis.png
+2025-02-08 23:46:02,949 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250208_234600/visualizations/sustainability_analysis.png

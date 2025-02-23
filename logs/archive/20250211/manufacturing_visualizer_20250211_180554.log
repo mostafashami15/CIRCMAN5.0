@@ -1,0 +1,4 @@
+2025-02-11 18:05:54,873 - manufacturing_visualizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250211_180554.log
+2025-02-11 18:05:55,840 - manufacturing_visualizer - WARNING - No material flow data available for visualization
+2025-02-11 18:05:55,905 - manufacturing_visualizer - WARNING - No production data available for visualization
+2025-02-11 18:05:56,508 - manufacturing_visualizer - WARNING - No material flow data available for visualization

@@ -1,0 +1,2 @@
+2025-02-13 14:56:33,788 - manufacturing_visualizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250213_145633.log
+2025-02-13 14:56:34,814 - manufacturing_visualizer - ERROR - Error creating performance dashboard: Could not interpret value `test_timestamp` for parameter `x`

@@ -1,0 +1,11 @@
+2025-02-13 17:29:33,499 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172933.log
+2025-02-13 17:29:33,505 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172933.log
+2025-02-13 17:29:33,508 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172933.log
+2025-02-13 17:29:33,531 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172933.log
+2025-02-13 17:29:33,534 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_172933.log
+2025-02-13 17:29:33,542 - sustainability_analyzer - INFO - Carbon footprint calculated: 1362.7285031258734
+2025-02-13 17:29:33,543 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(90.05511935453163), 'recycling_rate': np.float64(75.89590655134029), 'waste_reduction': np.float64(90.05511935453163)}
+2025-02-13 17:29:33,543 - sustainability_analyzer - INFO - Carbon footprint calculated: 1362.7285031258734
+2025-02-13 17:29:33,543 - sustainability_analyzer - INFO - Energy efficiency calculated: 77.90% (Base: 90.19%, Carbon Impact: 0.86)
+2025-02-13 17:29:33,543 - sustainability_analyzer - INFO - Sustainability score calculated: 82.16126990642168
+2025-02-13 17:29:33,543 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(1362.7285031258734), 'per_unit': np.float64(11.356070859382278)}, 'material_efficiency': {'material_efficiency': 90.05511935453163, 'recycling_rate': 75.89590655134029, 'waste_reduction': 90.05511935453163}, 'sustainability_score': {'overall': 82.16126990642168}}

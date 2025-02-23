@@ -1,0 +1,2 @@
+2025-02-12 23:14:51,288 - manufacturing_visualizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_visualizer_20250212_231451.log
+2025-02-12 23:14:52,627 - manufacturing_visualizer - INFO - Saved production trends visualization to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_231452/visualizations/production_trends.png

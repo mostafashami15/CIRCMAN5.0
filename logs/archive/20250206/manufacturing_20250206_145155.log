@@ -1,0 +1,16 @@
+2025-02-06 14:51:56,316 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.011697608982851779, 'r2': 0.9884949729842206}
+2025-02-06 14:51:56,322 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 99.64
+energy_used: 148.98
+cycle_time: 49.70
+efficiency: 20.99
+defect_rate: 1.98
+thickness_uniformity: 94.93
+2025-02-06 14:51:56,816 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/production_analysis.png
+2025-02-06 14:51:57,212 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/energy_analysis.png
+2025-02-06 14:51:57,558 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/quality_analysis.png
+2025-02-06 14:51:57,865 - solitek_manufacturing - INFO - Visualization saved to tests/results/latest/sustainability_analysis.png
+2025-02-06 14:51:57,865 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.34120467421131), 'cycle_time_efficiency': np.float64(1.8333441142459908), 'energy_efficiency': np.float64(0.609331409985332), 'output_amount': np.float64(91.40276582608482), 'input_amount': np.float64(100.06739691259062)}
+2025-02-06 14:51:57,866 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.007487502256699), 'efficiency_score': np.float64(21.005286231867075), 'uniformity_score': np.float64(95.03210730150815)}
+2025-02-06 14:51:57,867 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(5613.842404436459), 'sustainability_score': np.float64(89.93607176930189), 'material_efficiency': np.float64(96.97567724801137), 'recycling_rate': np.float64(73.51032565231309), 'waste_reduction': np.float64(96.97567724801137)}
+2025-02-06 14:51:57,937 - solitek_manufacturing - INFO - Comprehensive report generated at: tests/results/latest/analysis_report.xlsx

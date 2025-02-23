@@ -1,0 +1,14 @@
+2025-02-13 17:17:49,788 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_171749.log
+2025-02-13 17:17:49,789 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(2.045955815602855), 'efficiency_score': np.float64(21.084869022793562), 'uniformity_score': np.float64(94.69673770982672)}
+2025-02-13 17:17:49,792 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_171749.log
+2025-02-13 17:17:49,794 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:17:49,931 - quality_analyzer - INFO - Quality trends plot generated successfully
+2025-02-13 17:17:49,932 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_171749.log
+2025-02-13 17:17:49,932 - quality_analyzer - WARNING - Empty quality data provided
+2025-02-13 17:17:49,933 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_171749.log
+2025-02-13 17:17:49,934 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(1.9912049816074675), 'efficiency_score': np.float64(21.306582990347444), 'uniformity_score': np.float64(95.00696185843579)}
+2025-02-13 17:17:49,937 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_171749.log
+2025-02-13 17:17:49,938 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:17:49,942 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_171749.log
+2025-02-13 17:17:49,943 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:17:50,080 - quality_analyzer - INFO - Quality trends plot generated successfully

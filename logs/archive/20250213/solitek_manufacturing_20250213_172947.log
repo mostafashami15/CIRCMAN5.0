@@ -1,0 +1,3 @@
+2025-02-13 17:29:47,564 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_172947.log
+2025-02-13 17:29:48,059 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_172945/lca_results
+2025-02-13 17:29:48,063 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0008

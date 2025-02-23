@@ -1,0 +1,6 @@
+2025-02-13 17:35:12,225 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_173512.log
+2025-02-13 17:35:12,229 - quality_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/quality_analyzer_20250213_173512.log
+2025-02-13 17:35:12,238 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(1.9128341787147798), 'efficiency_score': np.float64(21.060641665002148), 'uniformity_score': np.float64(95.00470177010904)}
+2025-02-13 17:35:12,645 - quality_analyzer - INFO - Quality trends analyzed successfully
+2025-02-13 17:35:13,462 - quality_analyzer - INFO - Quality metrics calculated: {'avg_defect_rate': np.float64(1.9128341787147798), 'efficiency_score': np.float64(21.060641665002148), 'uniformity_score': np.float64(95.00470177010904)}
+2025-02-13 17:35:13,462 - quality_analyzer - DEBUG - Quality score calculated: 66.66006334853677

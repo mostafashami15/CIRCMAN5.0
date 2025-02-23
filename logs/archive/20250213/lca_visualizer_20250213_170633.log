@@ -1,0 +1,3 @@
+2025-02-13 17:06:33,984 - lca_visualizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_170633.log
+2025-02-13 17:06:33,987 - lca_visualizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_visualizer_20250213_170633.log
+2025-02-13 17:06:34,558 - lca_visualizer - WARNING - Material flow data is empty. Skipping material flow plot.

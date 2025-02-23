@@ -1,0 +1,16 @@
+2025-02-13 17:44:37,340 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,341 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(94.64647395066883), 'recycling_rate': np.float64(72.51306834375303), 'waste_reduction': np.float64(94.64647395066883)}
+2025-02-13 17:44:37,344 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,345 - sustainability_analyzer - INFO - Carbon footprint calculated: 991.9055856365131
+2025-02-13 17:44:37,345 - sustainability_analyzer - INFO - Carbon footprint calculated: 0.0
+2025-02-13 17:44:37,348 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,349 - sustainability_analyzer - INFO - Sustainability score calculated: 80.0
+2025-02-13 17:44:37,351 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,352 - sustainability_analyzer - WARNING - Empty material data provided
+2025-02-13 17:44:37,352 - sustainability_analyzer - WARNING - Empty energy data provided
+2025-02-13 17:44:37,352 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,353 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(94.78106874134444), 'recycling_rate': np.float64(85.01283278326886), 'waste_reduction': np.float64(94.78106874134446)}
+2025-02-13 17:44:37,356 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,495 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,518 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log
+2025-02-13 17:44:37,527 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_174437.log

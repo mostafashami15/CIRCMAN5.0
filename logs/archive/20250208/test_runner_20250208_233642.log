@@ -1,0 +1,13 @@
+2025-02-08 23:36:42,314 - test_runner - INFO - Running test suite: tests/unit/test_lca_core.py
+2025-02-08 23:36:42,334 - test_runner - ERROR - Test suite failed: tests/unit/test_lca_core.py
+2025-02-08 23:36:42,334 - test_runner - INFO - Running test suite: tests/integration/test_data_pipeline.py
+2025-02-08 23:36:42,340 - test_runner - ERROR - Test suite failed: tests/integration/test_data_pipeline.py
+2025-02-08 23:36:42,340 - test_runner - INFO - Running test suite: tests/integration/test_manufacturing_optimization.py
+2025-02-08 23:36:42,370 - test_runner - ERROR - Test suite failed: tests/integration/test_manufacturing_optimization.py
+2025-02-08 23:36:42,370 - test_runner - INFO - Running test suite: tests/integration/test_system_integration.py
+2025-02-08 23:36:42,376 - test_runner - ERROR - Test suite failed: tests/integration/test_system_integration.py
+2025-02-08 23:36:42,376 - test_runner - INFO - Running test suite: tests/ai/test_optimization.py
+2025-02-08 23:36:42,383 - test_runner - ERROR - Test suite failed: tests/ai/test_optimization.py
+2025-02-08 23:36:42,383 - test_runner - INFO - Running test suite: tests/performance/test_performance.py
+2025-02-08 23:36:42,389 - test_runner - ERROR - Test suite failed: tests/performance/test_performance.py
+2025-02-08 23:36:42,717 - test_runner - ERROR - Some test suites failed. Check results for details.

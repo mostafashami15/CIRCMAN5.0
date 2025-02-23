@@ -1,0 +1,18 @@
+2025-02-09 12:09:25,346 - performance_tests - INFO - Starting data generation performance test
+2025-02-09 12:09:25,370 - performance_tests - INFO - Data generation completed in 0.02 seconds
+2025-02-09 12:09:25,373 - performance_tests - INFO - Starting memory usage test
+2025-02-09 12:09:25,373 - performance_tests - INFO - Loading test data
+2025-02-09 12:09:25,397 - performance_tests - INFO - Performing analysis
+2025-02-09 12:09:25,399 - performance_tests - INFO - Memory increase: 0.0 MB
+2025-02-09 12:09:25,400 - performance_tests - INFO - Starting optimization performance test
+2025-02-09 12:09:25,400 - performance_tests - INFO - Loading data for optimization
+2025-02-09 12:09:25,402 - performance_tests - INFO - Training optimization model
+2025-02-09 12:09:26,808 - performance_tests - INFO - Model training completed: {'mse': 0.014051720540749008, 'r2': 0.9860523257408458}
+2025-02-09 12:09:26,808 - performance_tests - INFO - Testing parameter optimization
+2025-02-09 12:09:26,815 - performance_tests - INFO - Optimization completed in 1.42 seconds
+2025-02-09 12:09:26,816 - performance_tests - INFO - Starting visualization performance test
+2025-02-09 12:09:26,816 - performance_tests - INFO - Loading data for visualization
+2025-02-09 12:09:26,842 - performance_tests - INFO - Generating visualizations
+2025-02-09 12:09:28,215 - performance_tests - INFO - Visualization completed in 1.40 seconds
+2025-02-09 12:09:28,215 - performance_tests - INFO - Writing performance test results
+2025-02-09 12:09:28,216 - performance_tests - INFO - Performance results logged successfully

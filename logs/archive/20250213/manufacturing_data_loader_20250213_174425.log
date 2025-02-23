@@ -1,0 +1,13 @@
+2025-02-13 17:44:25,708 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_174425.log
+2025-02-13 17:44:25,713 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_174425.log
+2025-02-13 17:44:25,716 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_174425.log
+2025-02-13 17:44:25,728 - manufacturing_data_loader - INFO - Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-68/test_data_loading0/production.csv
+2025-02-13 17:44:25,730 - manufacturing_data_loader - INFO - Successfully loaded 120 production records
+2025-02-13 17:44:25,730 - manufacturing_data_loader - INFO - Loading quality data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-68/test_data_loading0/quality.csv
+2025-02-13 17:44:25,731 - manufacturing_data_loader - INFO - Successfully loaded 120 quality records
+2025-02-13 17:44:25,731 - manufacturing_data_loader - INFO - Loading material data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-68/test_data_loading0/material.csv
+2025-02-13 17:44:25,732 - manufacturing_data_loader - INFO - Successfully loaded 120 material records
+2025-02-13 17:44:25,732 - manufacturing_data_loader - INFO - Loading energy data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-68/test_data_loading0/energy.csv
+2025-02-13 17:44:25,733 - manufacturing_data_loader - INFO - Successfully loaded 120 energy records
+2025-02-13 17:44:25,734 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_174425.log
+2025-02-13 17:44:25,737 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_174425.log

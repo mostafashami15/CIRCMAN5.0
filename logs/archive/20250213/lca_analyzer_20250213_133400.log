@@ -1,0 +1,4 @@
+2025-02-13 13:34:00,298 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_133400.log
+2025-02-13 13:34:00,303 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_133400.log
+2025-02-13 13:34:00,317 - lca_analyzer - ERROR - Error performing LCA: Material inputs dictionary cannot be empty
+2025-02-13 13:34:00,908 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_133400/reports/lca_impact_BATCH_0094.xlsx

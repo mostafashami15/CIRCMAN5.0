@@ -1,0 +1,4 @@
+2025-02-05 23:50:08,123 - solitek_manufacturing - INFO - Loading production data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/src/test_results/run_20250205_235008/input_data/test_production_data.csv
+2025-02-05 23:50:08,127 - solitek_manufacturing - INFO - Successfully loaded and validated 720 records from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/src/test_results/run_20250205_235008/input_data/test_production_data.csv
+2025-02-05 23:50:08,128 - solitek_manufacturing - INFO - Loading production data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_production_data.csv
+2025-02-05 23:50:08,128 - solitek_manufacturing - ERROR - DataError: Production data file not found: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_production_data.csv

@@ -1,0 +1,6 @@
+2025-02-07 14:27:42,887 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-07 14:27:42,887 - solitek_manufacturing - WARNING - No quality data available for analysis
+2025-02-07 14:27:42,887 - solitek_manufacturing - WARNING - Insufficient data for sustainability calculation
+2025-02-07 14:27:42,953 - solitek_manufacturing - INFO - Analysis report exported to: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250207_142742/reports/analysis_report.xlsx
+2025-02-07 14:27:42,960 - solitek_manufacturing - INFO - Loading production data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/data/synthetic/test_production_data.csv
+2025-02-07 14:27:42,963 - solitek_manufacturing - ERROR - Error loading production data: Output amount cannot exceed input amount

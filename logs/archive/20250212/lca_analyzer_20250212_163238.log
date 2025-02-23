@@ -1,0 +1,21 @@
+2025-02-12 16:32:38,408 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250212_163238.log
+2025-02-12 16:32:39,152 - lca_analyzer - INFO - LCA Results saved successfully for batch default:
+File Path: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_163239/reports/lca_impact.xlsx
+Manufacturing Impact: 8974.169877605575
+Use Phase Impact: -0.0
+End of Life Impact: 371.1067600927132
+2025-02-12 16:32:39,476 - lca_analyzer - INFO - LCA Results saved successfully for batch BATCH_0036:
+File Path: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_163239/reports/lca_impact_BATCH_0036.xlsx
+Manufacturing Impact: 214.76627442620656
+Use Phase Impact: -0.0
+End of Life Impact: 3.1094202744934885
+2025-02-12 16:32:39,784 - lca_analyzer - INFO - LCA Results saved successfully for batch default:
+File Path: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_163239/reports/lca_impact.xlsx
+Manufacturing Impact: 9030.481646370235
+Use Phase Impact: -0.0
+End of Life Impact: 370.1097108054941
+2025-02-12 16:32:41,366 - lca_analyzer - INFO - LCA Results saved successfully for batch TEST_001:
+File Path: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_163241/reports/lca_impact_TEST_001.xlsx
+Manufacturing Impact: 100.0
+Use Phase Impact: -200.0
+End of Life Impact: 50.0

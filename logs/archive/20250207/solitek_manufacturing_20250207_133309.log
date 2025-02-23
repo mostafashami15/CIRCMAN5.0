@@ -1,0 +1,43 @@
+2025-02-07 13:33:09,710 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.46049911365027), 'cycle_time_efficiency': np.float64(1.8359917312168905), 'energy_efficiency': np.float64(0.6108169946625611), 'output_amount': np.float64(91.45452203959043), 'input_amount': np.float64(99.99346485737803)}
+2025-02-07 13:33:09,716 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.029268183235355), 'efficiency_score': np.float64(21.011170897711395), 'uniformity_score': np.float64(95.01037800269566)}
+2025-02-07 13:33:09,717 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(1794.2187930277942), 'sustainability_score': np.float64(90.69535382601097), 'material_efficiency': np.float64(96.9631253592821), 'recycling_rate': np.float64(76.07055358171166), 'waste_reduction': np.float64(96.9631253592821)}
+2025-02-07 13:33:10,377 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_end_to_end_analysis0/test_visualization.png
+2025-02-07 13:33:10,390 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.07331556954229), 'cycle_time_efficiency': np.float64(1.8085970523459909), 'energy_efficiency': np.float64(0.6034698093202401), 'output_amount': np.float64(90.60933690287176), 'input_amount': np.float64(99.49054378467616)}
+2025-02-07 13:33:10,562 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.15645460430393326, 'r2': 0.8565173551308612}
+2025-02-07 13:33:10,567 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 100.51
+energy_used: 149.83
+cycle_time: 50.08
+efficiency: 21.02
+defect_rate: 1.96
+thickness_uniformity: 95.06
+2025-02-07 13:33:10,569 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-07 13:33:10,976 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_visualization_integration0/test_production.png
+2025-02-07 13:33:11,297 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_visualization_integration0/test_quality.png
+2025-02-07 13:33:11,594 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_visualization_integration0/test_sustainability.png
+2025-02-07 13:33:11,712 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.45036276788613), 'cycle_time_efficiency': np.float64(1.8270674183249964), 'energy_efficiency': np.float64(0.6085885506774823), 'output_amount': np.float64(91.22408266430769), 'input_amount': np.float64(99.75256511102884)}
+2025-02-07 13:33:11,713 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.0570152727783704), 'efficiency_score': np.float64(21.01441594427927), 'uniformity_score': np.float64(95.00352538843875)}
+2025-02-07 13:33:11,714 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(5984.109002902697), 'sustainability_score': np.float64(90.37110500011858), 'material_efficiency': np.float64(97.02058299018823), 'recycling_rate': np.float64(74.85565635662267), 'waste_reduction': np.float64(97.02058299018823)}
+2025-02-07 13:33:12,108 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_visualization_performance0/test_production.png
+2025-02-07 13:33:12,419 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_visualization_performance0/test_quality.png
+2025-02-07 13:33:12,715 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_visualization_performance0/test_sustainability.png
+2025-02-07 13:33:12,763 - solitek_manufacturing - INFO - Successfully loaded LCA data
+2025-02-07 13:33:12,766 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-07 13:33:12,770 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-07 13:33:12,770 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-07 13:33:12,774 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-07 13:33:12,774 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-07 13:33:12,846 - solitek_manufacturing - INFO - LCA report generated successfully at /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_lca_report_generation0/lca_report.xlsx
+2025-02-07 13:33:12,864 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-07 13:33:12,864 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0086
+2025-02-07 13:33:13,007 - solitek_manufacturing - INFO - Loading production data from /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-4/test_valid_production_data_loa0/test_production_data.csv
+2025-02-07 13:33:13,008 - solitek_manufacturing - INFO - Successfully loaded 2 records
+2025-02-07 13:33:13,009 - solitek_manufacturing - INFO - Loading production data from nonexistent_file.csv
+2025-02-07 13:33:13,009 - solitek_manufacturing - ERROR - Error loading production data: Production data file not found: nonexistent_file.csv
+2025-02-07 13:33:13,011 - solitek_manufacturing - INFO - Loading production data from test_invalid_data.csv
+2025-02-07 13:33:13,011 - solitek_manufacturing - ERROR - Error loading production data: Output amount cannot exceed input amount
+2025-02-07 13:33:13,017 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-07 13:33:13,018 - solitek_manufacturing - WARNING - No quality data available for analysis
+2025-02-07 13:33:13,018 - solitek_manufacturing - WARNING - Insufficient data for sustainability calculation
+2025-02-07 13:33:13,020 - solitek_manufacturing - INFO - Analysis report exported to: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250207_133313/reports/analysis_report.xlsx
+2025-02-07 13:33:13,022 - solitek_manufacturing - ERROR - Error loading production data: unsupported operand type(s) for /: 'str' and 'str'

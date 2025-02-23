@@ -1,0 +1,6 @@
+2025-02-13 12:33:11,425 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123311.log
+2025-02-13 12:33:11,432 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123311.log
+2025-02-13 12:33:11,439 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123311.log
+2025-02-13 12:33:11,462 - solitek_manufacturing - ERROR - Error loading data: Missing required columns in quality data: ['visual_inspection']
+2025-02-13 12:33:11,526 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123311.log
+2025-02-13 12:33:11,529 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123311.log

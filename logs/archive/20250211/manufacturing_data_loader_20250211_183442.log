@@ -1,0 +1,3 @@
+2025-02-11 18:34:42,871 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250211_183442.log
+2025-02-11 18:34:43,542 - manufacturing_data_loader - INFO - Loading production data from /nonexistent/path/data.csv
+2025-02-11 18:34:43,542 - manufacturing_data_loader - ERROR - Error loading production data: production data file not found: /nonexistent/path/data.csv

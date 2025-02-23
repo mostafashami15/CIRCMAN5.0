@@ -1,0 +1,12 @@
+2025-02-11 17:55:10,487 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_175510.log
+2025-02-11 17:55:10,541 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.04215198020784114, 'r2': 0.964893846617961}
+2025-02-11 17:55:10,544 - solitek_manufacturing - ERROR - Error generating performance visualizations: 'ManufacturingVisualizer' object has no attribute 'visualize_production_trends'
+2025-02-11 17:55:10,544 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: 'ManufacturingVisualizer' object has no attribute 'visualize_production_trends'
+2025-02-11 17:55:10,604 - solitek_manufacturing - ERROR - Error generating performance visualizations: 'ManufacturingVisualizer' object has no attribute 'visualize_production_trends'
+2025-02-11 17:55:10,604 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: 'ManufacturingVisualizer' object has no attribute 'visualize_production_trends'
+2025-02-11 17:55:10,607 - solitek_manufacturing - ERROR - Error generating performance visualizations: 'ManufacturingVisualizer' object has no attribute 'visualize_production_trends'
+2025-02-11 17:55:10,607 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: 'ManufacturingVisualizer' object has no attribute 'visualize_production_trends'
+2025-02-11 17:55:10,661 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.028001720901993588, 'r2': 0.9649017105734118}
+2025-02-11 17:55:10,664 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 95.11
+Predicted Quality: 85.59

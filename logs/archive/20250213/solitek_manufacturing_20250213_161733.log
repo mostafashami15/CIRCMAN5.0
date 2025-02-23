@@ -1,0 +1,14 @@
+2025-02-13 16:17:33,298 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161733.log
+2025-02-13 16:17:33,307 - solitek_manufacturing - ERROR - Error generating performance visualizations: No quality data available for visualization
+2025-02-13 16:17:33,307 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No quality data available for visualization
+2025-02-13 16:17:33,367 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161733.log
+2025-02-13 16:17:33,371 - solitek_manufacturing - ERROR - Error generating performance visualizations: No quality data available for visualization
+2025-02-13 16:17:33,371 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No quality data available for visualization
+2025-02-13 16:17:33,382 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161733.log
+2025-02-13 16:17:33,387 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161733.log
+2025-02-13 16:17:33,390 - solitek_manufacturing - ERROR - Error generating performance visualizations: No quality data available for visualization
+2025-02-13 16:17:33,390 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No quality data available for visualization
+2025-02-13 16:17:33,390 - solitek_manufacturing - ERROR - Error generating reports: Performance analysis failed: Visualization generation failed: No quality data available for visualization
+2025-02-13 16:17:33,404 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_161733.log
+2025-02-13 16:17:33,407 - solitek_manufacturing - ERROR - Error generating performance visualizations: No quality data available for visualization
+2025-02-13 16:17:33,407 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No quality data available for visualization

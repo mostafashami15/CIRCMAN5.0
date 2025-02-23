@@ -1,0 +1,16 @@
+2025-02-06 15:00:35,654 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.009181357379339622, 'r2': 0.9908503542135673}
+2025-02-06 15:00:35,660 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 99.75
+energy_used: 148.86
+cycle_time: 50.04
+efficiency: 20.97
+defect_rate: 1.97
+thickness_uniformity: 94.97
+2025-02-06 15:00:36,164 - solitek_manufacturing - INFO - Visualization saved to tests/results/runs/run_20250206_150034/visualizations/production_analysis.png
+2025-02-06 15:00:36,563 - solitek_manufacturing - INFO - Visualization saved to tests/results/runs/run_20250206_150034/visualizations/energy_analysis.png
+2025-02-06 15:00:36,913 - solitek_manufacturing - INFO - Visualization saved to tests/results/runs/run_20250206_150034/visualizations/quality_analysis.png
+2025-02-06 15:00:37,209 - solitek_manufacturing - INFO - Visualization saved to tests/results/runs/run_20250206_150034/visualizations/sustainability_analysis.png
+2025-02-06 15:00:37,210 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.35307317998573), 'cycle_time_efficiency': np.float64(1.8257245685834886), 'energy_efficiency': np.float64(0.6084517778821594), 'output_amount': np.float64(91.37263224228724), 'input_amount': np.float64(100.02141040429257)}
+2025-02-06 15:00:37,211 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(2.0327352197861535), 'efficiency_score': np.float64(20.967799536247817), 'uniformity_score': np.float64(94.98270810700366)}
+2025-02-06 15:00:37,211 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(5940.822236058559), 'sustainability_score': np.float64(90.571758014362), 'material_efficiency': np.float64(96.94807928823077), 'recycling_rate': np.float64(75.69367504200154), 'waste_reduction': np.float64(96.94807928823076)}
+2025-02-06 15:00:37,279 - solitek_manufacturing - INFO - Comprehensive report generated at: tests/results/runs/run_20250206_150034/reports/analysis_report.xlsx

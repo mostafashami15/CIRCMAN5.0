@@ -1,0 +1,19 @@
+2025-02-13 14:53:29,826 - performance_tests - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/performance_tests_20250213_145329.log
+2025-02-13 14:53:29,827 - performance_tests - INFO - Starting data generation performance test
+2025-02-13 14:53:29,887 - performance_tests - INFO - Data generation completed in 0.06 seconds
+2025-02-13 14:53:29,897 - performance_tests - INFO - Starting memory usage test
+2025-02-13 14:53:29,897 - performance_tests - INFO - Loading test data
+2025-02-13 14:53:29,921 - performance_tests - INFO - Performing analysis
+2025-02-13 14:53:29,924 - performance_tests - INFO - Memory increase: -0.7 MB
+2025-02-13 14:53:29,925 - performance_tests - INFO - Starting optimization performance test
+2025-02-13 14:53:29,925 - performance_tests - INFO - Loading data for optimization
+2025-02-13 14:53:29,927 - performance_tests - INFO - Training optimization model
+2025-02-13 14:53:30,813 - performance_tests - INFO - Model training completed: {'mse': 0.010752630021369138, 'r2': 0.9897523777567288}
+2025-02-13 14:53:30,813 - performance_tests - INFO - Testing parameter optimization
+2025-02-13 14:53:30,820 - performance_tests - INFO - Optimization completed in 0.90 seconds
+2025-02-13 14:53:30,821 - performance_tests - INFO - Starting visualization performance test
+2025-02-13 14:53:30,821 - performance_tests - INFO - Loading data for visualization
+2025-02-13 14:53:30,846 - performance_tests - INFO - Generating visualizations
+2025-02-13 14:53:32,310 - performance_tests - INFO - Visualization completed in 1.49 seconds
+2025-02-13 14:53:32,310 - performance_tests - INFO - Writing performance test results
+2025-02-13 14:53:32,311 - performance_tests - INFO - Performance results logged successfully

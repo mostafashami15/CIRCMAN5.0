@@ -1,0 +1,22 @@
+2025-02-13 16:11:07,014 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,017 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,021 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,024 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,028 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,031 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,034 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,037 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,540 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,543 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_161107.log
+2025-02-13 16:11:07,552 - sustainability_analyzer - INFO - Carbon footprint calculated: 816.2437294786897
+2025-02-13 16:11:07,552 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(90.26324250854042), 'recycling_rate': np.float64(75.08633127024589), 'waste_reduction': np.float64(90.26324250854042)}
+2025-02-13 16:11:07,552 - sustainability_analyzer - INFO - Carbon footprint calculated: 816.2437294786897
+2025-02-13 16:11:07,553 - sustainability_analyzer - INFO - Energy efficiency calculated: 82.89% (Base: 90.26%, Carbon Impact: 0.92)
+2025-02-13 16:11:07,553 - sustainability_analyzer - INFO - Sustainability score calculated: 83.49833624893208
+2025-02-13 16:11:07,553 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(816.2437294786897), 'per_unit': np.float64(6.8020310789890805)}, 'material_efficiency': {'material_efficiency': 90.26324250854042, 'recycling_rate': 75.08633127024589, 'waste_reduction': 90.26324250854042}, 'sustainability_score': {'overall': 83.49833624893208}}
+2025-02-13 16:11:09,193 - sustainability_analyzer - INFO - Carbon footprint calculated: 816.2437294786897
+2025-02-13 16:11:09,193 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(90.26324250854042), 'recycling_rate': np.float64(75.08633127024589), 'waste_reduction': np.float64(90.26324250854042)}
+2025-02-13 16:11:09,193 - sustainability_analyzer - INFO - Carbon footprint calculated: 816.2437294786897
+2025-02-13 16:11:09,193 - sustainability_analyzer - INFO - Energy efficiency calculated: 82.89% (Base: 90.26%, Carbon Impact: 0.92)
+2025-02-13 16:11:09,193 - sustainability_analyzer - INFO - Sustainability score calculated: 83.49833624893208
+2025-02-13 16:11:09,193 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': np.float64(816.2437294786897), 'per_unit': np.float64(6.8020310789890805)}, 'material_efficiency': {'material_efficiency': 90.26324250854042, 'recycling_rate': 75.08633127024589, 'waste_reduction': 90.26324250854042}, 'sustainability_score': {'overall': 83.49833624893208}}

@@ -1,0 +1,16 @@
+2025-02-07 18:45:06,721 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.014552346638851642, 'r2': 0.9857766387176017}
+2025-02-07 18:45:06,728 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 101.21
+energy_used: 150.42
+cycle_time: 50.23
+efficiency: 20.95
+defect_rate: 2.08
+thickness_uniformity: 94.93
+2025-02-07 18:45:07,352 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250207_184505/visualizations/production_analysis.png
+2025-02-07 18:45:07,744 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250207_184505/visualizations/energy_analysis.png
+2025-02-07 18:45:08,107 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250207_184505/visualizations/quality_analysis.png
+2025-02-07 18:45:08,406 - solitek_manufacturing - INFO - Visualization saved to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250207_184505/visualizations/sustainability_analysis.png
+2025-02-07 18:45:08,407 - solitek_manufacturing - INFO - Efficiency analysis completed: {'yield_rate': np.float64(91.56014680014582), 'cycle_time_efficiency': np.float64(1.8308108390417541), 'energy_efficiency': np.float64(0.6102095887558059), 'output_amount': np.float64(91.49233734343052), 'input_amount': np.float64(99.92593998689921)}
+2025-02-07 18:45:08,408 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(1.9555334301399006), 'efficiency_score': np.float64(20.97150355126488), 'uniformity_score': np.float64(95.03122519689411)}
+2025-02-07 18:45:08,408 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(5724.768612846994), 'sustainability_score': np.float64(91.01470023281317), 'material_efficiency': np.float64(96.9828312102647), 'recycling_rate': np.float64(77.08906128542623), 'waste_reduction': np.float64(96.9828312102647)}
+2025-02-07 18:45:08,474 - solitek_manufacturing - INFO - Analysis report exported to: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250207_184505/reports/analysis_report.xlsx

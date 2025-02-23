@@ -1,0 +1,9 @@
+2025-02-12 18:18:24,645 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250212_181824.log
+2025-02-12 18:18:24,669 - solitek_manufacturing - ERROR - Error loading LCA data: Missing required columns in energy data: ['efficiency_rate']
+2025-02-12 18:18:25,400 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 18:18:25,416 - solitek_manufacturing - ERROR - Error generating performance visualizations: No quality data available for visualization
+2025-02-12 18:18:25,416 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No quality data available for visualization
+2025-02-12 18:18:25,416 - solitek_manufacturing - ERROR - Error generating reports: Performance analysis failed: Visualization generation failed: No quality data available for visualization
+2025-02-12 18:18:25,721 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0069
+2025-02-12 18:18:26,023 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 18:18:27,486 - solitek_manufacturing - ERROR - Error in lifecycle assessment: 'energy_consumption'

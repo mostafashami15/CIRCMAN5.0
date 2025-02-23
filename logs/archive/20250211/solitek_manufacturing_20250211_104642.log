@@ -1,0 +1,17 @@
+2025-02-11 10:46:42,726 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_104642.log
+2025-02-11 10:46:42,782 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.3114135233898095, 'r2': 0.6356526328409904}
+2025-02-11 10:46:42,785 - solitek_manufacturing - ERROR - Error optimizing process parameters: Model must be trained before optimization
+2025-02-11 10:46:42,792 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 92.20
+Predicted Quality: 82.98
+2025-02-11 10:46:42,841 - solitek_manufacturing - INFO - Optimization potential analysis:
+input_amount: -0.2%
+energy_used: 0.3%
+cycle_time: 1.4%
+efficiency: 0.8%
+defect_rate: 1.5%
+thickness_uniformity: 0.0%
+2025-02-11 10:46:46,555 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.0070884347966045785, 'r2': 0.9925419297704565}
+2025-02-11 10:46:46,555 - solitek_manufacturing - ERROR - Error optimizing process parameters: Model must be trained before optimization
+2025-02-11 10:46:47,133 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-11 10:46:47,458 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0004

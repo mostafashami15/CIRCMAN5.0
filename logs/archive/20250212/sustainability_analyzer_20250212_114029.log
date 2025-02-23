@@ -1,0 +1,40 @@
+2025-02-12 11:40:29,624 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250212_114029.log
+2025-02-12 11:40:29,625 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(94.92360869733827), 'recycling_rate': np.float64(79.42367189531222), 'waste_reduction': np.float64(94.92360869733827)}
+2025-02-12 11:40:29,631 - sustainability_analyzer - INFO - Carbon footprint calculated: 931.949590648903
+2025-02-12 11:40:29,631 - sustainability_analyzer - INFO - Carbon footprint calculated: 0.0
+2025-02-12 11:40:29,636 - sustainability_analyzer - INFO - Sustainability score calculated: 80.0
+2025-02-12 11:40:29,684 - sustainability_analyzer - WARNING - Empty material data provided
+2025-02-12 11:40:29,684 - sustainability_analyzer - WARNING - Empty energy data provided
+2025-02-12 11:40:29,685 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(95.13606772619363), 'recycling_rate': np.float64(81.13969492830422), 'waste_reduction': np.float64(95.13606772619363)}
+2025-02-12 11:40:29,704 - sustainability_analyzer - INFO - Material efficiency metrics calculated: {'material_efficiency': np.float64(95.06554270831478), 'recycling_rate': np.float64(84.88914980820807), 'waste_reduction': np.float64(95.06554270831478)}
+2025-02-12 11:40:29,737 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,738 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,738 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,738 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,738 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,738 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,739 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,739 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,739 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,739 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,739 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,739 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,739 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,740 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,741 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,741 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,741 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,741 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,741 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,741 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,742 - sustainability_analyzer - INFO - Carbon footprint calculated: 1028.1618331716877
+2025-02-12 11:40:29,742 - sustainability_analyzer - INFO - Energy efficiency calculated: 79.15% (Base: 88.22%, Carbon Impact: 0.90)
+2025-02-12 11:40:29,742 - sustainability_analyzer - INFO - Sustainability score calculated: 87.23718145604565
+2025-02-12 11:40:29,977 - sustainability_analyzer - INFO - Sustainability metrics plot generated successfully

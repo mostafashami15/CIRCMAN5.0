@@ -1,0 +1,28 @@
+2025-02-09 12:25:51,533 - manufacturing_optimizer - INFO - Preparing manufacturing data for optimization
+2025-02-09 12:25:51,537 - manufacturing_optimizer - INFO - Prepared 100 samples for training
+2025-02-09 12:25:51,538 - manufacturing_optimizer - INFO - Preparing manufacturing data for optimization
+2025-02-09 12:25:51,539 - manufacturing_optimizer - INFO - Prepared 100 samples for training
+2025-02-09 12:25:51,539 - manufacturing_optimizer - INFO - Training optimization models
+2025-02-09 12:25:51,954 - manufacturing_optimizer - INFO - Models trained successfully. Metrics: {'mse': 1.0087434685531345, 'r2': 0.16700737119432985}
+2025-02-09 12:25:51,955 - manufacturing_optimizer - INFO - Preparing manufacturing data for optimization
+2025-02-09 12:25:51,956 - manufacturing_optimizer - INFO - Prepared 100 samples for training
+2025-02-09 12:25:51,956 - manufacturing_optimizer - INFO - Training optimization models
+2025-02-09 12:25:52,132 - manufacturing_optimizer - INFO - Models trained successfully. Metrics: {'mse': 1.0087434685531345, 'r2': 0.16700737119432985}
+2025-02-09 12:25:52,137 - manufacturing_optimizer - INFO - Parameter optimization completed successfully
+2025-02-09 12:25:52,138 - manufacturing_optimizer - INFO - Preparing manufacturing data for optimization
+2025-02-09 12:25:52,140 - manufacturing_optimizer - INFO - Prepared 100 samples for training
+2025-02-09 12:25:52,140 - manufacturing_optimizer - INFO - Training optimization models
+2025-02-09 12:25:52,316 - manufacturing_optimizer - INFO - Models trained successfully. Metrics: {'mse': 1.0087434685531345, 'r2': 0.16700737119432985}
+2025-02-09 12:25:52,319 - manufacturing_optimizer - INFO - Generated predictions: {'predicted_output': 96.93616972972212, 'predicted_quality': 95.99636596834223}
+2025-02-09 12:25:53,039 - manufacturing_optimizer - INFO - Preparing manufacturing data for optimization
+2025-02-09 12:25:53,040 - manufacturing_optimizer - INFO - Prepared 124 samples for training
+2025-02-09 12:25:53,040 - manufacturing_optimizer - INFO - Training optimization models
+2025-02-09 12:25:53,227 - manufacturing_optimizer - INFO - Models trained successfully. Metrics: {'mse': 0.19515236311754808, 'r2': 0.7899797063269498}
+2025-02-09 12:25:53,232 - manufacturing_optimizer - INFO - Parameter optimization completed successfully
+2025-02-09 12:25:53,235 - manufacturing_optimizer - INFO - Generated predictions: {'predicted_output': 91.49466040772302, 'predicted_quality': 90.30389378983627}
+2025-02-09 12:25:54,494 - manufacturing_optimizer - INFO - Parameter optimization completed successfully
+2025-02-09 12:25:56,899 - manufacturing_optimizer - INFO - Preparing manufacturing data for optimization
+2025-02-09 12:25:56,901 - manufacturing_optimizer - INFO - Prepared 5118 samples for training
+2025-02-09 12:25:56,901 - manufacturing_optimizer - INFO - Training optimization models
+2025-02-09 12:25:58,315 - manufacturing_optimizer - INFO - Models trained successfully. Metrics: {'mse': 0.015897955751439555, 'r2': 0.9836188571118104}
+2025-02-09 12:25:58,321 - manufacturing_optimizer - INFO - Parameter optimization completed successfully

@@ -1,0 +1,9 @@
+2025-02-13 16:49:03,172 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_164903.log
+2025-02-13 16:49:04,082 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.013528391125761034, 'r2': 0.986075633982962}
+2025-02-13 16:49:04,087 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 101.08
+energy_used: 149.23
+cycle_time: 50.40
+efficiency: 20.98
+defect_rate: 1.95
+thickness_uniformity: 95.09

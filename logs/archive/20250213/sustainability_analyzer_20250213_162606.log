@@ -1,0 +1,16 @@
+2025-02-13 16:26:06,314 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_162606.log
+2025-02-13 16:26:06,318 - sustainability_analyzer - WARNING - Empty energy data provided
+2025-02-13 16:26:06,318 - sustainability_analyzer - WARNING - Empty material data provided
+2025-02-13 16:26:06,318 - sustainability_analyzer - INFO - Sustainability score calculated: 0.0
+2025-02-13 16:26:06,318 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': 0.0, 'per_unit': 0.0}, 'material_efficiency': {}, 'sustainability_score': {'overall': 0.0}}
+2025-02-13 16:26:06,382 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_162606.log
+2025-02-13 16:26:06,387 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_162606.log
+2025-02-13 16:26:06,389 - sustainability_analyzer - WARNING - Empty energy data provided
+2025-02-13 16:26:06,389 - sustainability_analyzer - WARNING - Empty material data provided
+2025-02-13 16:26:06,389 - sustainability_analyzer - INFO - Sustainability score calculated: 0.0
+2025-02-13 16:26:06,389 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': 0.0, 'per_unit': 0.0}, 'material_efficiency': {}, 'sustainability_score': {'overall': 0.0}}
+2025-02-13 16:26:06,404 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250213_162606.log
+2025-02-13 16:26:06,406 - sustainability_analyzer - WARNING - Empty energy data provided
+2025-02-13 16:26:06,406 - sustainability_analyzer - WARNING - Empty material data provided
+2025-02-13 16:26:06,406 - sustainability_analyzer - INFO - Sustainability score calculated: 0.0
+2025-02-13 16:26:06,406 - sustainability_analyzer - INFO - Sustainability metrics calculated: {'carbon_footprint': {'total': 0.0, 'per_unit': 0.0}, 'material_efficiency': {}, 'sustainability_score': {'overall': 0.0}}

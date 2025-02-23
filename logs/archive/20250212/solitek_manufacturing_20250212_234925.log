@@ -1,0 +1,12 @@
+2025-02-12 23:49:25,102 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250212_234925.log
+2025-02-12 23:49:25,123 - solitek_manufacturing - INFO - Successfully loaded all LCA data files
+2025-02-12 23:49:25,648 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_234925/visualizations
+2025-02-12 23:49:25,743 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 23:49:26,061 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_234925/visualizations
+2025-02-12 23:49:26,065 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 23:49:27,306 - solitek_manufacturing - INFO - Successfully generated all reports
+2025-02-12 23:49:27,597 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_234925/lca_results
+2025-02-12 23:49:27,601 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0078
+2025-02-12 23:49:27,915 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250212_234927/visualizations
+2025-02-12 23:49:27,918 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 23:49:28,321 - solitek_manufacturing - ERROR - Error in lifecycle assessment: No material flow data available

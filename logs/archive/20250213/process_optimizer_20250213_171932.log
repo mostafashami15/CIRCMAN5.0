@@ -1,0 +1,14 @@
+2025-02-13 17:19:32,803 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171932.log
+2025-02-13 17:19:32,810 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171932.log
+2025-02-13 17:19:32,910 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171932.log
+2025-02-13 17:19:32,911 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171932.log
+2025-02-13 17:19:32,960 - process_optimizer - INFO - Parameter optimization completed successfully
+2025-02-13 17:19:32,961 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171932.log
+2025-02-13 17:19:33,011 - process_optimizer - INFO - Parameter optimization completed successfully
+2025-02-13 17:19:33,011 - process_optimizer - INFO - Optimization potential analysis:
+input_amount: 0.8%
+energy_used: 0.2%
+cycle_time: 0.3%
+efficiency: 0.7%
+defect_rate: -1.9%
+thickness_uniformity: 0.1%

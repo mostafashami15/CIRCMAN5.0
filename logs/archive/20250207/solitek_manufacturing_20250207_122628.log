@@ -1,0 +1,5 @@
+2025-02-07 12:26:28,026 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-07 12:26:28,027 - solitek_manufacturing - WARNING - No quality data available for analysis
+2025-02-07 12:26:28,027 - solitek_manufacturing - WARNING - Insufficient data for sustainability calculation
+2025-02-07 12:26:28,095 - solitek_manufacturing - ERROR - Error exporting analysis report: At least one sheet must be visible
+2025-02-07 12:26:28,194 - solitek_manufacturing - ERROR - Error loading production data: unsupported operand type(s) for /: 'str' and 'str'

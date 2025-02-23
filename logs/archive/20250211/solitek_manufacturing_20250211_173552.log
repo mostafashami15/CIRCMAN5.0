@@ -1,0 +1,12 @@
+2025-02-11 17:35:52,578 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_173552.log
+2025-02-11 17:35:52,635 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 1.2012775921605825, 'r2': -0.30627053516281877}
+2025-02-11 17:35:52,993 - solitek_manufacturing - ERROR - Error generating performance visualizations: Could not interpret value `yield_rate` for parameter `x`
+2025-02-11 17:35:52,993 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: Could not interpret value `yield_rate` for parameter `x`
+2025-02-11 17:35:53,069 - solitek_manufacturing - ERROR - Error generating performance visualizations: No production data available for visualization
+2025-02-11 17:35:53,069 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: No production data available for visualization
+2025-02-11 17:35:53,088 - solitek_manufacturing - ERROR - Error generating performance visualizations: Could not interpret value `yield_rate` for parameter `x`
+2025-02-11 17:35:53,088 - solitek_manufacturing - ERROR - Error in performance analysis: Visualization generation failed: Could not interpret value `yield_rate` for parameter `x`
+2025-02-11 17:35:53,181 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.9038025382129907, 'r2': 0.021858962816967975}
+2025-02-11 17:35:53,183 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 89.63
+Predicted Quality: 80.67

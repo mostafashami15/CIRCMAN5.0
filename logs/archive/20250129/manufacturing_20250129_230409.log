@@ -1,0 +1,25 @@
+2025-01-29 23:04:09,400 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 1.4667266949878006, 'r2': -0.6671352786571627}
+2025-01-29 23:04:09,404 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 100.32
+energy_used: 149.69
+cycle_time: 50.06
+efficiency: 20.92
+defect_rate: 2.01
+thickness_uniformity: 94.82
+2025-01-29 23:04:09,407 - solitek_manufacturing - INFO - Manufacturing predictions:
+Predicted Output: 99.70
+Predicted Quality: 98.86
+2025-01-29 23:04:09,412 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 95.91
+energy_used: 148.94
+cycle_time: 50.51
+efficiency: 21.12
+defect_rate: 1.96
+thickness_uniformity: 94.82
+2025-01-29 23:04:09,412 - solitek_manufacturing - INFO - Optimization potential analysis:
+input_amount: -2.4%
+energy_used: -0.4%
+cycle_time: 0.1%
+efficiency: 0.1%
+defect_rate: -5.3%
+thickness_uniformity: -0.2%

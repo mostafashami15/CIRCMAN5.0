@@ -1,0 +1,5 @@
+2025-02-11 12:06:33,001 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250211_120633.log
+2025-02-11 12:06:33,121 - lca_analyzer - INFO - LCA Results for batch TEST_001:
+Manufacturing Impact: 100.0
+Use Phase Impact: 200.0
+End of Life Impact: 50.0

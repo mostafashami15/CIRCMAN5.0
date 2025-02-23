@@ -1,0 +1,6 @@
+2025-02-13 17:17:39,664 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_171739.log
+2025-02-13 17:17:39,667 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_171739.log
+2025-02-13 17:17:39,677 - lca_analyzer - WARNING - Use phase impact calculation yielded non-negative value
+2025-02-13 17:17:40,190 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_171740/reports/lca_impact.xlsx
+2025-02-13 17:17:40,191 - lca_analyzer - WARNING - Use phase impact calculation yielded non-negative value
+2025-02-13 17:17:40,634 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_171740/reports/lca_impact_BATCH_0072.xlsx

@@ -1,0 +1,5 @@
+2025-02-11 23:52:43,295 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250211_235243.log
+2025-02-11 23:52:43,323 - solitek_manufacturing - INFO - Successfully loaded all data files
+2025-02-11 23:52:46,083 - solitek_manufacturing - INFO - Successfully exported analysis report to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-31/test_report_generation0/analysis_report.xlsx
+2025-02-11 23:52:46,430 - solitek_manufacturing - ERROR - Error loading data: production data file not found: /nonexistent/path.csv
+2025-02-11 23:52:46,430 - solitek_manufacturing - ERROR - Error generating visualization: Unknown metric type: invalid_type

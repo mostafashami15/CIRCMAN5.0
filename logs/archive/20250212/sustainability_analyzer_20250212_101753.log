@@ -1,0 +1,3 @@
+2025-02-12 10:17:53,124 - sustainability_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/sustainability_analyzer_20250212_101753.log
+2025-02-12 10:17:53,150 - sustainability_analyzer - WARNING - Empty material data provided
+2025-02-12 10:17:53,150 - sustainability_analyzer - WARNING - Empty energy data provided

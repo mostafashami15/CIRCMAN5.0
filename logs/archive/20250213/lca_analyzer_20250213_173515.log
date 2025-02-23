@@ -1,0 +1,3 @@
+2025-02-13 17:35:15,391 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_173515.log
+2025-02-13 17:35:15,858 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_173515/reports/lca_impact.xlsx
+2025-02-13 17:35:15,861 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_173514/lca_results/lca_impact.xlsx

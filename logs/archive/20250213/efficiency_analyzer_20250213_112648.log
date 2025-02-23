@@ -1,0 +1,13 @@
+2025-02-13 11:26:48,329 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,333 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,343 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,346 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,349 - efficiency_analyzer - ERROR - Error in efficiency analysis: Input amounts must be positive
+2025-02-13 11:26:48,350 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,353 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,356 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,359 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,815 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,818 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250213_112648.log
+2025-02-13 11:26:48,827 - efficiency_analyzer - INFO - Efficiency analysis completed: {'yield_rate': 91.55945692024457, 'output_amount': 90.61828539839203, 'input_amount': 98.97206519838538, 'cycle_time_efficiency': 1.804273332977292, 'energy_efficiency': 0.6077376491519554}
+2025-02-13 11:26:50,482 - efficiency_analyzer - INFO - Efficiency analysis completed: {'yield_rate': 91.55945692024457, 'output_amount': 90.61828539839203, 'input_amount': 98.97206519838538, 'cycle_time_efficiency': 1.804273332977292, 'energy_efficiency': 0.6077376491519554}

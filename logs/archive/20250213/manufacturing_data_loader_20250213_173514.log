@@ -1,0 +1,7 @@
+2025-02-13 17:35:14,884 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_173514.log
+2025-02-13 17:35:14,901 - manufacturing_data_loader - INFO - Loading material data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_173514/input_data/material_data.csv
+2025-02-13 17:35:14,902 - manufacturing_data_loader - INFO - Successfully loaded 120 material records
+2025-02-13 17:35:14,902 - manufacturing_data_loader - INFO - Loading energy data from /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_173514/input_data/energy_data.csv
+2025-02-13 17:35:14,904 - manufacturing_data_loader - INFO - Successfully loaded 120 energy records
+2025-02-13 17:35:14,908 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_173514.log
+2025-02-13 17:35:14,917 - manufacturing_data_loader - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_data_loader_20250213_173514.log

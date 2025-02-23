@@ -1,0 +1,6 @@
+2025-02-11 23:52:43,295 - efficiency_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/efficiency_analyzer_20250211_235243.log
+2025-02-11 23:52:43,332 - efficiency_analyzer - INFO - Efficiency analysis completed: {'yield_rate': 90.9422179744504, 'output_amount': 90.31569450967136, 'input_amount': 99.31107523135728, 'cycle_time_efficiency': 1.8026012940445981, 'energy_efficiency': 0.5987753711955283}
+2025-02-11 23:52:44,807 - efficiency_analyzer - INFO - Efficiency analysis completed: {'yield_rate': 91.34878275267127, 'output_amount': 91.30209202799075, 'input_amount': 99.94888741450784, 'cycle_time_efficiency': 1.8276797280344783, 'energy_efficiency': 0.6088528905357006}
+2025-02-11 23:52:46,490 - efficiency_analyzer - INFO - Efficiency analysis completed: {'yield_rate': 90.33257215562345, 'output_amount': 90.52580956411408, 'input_amount': 100.2139177528984, 'cycle_time_efficiency': 1.8143433501587163, 'energy_efficiency': 0.5920514248454141}
+2025-02-11 23:52:46,491 - efficiency_analyzer - ERROR - Error in efficiency analysis: Input amounts must be positive
+2025-02-11 23:52:46,491 - efficiency_analyzer - INFO - Efficiency analysis completed: {'yield_rate': 90.0, 'output_amount': 90.0, 'input_amount': 100.0}

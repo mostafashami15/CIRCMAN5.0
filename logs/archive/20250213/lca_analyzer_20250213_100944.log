@@ -1,0 +1,7 @@
+2025-02-13 10:09:44,701 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_100944.log
+2025-02-13 10:09:45,504 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_100945/reports/lca_impact.xlsx
+2025-02-13 10:09:45,962 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_100945/reports/lca_impact.xlsx
+2025-02-13 10:09:45,964 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_100944/lca_results/lca_impact.xlsx
+2025-02-13 10:09:47,612 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_100947/reports/lca_impact_BATCH_0085.xlsx
+2025-02-13 10:09:48,069 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_100948/reports/lca_impact.xlsx
+2025-02-13 10:09:48,659 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_100944/reports/lca_impact_TEST_001.xlsx

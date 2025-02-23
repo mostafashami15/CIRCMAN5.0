@@ -1,0 +1,4 @@
+2025-02-12 11:02:25,453 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250212_110225.log
+2025-02-12 11:02:25,474 - solitek_manufacturing - ERROR - Error loading LCA data: Missing required columns in energy data: ['efficiency_rate']
+2025-02-12 11:02:26,132 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-12 11:02:26,441 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0040

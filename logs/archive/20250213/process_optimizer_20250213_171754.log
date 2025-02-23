@@ -1,0 +1,14 @@
+2025-02-13 17:17:54,008 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171754.log
+2025-02-13 17:17:54,009 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171754.log
+2025-02-13 17:17:54,058 - process_optimizer - INFO - Parameter optimization completed successfully
+2025-02-13 17:17:54,059 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171754.log
+2025-02-13 17:17:54,108 - process_optimizer - INFO - Parameter optimization completed successfully
+2025-02-13 17:17:54,108 - process_optimizer - INFO - Optimization potential analysis:
+input_amount: 0.8%
+energy_used: 0.2%
+cycle_time: 0.3%
+efficiency: 0.7%
+defect_rate: -1.9%
+thickness_uniformity: 0.1%
+2025-02-13 17:17:54,109 - process_optimizer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/process_optimizer_20250213_171754.log
+2025-02-13 17:17:54,109 - process_optimizer - ERROR - Error optimizing parameters: Model must be trained before optimization

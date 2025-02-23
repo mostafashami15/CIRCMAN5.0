@@ -1,0 +1,19 @@
+2025-02-13 12:33:16,364 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,369 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,372 - solitek_manufacturing - ERROR - Error analyzing efficiency: No production data available for analysis
+2025-02-13 12:33:16,425 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,428 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,431 - solitek_manufacturing - ERROR - Error analyzing efficiency: Input amounts must be positive
+2025-02-13 12:33:16,432 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,434 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,437 - solitek_manufacturing - ERROR - Error optimizing process parameters: No data available for training optimization model
+2025-02-13 12:33:16,437 - solitek_manufacturing - ERROR - Error predicting batch outcomes: Model must be trained before prediction
+2025-02-13 12:33:16,438 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,441 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,563 - solitek_manufacturing - ERROR - Error generating LCA visualizations: index 0 is out of bounds for axis 0 with size 0
+2025-02-13 12:33:16,564 - solitek_manufacturing - ERROR - Error in lifecycle assessment: Visualization generation failed: index 0 is out of bounds for axis 0 with size 0
+2025-02-13 12:33:16,614 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:16,617 - solitek_manufacturing - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/solitek_manufacturing_20250213_123316.log
+2025-02-13 12:33:18,309 - solitek_manufacturing - INFO - Generated visualizations in /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_123316/visualizations
+2025-02-13 12:33:18,313 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-13 12:33:19,548 - solitek_manufacturing - INFO - Successfully generated all reports

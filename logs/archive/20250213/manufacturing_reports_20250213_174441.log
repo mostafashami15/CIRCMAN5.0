@@ -1,0 +1,10 @@
+2025-02-13 17:44:41,264 - manufacturing_reports - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_174441.log
+2025-02-13 17:44:41,271 - manufacturing_reports - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_174441.log
+2025-02-13 17:44:41,473 - manufacturing_reports - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_174441.log
+2025-02-13 17:44:41,477 - manufacturing_reports - INFO - Comprehensive report generated at: /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-68/test_generate_comprehensive_re0/test_report.xlsx
+2025-02-13 17:44:41,480 - manufacturing_reports - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_174441.log
+2025-02-13 17:44:41,483 - manufacturing_reports - INFO - Analysis report exported to: /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-68/test_export_analysis_report0/analysis_report.xlsx
+2025-02-13 17:44:41,486 - manufacturing_reports - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_174441.log
+2025-02-13 17:44:41,489 - manufacturing_reports - INFO - LCA report generated successfully at /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_174441/reports/lca_report_TEST_001.xlsx
+2025-02-13 17:44:41,490 - manufacturing_reports - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_reports_20250213_174441.log
+2025-02-13 17:44:41,492 - manufacturing_reports - INFO - Performance metrics saved to: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_174441/reports/performance_metrics.xlsx

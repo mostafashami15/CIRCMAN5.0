@@ -1,0 +1,17 @@
+2025-02-03 23:22:37,874 - solitek_manufacturing - ERROR - Error in efficiency analysis: 'Column not found: output_quantity'
+2025-02-03 23:22:37,876 - solitek_manufacturing - INFO - Quality analysis completed: {'avg_defect_rate': np.float64(1.944613649725053), 'efficiency_score': np.float64(20.95191665742038), 'uniformity_score': np.float64(94.96562328762053)}
+2025-02-03 23:22:37,877 - solitek_manufacturing - INFO - Sustainability analysis completed: {'carbon_footprint': np.float64(2156.2066760433318), 'sustainability_score': np.float64(90.2805523019744), 'material_efficiency': np.float64(97.01763196689093), 'recycling_rate': np.float64(74.56069975050248), 'waste_reduction': np.float64(97.01763196689093)}
+2025-02-03 23:22:38,191 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-10/test_end_to_end_analysis0/test_visualization.png
+2025-02-03 23:22:38,204 - solitek_manufacturing - ERROR - Error in efficiency analysis: 'Column not found: output_quantity'
+2025-02-03 23:22:38,387 - solitek_manufacturing - INFO - AI optimization model trained. Metrics: {'mse': 0.14391253704139206, 'r2': 0.8028003359972681}
+2025-02-03 23:22:38,392 - solitek_manufacturing - INFO - Optimized parameters generated:
+input_amount: 101.00
+energy_used: 151.54
+cycle_time: 50.17
+efficiency: 20.95
+defect_rate: 2.01
+thickness_uniformity: 95.01
+2025-02-03 23:22:38,394 - solitek_manufacturing - WARNING - No production data available for efficiency analysis
+2025-02-03 23:22:38,581 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-10/test_visualization_integration0/test_production.png
+2025-02-03 23:22:38,916 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-10/test_visualization_integration0/test_quality.png
+2025-02-03 23:22:39,188 - solitek_manufacturing - INFO - Visualization saved to /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-10/test_visualization_integration0/test_sustainability.png

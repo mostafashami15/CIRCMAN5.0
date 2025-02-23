@@ -1,0 +1,9 @@
+2025-02-05 18:39:44,182 - solitek_manufacturing - INFO - Successfully loaded LCA data
+2025-02-05 18:39:44,189 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:39:44,194 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:39:44,195 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-05 18:39:44,202 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:39:44,202 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch None
+2025-02-05 18:39:44,274 - solitek_manufacturing - INFO - LCA report generated successfully at /private/var/folders/2x/21q3ps_j25scps452y208t_h0000gn/T/pytest-of-mostafashami/pytest-3/test_lca_report_generation0/lca_report.xlsx
+2025-02-05 18:39:44,292 - solitek_manufacturing - INFO - Calculated recycling rates for 5 materials
+2025-02-05 18:39:44,292 - solitek_manufacturing - INFO - Completed lifecycle assessment for batch BATCH_0018

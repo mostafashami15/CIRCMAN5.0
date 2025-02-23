@@ -1,0 +1,6 @@
+2025-02-13 17:44:26,912 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_174426.log
+2025-02-13 17:44:26,915 - lca_analyzer - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/lca_analyzer_20250213_174426.log
+2025-02-13 17:44:26,925 - lca_analyzer - WARNING - Use phase impact calculation yielded non-negative value
+2025-02-13 17:44:27,435 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_174427/reports/lca_impact.xlsx
+2025-02-13 17:44:27,435 - lca_analyzer - ERROR - Error performing LCA: Material inputs dictionary cannot be empty
+2025-02-13 17:44:27,743 - lca_analyzer - INFO - Saved LCA results to /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_174427/reports/lca_impact_BATCH_0034.xlsx

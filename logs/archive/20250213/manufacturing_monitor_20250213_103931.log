@@ -1,0 +1,2 @@
+2025-02-13 10:39:31,350 - manufacturing_monitor - DEBUG - Logger initialized. Log file: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/logs/manufacturing_monitor_20250213_103931.log
+2025-02-13 10:39:31,353 - manufacturing_monitor - INFO - Saved efficiency metrics to: /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250213_103931/reports/efficiency_metrics.csv
