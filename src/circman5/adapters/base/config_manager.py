@@ -39,25 +39,21 @@ class ConfigurationManager:
         self.logger.info(f"Registered adapter: {name}")
 
     def load_config(self, adapter_name: str) -> Dict[str, Any]:
-        """
-        Load configuration using specified adapter.
-
-        Args:
-            adapter_name: Name of adapter to use
-
-        Returns:
-            Dict[str, Any]: Loaded configuration
-
-        Raises:
-            ValueError: If adapter not found or config invalid
-        """
+        """Load configuration using specified adapter."""
         if adapter_name not in self.adapters:
+            self.logger.error(f"Unknown adapter: {adapter_name}")
             raise ValueError(f"Unknown adapter: {adapter_name}")
 
         adapter = self.adapters[adapter_name]
+        self.logger.info(
+            f"Loading config for {adapter_name} using adapter {adapter.__class__.__name__}"
+        )
 
         try:
             config = adapter.load_config()
+            self.logger.info(
+                f"Loaded config for {adapter_name}: keys: {list(config.keys())}"
+            )
 
             if not adapter.validate_config(config):
                 self.logger.warning(

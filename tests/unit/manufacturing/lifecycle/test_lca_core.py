@@ -7,11 +7,13 @@ import numpy as np
 from pathlib import Path
 from circman5.manufacturing.lifecycle import LCAAnalyzer, LifeCycleImpact
 from circman5.utils.results_manager import results_manager
-from circman5.manufacturing.lifecycle.impact_factors import (
-    MATERIAL_IMPACT_FACTORS,
-    ENERGY_IMPACT_FACTORS,
-    RECYCLING_BENEFIT_FACTORS,
-)
+from circman5.adapters.services.constants_service import ConstantsService
+
+
+@pytest.fixture
+def constants_service():
+    """Fixture providing constants service."""
+    return ConstantsService()
 
 
 @pytest.fixture
@@ -26,7 +28,9 @@ def sample_material_inputs():
     }
 
 
-def test_manufacturing_impact_calculation(lca_analyzer, sample_material_data):
+def test_manufacturing_impact_calculation(
+    lca_analyzer, sample_material_data, constants_service
+):
     """Test manufacturing phase impact calculations."""
     material_inputs = {
         "silicon_wafer": 100.0,
@@ -43,12 +47,21 @@ def test_manufacturing_impact_calculation(lca_analyzer, sample_material_data):
 
     assert impact > 0
     assert isinstance(impact, float)
-    # Verify impact calculation using known factors
+
+    # Get constants from service
+    material_impact_factors = constants_service.get_constant(
+        "impact_factors", "MATERIAL_IMPACT_FACTORS"
+    )
+    energy_impact_factors = constants_service.get_constant(
+        "impact_factors", "ENERGY_IMPACT_FACTORS"
+    )
+
+    # Verify impact calculation using factors from constants service
     expected_impact = sum(
-        qty * MATERIAL_IMPACT_FACTORS.get(mat, 0)
+        qty * material_impact_factors.get(mat, 0)
         for mat, qty in material_inputs.items()
     )
-    expected_impact += energy_consumption * ENERGY_IMPACT_FACTORS["grid_electricity"]
+    expected_impact += energy_consumption * energy_impact_factors["grid_electricity"]
     assert (
         abs(impact - expected_impact) < 0.01
     )  # Allow for small floating point differences
@@ -111,7 +124,7 @@ def test_use_phase_impact_with_degradation(lca_analyzer):
     )  # Allow for small floating point differences
 
 
-def test_end_of_life_impact_calculation(lca_analyzer):
+def test_end_of_life_impact_calculation(lca_analyzer, constants_service):
     """Test end-of-life phase impact calculations."""
     material_inputs = {
         "silicon_wafer": 100.0,
@@ -127,9 +140,14 @@ def test_end_of_life_impact_calculation(lca_analyzer):
 
     assert isinstance(impact, float)
 
+    # Get recycling benefit factors from constants service
+    recycling_benefit_factors = constants_service.get_constant(
+        "impact_factors", "RECYCLING_BENEFIT_FACTORS"
+    )
+
     # Calculate expected recycling benefit correctly
     expected_recycling_benefit = sum(
-        qty * recycling_rates[mat] * RECYCLING_BENEFIT_FACTORS.get(mat, 0)
+        qty * recycling_rates[mat] * recycling_benefit_factors.get(mat, 0)
         for mat, qty in material_inputs.items()
     )
 
@@ -245,7 +263,7 @@ def test_error_handling(lca_analyzer):
         )
 
 
-def test_detailed_impacts_calculation(lca_analyzer):
+def test_detailed_impacts_calculation(lca_analyzer, constants_service):
     """Test detailed environmental impacts calculation."""
     material_inputs = {
         "silicon_wafer": 100.0,
@@ -276,13 +294,21 @@ def test_detailed_impacts_calculation(lca_analyzer):
     assert impacts["water_consumption"] > 0
     assert impacts["waste_generation"] > 0
 
+    # Get impact factors from constants service
+    material_impact_factors = constants_service.get_constant(
+        "impact_factors", "MATERIAL_IMPACT_FACTORS"
+    )
+    energy_impact_factors = constants_service.get_constant(
+        "impact_factors", "ENERGY_IMPACT_FACTORS"
+    )
+
     # Verify GHG emissions calculation
     expected_material_emissions = sum(
-        qty * MATERIAL_IMPACT_FACTORS.get(mat, 0)
+        qty * material_impact_factors.get(mat, 0)
         for mat, qty in material_inputs.items()
     )
     expected_energy_emissions = (
-        energy_consumption * ENERGY_IMPACT_FACTORS["grid_electricity"]
+        energy_consumption * energy_impact_factors["grid_electricity"]
     )
     expected_total_emissions = expected_material_emissions + expected_energy_emissions
 

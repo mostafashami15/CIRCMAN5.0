@@ -7,12 +7,7 @@ import pandas as pd
 from pathlib import Path
 from circman5.utils.results_manager import results_manager
 from ...utils.logging_config import setup_logger
-from .impact_factors import (
-    MATERIAL_IMPACT_FACTORS,
-    ENERGY_IMPACT_FACTORS,
-    RECYCLING_BENEFIT_FACTORS,
-    DEGRADATION_RATES,
-)
+from circman5.adapters.services.constants_service import ConstantsService
 
 
 @dataclass
@@ -69,6 +64,9 @@ class LCAAnalyzer:
         self.results_dir = results_manager.get_run_dir()
         self.lca_results_dir = results_manager.get_path("lca_results")
 
+        # Initialize constants service
+        self.constants = ConstantsService()
+
     def calculate_manufacturing_impact(
         self, material_inputs: Dict[str, float], energy_consumption: float
     ) -> float:
@@ -94,14 +92,20 @@ class LCAAnalyzer:
         impact = 0.0
 
         # Material impacts
+        material_impact_factors = self.constants.get_constant(
+            "impact_factors", "MATERIAL_IMPACT_FACTORS"
+        )
         for material, quantity in material_inputs.items():
             if quantity < 0:
                 raise ValueError(f"Material quantity cannot be negative: {material}")
-            impact_factor = MATERIAL_IMPACT_FACTORS.get(material, 0.0)
+            impact_factor = material_impact_factors.get(material, 0.0)
             impact += quantity * impact_factor
 
         # Energy impact
-        impact += energy_consumption * ENERGY_IMPACT_FACTORS.get(
+        energy_impact_factors = self.constants.get_constant(
+            "impact_factors", "ENERGY_IMPACT_FACTORS"
+        )
+        impact += energy_consumption * energy_impact_factors.get(
             "grid_electricity", 0.5
         )
 
@@ -180,14 +184,22 @@ class LCAAnalyzer:
         impact = 0.0
 
         # Recycling benefits
+        recycling_benefit_factors = self.constants.get_constant(
+            "impact_factors", "RECYCLING_BENEFIT_FACTORS"
+        )
         for material, quantity in material_inputs.items():
             recycling_rate = recycling_rates.get(material, 0.0)
-            benefit_factor = RECYCLING_BENEFIT_FACTORS.get(material, 0.0)
+            benefit_factor = recycling_benefit_factors.get(material, 0.0)
             impact += quantity * recycling_rate * benefit_factor
 
         # Transport impact
         total_mass = sum(material_inputs.values())
-        transport_factor = 0.062  # kg CO2-eq per tonne-km
+        transport_impact_factors = self.constants.get_constant(
+            "impact_factors", "TRANSPORT_IMPACT_FACTORS"
+        )
+        transport_factor = transport_impact_factors.get(
+            "road", 0.062
+        )  # kg CO2-eq per tonne-km
         impact += (total_mass / 1000) * transport_distance * transport_factor
 
         return impact
@@ -214,22 +226,39 @@ class LCAAnalyzer:
                 "waste_generation": 0.0,  # kg
             }
 
+            # Get impact factors from constants service
+            material_impact_factors = self.constants.get_constant(
+                "impact_factors", "MATERIAL_IMPACT_FACTORS"
+            )
+            energy_impact_factors = self.constants.get_constant(
+                "impact_factors", "ENERGY_IMPACT_FACTORS"
+            )
+
             # Calculate impacts for each material
             for material, quantity in material_inputs.items():
                 # GHG emissions
-                impact_factor = MATERIAL_IMPACT_FACTORS.get(material, 0.0)
+                impact_factor = material_impact_factors.get(material, 0.0)
                 impacts["ghg_emissions"] += quantity * impact_factor
 
-                # Estimate water consumption (example factors)
-                water_factor = 0.1  # m3/kg (example)
+                # Get water and waste factors from configuration
+                water_factor = 0.1  # Default value
+                try:
+                    water_factor = self.constants.get_constant(
+                        "impact_factors", "WATER_FACTOR"
+                    )
+                except (KeyError, AttributeError):
+                    # Use default water_factor
+                    pass
                 impacts["water_consumption"] += quantity * water_factor
 
-                # Estimate waste generation (example factors)
-                waste_factor = 0.05  # 5% waste rate
+                # Estimate waste generation
+                waste_factor = self.constants.get_constant(
+                    "impact_factors", "WASTE_FACTOR"
+                )
                 impacts["waste_generation"] += quantity * waste_factor
 
             # Add energy-related impacts
-            impacts["ghg_emissions"] += energy_consumption * ENERGY_IMPACT_FACTORS.get(
+            impacts["ghg_emissions"] += energy_consumption * energy_impact_factors.get(
                 "grid_electricity", 0.5
             )
 

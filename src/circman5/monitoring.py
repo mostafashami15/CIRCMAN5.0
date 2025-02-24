@@ -11,6 +11,7 @@ from typing import Dict, List, Optional
 from pathlib import Path
 from .utils.logging_config import setup_logger
 from .utils.results_manager import results_manager
+from .adapters.services.constants_service import ConstantsService
 
 
 class ManufacturingMonitor:
@@ -25,6 +26,7 @@ class ManufacturingMonitor:
         }
         self.current_batch: Optional[str] = None
         self.logger = setup_logger("manufacturing_monitor")
+        self.constants = ConstantsService()
 
     def start_batch_monitoring(self, batch_id: str) -> None:
         """
@@ -186,7 +188,15 @@ class ManufacturingMonitor:
     ) -> float:
         """Calculate composite quality score."""
         # Weighted average of quality metrics
-        weights = {"defect": 0.4, "yield": 0.4, "uniformity": 0.2}
+        weights = {"defect": 0.4, "yield": 0.4, "uniformity": 0.2}  # Default weights
+        try:
+            weights = self.constants.get_constant(
+                "impact_factors", "MONITORING_WEIGHTS"
+            )
+        except (KeyError, AttributeError):
+            # Use default weights if not found
+            pass
+
         return (
             (100 - defect_rate) * weights["defect"]
             + yield_rate * weights["yield"]

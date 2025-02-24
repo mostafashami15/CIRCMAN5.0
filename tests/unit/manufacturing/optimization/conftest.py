@@ -4,6 +4,7 @@ import pytest
 import numpy as np
 import pandas as pd
 from circman5.utils.results_manager import results_manager
+from circman5.adapters.services.constants_service import ConstantsService
 
 
 @pytest.fixture
@@ -65,3 +66,9 @@ def metrics_dir():
 def reports_dir():
     """Get reports directory."""
     return results_manager.get_path("reports")
+
+
+@pytest.fixture
+def constants_service():
+    """Fixture providing constants service."""
+    return ConstantsService()

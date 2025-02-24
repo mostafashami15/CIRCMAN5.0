@@ -10,6 +10,7 @@ from circman5.manufacturing.optimization.model import ManufacturingModel
 from circman5.manufacturing.optimization.types import MetricsDict, PredictionDict
 from circman5.test_data_generator import ManufacturingDataGenerator
 from circman5.utils.results_manager import results_manager
+from circman5.adapters.services.constants_service import ConstantsService
 
 
 def test_model_initialization(model):

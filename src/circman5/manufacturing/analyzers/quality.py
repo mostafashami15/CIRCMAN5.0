@@ -9,12 +9,14 @@ from typing import Dict, List, Optional
 from ...utils.logging_config import setup_logger
 from ...utils.results_manager import results_manager
 from circman5.manufacturing.visualization_utils import VisualizationConfig
+from ...adapters.services.constants_service import ConstantsService
 
 
 class QualityAnalyzer:
     def __init__(self):
         self.metrics = {}
         self.logger = setup_logger("quality_analyzer")
+        self.constants = ConstantsService()
 
     def analyze_defect_rates(self, quality_data: pd.DataFrame) -> Dict[str, float]:
         """Analyze defect patterns and rates."""
@@ -47,7 +49,7 @@ class QualityAnalyzer:
         else:
             return 0.0
 
-        weights = {"defect": 0.4, "efficiency": 0.4, "uniformity": 0.2}
+        weights = self.constants.get_constant("impact_factors", "QUALITY_WEIGHTS")
         score = (
             (100 - defect_rate) * weights["defect"]
             + efficiency * weights["efficiency"]

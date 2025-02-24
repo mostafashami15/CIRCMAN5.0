@@ -18,7 +18,9 @@ class ManufacturingAdapter(ConfigAdapterBase):
             config_path: Optional path to configuration file
         """
         super().__init__(config_path)
-        self.config_path = config_path or Path("config/json/manufacturing.json")
+        self.config_path = (
+            config_path or Path(__file__).parent / "json" / "manufacturing.json"
+        )
 
     def load_config(self) -> Dict[str, Any]:
         """

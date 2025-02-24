@@ -1,0 +1,13 @@
+{
+    "DEFAULT_STYLE": {
+        "figure.figsize": [12, 8],
+        "axes.titlesize": 14,
+        "axes.labelsize": 12,
+        "axes.grid": true,
+        "grid.linestyle": "--",
+        "grid.alpha": 0.7
+    },
+    "COLOR_PALETTE": "husl",
+    "COLOR_PALETTE_SIZE": 8,
+    "DEFAULT_DPI": 300
+}

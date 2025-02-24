@@ -9,14 +9,22 @@ from typing import Dict, List, Mapping, Optional
 from ...utils.logging_config import setup_logger
 from ...utils.results_manager import results_manager
 from circman5.manufacturing.visualization_utils import VisualizationConfig
+from ...adapters.services.constants_service import ConstantsService
 
 
 class SustainabilityAnalyzer:
     def __init__(self):
         self.metrics = {}
         self.logger = setup_logger("sustainability_analyzer")
-        # Carbon intensity factors (kg CO2/kWh)
-        self.carbon_factors = {"grid": 0.5, "solar": 0.0, "wind": 0.0}
+        # Get carbon factors from configuration
+        self.constants = ConstantsService()
+        self.carbon_factors = {"grid": 0.5, "solar": 0.0, "wind": 0.0}  # Default values
+        try:
+            self.carbon_factors = self.constants.get_constant(
+                "impact_factors", "CARBON_INTENSITY_FACTORS"
+            )
+        except KeyError:
+            self.logger.warning("CARBON_INTENSITY_FACTORS not found, using defaults")
 
     def calculate_carbon_footprint(self, energy_data: pd.DataFrame) -> float:
         """Calculate carbon footprint based on energy sources."""
@@ -71,7 +79,9 @@ class SustainabilityAnalyzer:
         energy_efficiency: float,
     ) -> float:
         """Calculate overall sustainability score."""
-        weights = {"material": 0.4, "recycling": 0.3, "energy": 0.3}
+        weights = self.constants.get_constant(
+            "impact_factors", "SUSTAINABILITY_WEIGHTS"
+        )
         score = (
             material_efficiency * weights["material"]
             + recycling_rate * weights["recycling"]

@@ -303,7 +303,7 @@ class ManufacturingVisualizer:
 
             # Resource Usage
             resource_data = monitor_data["resources"]
-            resource_data.plot(x="timestamp", y="quantity_used", ax=axes[2])
+            resource_data.plot(x="timestamp", y="material_consumption", ax=axes[2])
             axes[2].set_title("Resource Utilization")
             axes[2].set_ylabel("Material Usage")
 

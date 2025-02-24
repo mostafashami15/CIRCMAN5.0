@@ -14,6 +14,7 @@ import joblib
 from .types import PredictionDict, MetricsDict
 from ...utils.logging_config import setup_logger
 from ...utils.results_manager import results_manager
+from circman5.adapters.services.constants_service import ConstantsService
 
 
 class ManufacturingModel:
@@ -21,14 +22,22 @@ class ManufacturingModel:
         """Initialize the manufacturing model with improved configuration."""
         self.logger = setup_logger("manufacturing_model")
 
-        # Use more robust model configuration
+        # Initialize constants service
+        self.constants = ConstantsService()
+
+        # Get optimization configuration
+        optimization_config = self.constants.get_optimization_config()
+        model_config = optimization_config.get("MODEL_CONFIG", {})
+        model_params = model_config.get("model_params", {})
+
+        # Use configuration from constants service
         self.model = GradientBoostingRegressor(
-            n_estimators=100,
-            max_depth=5,  # Reduced from 10
-            min_samples_split=10,  # Increased from 5
-            min_samples_leaf=4,  # Increased from 2
-            subsample=0.8,  # Add subsampling
-            random_state=42,
+            n_estimators=model_params.get("n_estimators", 100),
+            max_depth=model_params.get("max_depth", 5),
+            min_samples_split=model_params.get("min_samples_split", 10),
+            min_samples_leaf=model_params.get("min_samples_leaf", 4),
+            subsample=model_params.get("subsample", 0.8),
+            random_state=model_config.get("random_state", 42),
         )
 
         # Use RobustScaler for better handling of outliers
@@ -36,26 +45,24 @@ class ManufacturingModel:
         self.target_scaler = RobustScaler()
         self.is_trained = False
 
-        # Enhanced configuration
+        # Get configuration from constants service
         self.config = {
-            "feature_columns": [
-                "input_amount",
-                "energy_used",
-                "cycle_time",
-                "efficiency",
-                "defect_rate",
-                "thickness_uniformity",
-            ],
-            "target_column": "output_amount",
-            "test_size": 0.2,
-            "random_state": 42,
-            "cv_folds": 5,  # For cross-validation
-            "model_params": {
-                "n_estimators": 200,
-                "max_depth": 10,
-                "min_samples_split": 5,
-                "min_samples_leaf": 2,
-            },
+            "feature_columns": optimization_config.get(
+                "FEATURE_COLUMNS",
+                [
+                    "input_amount",
+                    "energy_used",
+                    "cycle_time",
+                    "efficiency",
+                    "defect_rate",
+                    "thickness_uniformity",
+                ],
+            ),
+            "target_column": "output_amount",  # This is fixed
+            "test_size": model_config.get("test_size", 0.2),
+            "random_state": model_config.get("random_state", 42),
+            "cv_folds": model_config.get("cv_folds", 5),
+            "model_params": model_params,
         }
 
     def train_optimization_model(

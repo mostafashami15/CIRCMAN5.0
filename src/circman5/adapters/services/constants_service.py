@@ -8,6 +8,8 @@ from ..base.config_manager import ConfigurationManager
 from ..config.manufacturing import ManufacturingAdapter
 from ..config.impact_factors import ImpactFactorsAdapter
 from ..config.optimization import OptimizationAdapter
+from ..config.visualization import VisualizationAdapter
+from ..config.monitoring import MonitoringAdapter
 
 
 class ConstantsService:
@@ -47,6 +49,11 @@ class ConstantsService:
                 "impact_factors", ImpactFactorsAdapter()
             )
             self.config_manager.register_adapter("optimization", OptimizationAdapter())
+            self.config_manager.register_adapter("monitoring", MonitoringAdapter())
+            self.config_manager.register_adapter(
+                "visualization", VisualizationAdapter()
+            )
+            # Add any other adapters here
         except Exception as e:
             self.logger.error(f"Error registering adapters: {str(e)}")
             raise
@@ -71,6 +78,14 @@ class ConstantsService:
     def get_optimization_config(self) -> Dict[str, Any]:
         """Get optimization configuration."""
         return self.config_manager.get_config("optimization")
+
+    def get_visualization_config(self) -> Dict[str, Any]:
+        """Get visualization configuration."""
+        return self.config_manager.get_config("visualization")
+
+    def get_monitoring_config(self) -> Dict[str, Any]:
+        """Get monitoring configuration"""
+        return self.config_manager.get_config("monitoring")
 
     def get_constant(self, adapter: str, key: str) -> Any:
         """

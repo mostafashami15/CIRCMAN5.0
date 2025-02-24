@@ -48,5 +48,27 @@
         "poly_bsf": 0.6,
         "thin_film": 0.7,
         "bifacial": 0.45
-    }
+    },
+    "CARBON_INTENSITY_FACTORS": {
+        "grid": 0.5,
+        "solar": 0.0,
+        "wind": 0.0
+    },
+    "SUSTAINABILITY_WEIGHTS": {
+        "material": 0.4,
+        "recycling": 0.3,
+        "energy": 0.3
+    },
+    "QUALITY_WEIGHTS": {
+        "defect": 0.4,
+        "efficiency": 0.4,
+        "uniformity": 0.2
+    },
+    "MONITORING_WEIGHTS": {
+        "defect": 0.4,
+        "yield": 0.4,
+        "uniformity": 0.2
+    },
+    "WATER_FACTOR": 0.1,
+    "WASTE_FACTOR": 0.05
 }

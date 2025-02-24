@@ -18,7 +18,9 @@ class ImpactFactorsAdapter(ConfigAdapterBase):
             config_path: Optional path to configuration file
         """
         super().__init__(config_path)
-        self.config_path = config_path or Path("config/json/impact_factors.json")
+        self.config_path = (
+            config_path or Path(__file__).parent / "json" / "impact_factors.json"
+        )
 
     def load_config(self) -> Dict[str, Any]:
         """

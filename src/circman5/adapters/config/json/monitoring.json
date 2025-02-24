@@ -1,0 +1,7 @@
+{
+    "MONITORING_WEIGHTS": {
+        "defect": 0.4,
+        "yield": 0.4,
+        "uniformity": 0.2
+    }
+}

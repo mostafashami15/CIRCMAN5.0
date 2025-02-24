@@ -17,11 +17,7 @@ from .reporting.reports import ReportGenerator
 from .lifecycle.lca_analyzer import LCAAnalyzer, LifeCycleImpact
 from .lifecycle.visualizer import LCAVisualizer
 from ..utils.results_manager import results_manager
-from .lifecycle.impact_factors import (
-    MATERIAL_IMPACT_FACTORS,
-    ENERGY_IMPACT_FACTORS,
-    RECYCLING_BENEFIT_FACTORS,
-)
+from circman5.adapters.services.constants_service import ConstantsService
 
 
 class SoliTekManufacturingAnalysis:
@@ -31,6 +27,9 @@ class SoliTekManufacturingAnalysis:
 
     def __init__(self):
         self.logger = setup_logger("solitek_manufacturing")
+
+        # Initialize constants service
+        self.constants = ConstantsService()
 
         # Initialize data loader
         self.data_loader = ManufacturingDataLoader()
@@ -150,10 +149,23 @@ class SoliTekManufacturingAnalysis:
             # Calculate recycling rates
             recycling_rates = self.lca_analyzer.calculate_recycling_rates(material_data)
 
-            # Calculate annual energy generation
+            # Calculate annual energy generation with validation
             annual_energy_generation = self.lca_analyzer.calculate_energy_generation(
                 material_inputs
             )
+
+            # Ensure annual energy generation is positive
+            if annual_energy_generation <= 0:
+                self.logger.warning(
+                    "Calculated annual energy generation was invalid, using default value"
+                )
+                annual_energy_generation = 1000.0  # Use reasonable default
+
+            # Get default values from constants service
+            grid_carbon_intensities = self.constants.get_constant(
+                "impact_factors", "GRID_CARBON_INTENSITIES"
+            )
+            default_grid_intensity = grid_carbon_intensities.get("eu_average", 0.5)
 
             # Perform full LCA calculation
             impact = self.lca_analyzer.perform_full_lca(
@@ -161,7 +173,7 @@ class SoliTekManufacturingAnalysis:
                 energy_consumption=total_energy,
                 lifetime_years=25.0,  # Standard PV panel lifetime
                 annual_energy_generation=annual_energy_generation,
-                grid_carbon_intensity=0.5,  # Can be adjusted based on location
+                grid_carbon_intensity=default_grid_intensity,
                 recycling_rates=recycling_rates,
                 transport_distance=100.0,  # Average transport distance in km
             )

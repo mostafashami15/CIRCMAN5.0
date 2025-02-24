@@ -62,9 +62,13 @@ class ProcessOptimizer:
             for param in param_names:
                 if constraints and param in constraints:
                     target = constraints[param]
-                    # Create bounds as ±10% of target value
-                    bound_min = max(0.0, target * 0.9)
-                    bound_max = target * 1.1
+                    # Check if target is a tuple (min, max)
+                    if isinstance(target, tuple) and len(target) == 2:
+                        bound_min, bound_max = target
+                    else:
+                        # Create bounds as ±10% of target value
+                        bound_min = max(0.0, float(target) * 0.9)
+                        bound_max = float(target) * 1.1
                     bounds.append((bound_min, bound_max))
                 else:
                     # Default bounds if no constraint provided
