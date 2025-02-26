@@ -2,6 +2,7 @@
 
 from typing import Any, Dict, Optional, List, Tuple, Union, Mapping
 from pathlib import Path
+import numpy as np
 import pandas as pd
 
 from .optimization.types import PredictionDict
@@ -431,6 +432,242 @@ class SoliTekManufacturingAnalysis:
         except Exception as e:
             self.logger.error(f"Error generating performance visualizations: {str(e)}")
             raise ProcessError(f"Visualization generation failed: {str(e)}")
+
+    def generate_enhanced_dashboard(
+        self, save_path: Optional[Union[str, Path]] = None
+    ) -> bool:
+        """
+        Generate an enhanced dashboard with advanced visualizations.
+
+        Args:
+            save_path: Optional path to save the dashboard
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinDashboard
+            from .digital_twin.visualization.dashboard import TwinDashboard
+
+            # Create dashboard with the state manager
+            dashboard = TwinDashboard(self.digital_twin.state_manager)
+
+            # Generate enhanced dashboard
+            dashboard.generate_enhanced_dashboard(save_path)
+
+            self.logger.info("Generated enhanced dashboard")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error generating enhanced dashboard: {str(e)}")
+            return False
+
+    def generate_material_flow_sankey(
+        self, save_path: Optional[Union[str, Path]] = None
+    ) -> bool:
+        """
+        Generate a Sankey diagram visualization of material flow.
+
+        Args:
+            save_path: Optional path to save the visualization
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinVisualizer
+            from .digital_twin.visualization.twin_visualizer import TwinVisualizer
+
+            # Create visualizer with the state manager
+            visualizer = TwinVisualizer(self.digital_twin.state_manager)
+
+            # Generate Sankey diagram
+            visualizer.visualize_material_flow_sankey(save_path)
+
+            self.logger.info("Generated material flow Sankey diagram")
+            return True
+
+        except Exception as e:
+            self.logger.error(
+                f"Error generating material flow Sankey diagram: {str(e)}"
+            )
+            return False
+
+    def generate_efficiency_heatmap(
+        self, save_path: Optional[Union[str, Path]] = None
+    ) -> bool:
+        """
+        Generate a heatmap visualization of efficiency metrics.
+
+        Args:
+            save_path: Optional path to save the visualization
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinVisualizer
+            from .digital_twin.visualization.twin_visualizer import TwinVisualizer
+
+            # Create visualizer with the state manager
+            visualizer = TwinVisualizer(self.digital_twin.state_manager)
+
+            # Generate efficiency heatmap
+            visualizer.visualize_efficiency_heatmap(save_path)
+
+            self.logger.info("Generated efficiency metrics heatmap")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error generating efficiency heatmap: {str(e)}")
+            return False
+
+    def generate_process_visualization(
+        self, save_path: Optional[Union[str, Path]] = None
+    ) -> bool:
+        """
+        Generate process-specific visualizations.
+
+        Args:
+            save_path: Optional path to save the visualization
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the ProcessVisualizer
+            from .digital_twin.visualization.process_visualizer import ProcessVisualizer
+
+            # Create process visualizer with the state manager
+            visualizer = ProcessVisualizer(self.digital_twin.state_manager)
+
+            # Generate visualization
+            visualizer.visualize_manufacturing_stages(save_path)
+
+            self.logger.info("Generated process visualization")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error generating process visualization: {str(e)}")
+            return False
+
+    def compare_digital_twin_states(
+        self,
+        state1: Optional[Dict[str, Any]] = None,
+        state2: Optional[Dict[str, Any]] = None,
+        labels: Tuple[str, str] = ("Before", "After"),
+        save_path: Optional[Union[str, Path]] = None,
+    ) -> bool:
+        """
+        Compare two digital twin states with visualization.
+
+        Args:
+            state1: First state to compare (uses earliest history state if None)
+            state2: Second state to compare (uses current state if None)
+            labels: Labels for the states in the visualization
+            save_path: Optional path to save the visualization
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinVisualizer
+            from .digital_twin.visualization.twin_visualizer import TwinVisualizer
+
+            # Get states if not provided
+            if state1 is None:
+                # Get earliest state from history
+                history = self.digital_twin.state_manager.get_history(limit=20)
+                if history:
+                    state1 = history[0]
+                else:
+                    self.logger.warning("No historical states available for comparison")
+                    return False
+
+            if state2 is None:
+                # Use current state
+                state2 = self.digital_twin.state_manager.get_current_state()
+
+            # Create visualizer with the state manager
+            visualizer = TwinVisualizer(self.digital_twin.state_manager)
+
+            # Generate comparison visualization
+            visualizer.visualize_state_comparison(state1, state2, labels, save_path)
+
+            self.logger.info("Generated state comparison visualization")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error comparing digital twin states: {str(e)}")
+            return False
+
+    def analyze_parameter_sensitivity(
+        self,
+        parameter: str,
+        min_value: float,
+        max_value: float,
+        steps: int = 5,
+        target_metrics: Optional[List[str]] = None,
+        save_path: Optional[Union[str, Path]] = None,
+    ) -> bool:
+        """
+        Analyze and visualize how changes to a parameter affect different metrics.
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinVisualizer
+            from .digital_twin.visualization.twin_visualizer import TwinVisualizer
+
+            # Create value range as a list of evenly spaced values
+            value_range = []
+            for i in range(steps):
+                # Calculate each value in the range
+                val = min_value + (max_value - min_value) * i / (
+                    steps - 1 if steps > 1 else 1
+                )
+                value_range.append(val)
+
+            # Use default metrics if none provided
+            if target_metrics is None:
+                target_metrics = [
+                    "production_line.production_rate",
+                    "production_line.energy_consumption",
+                    "production_line.temperature",
+                ]
+
+            # Create visualizer with the state manager
+            visualizer = TwinVisualizer(self.digital_twin.state_manager)
+
+            # Generate parameter sensitivity visualization
+            visualizer.visualize_parameter_sensitivity(
+                parameter, value_range, target_metrics, save_path
+            )
+
+            self.logger.info(
+                f"Generated parameter sensitivity analysis for {parameter}"
+            )
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error in parameter sensitivity analysis: {str(e)}")
+            return False
 
     def _filter_batch_data(
         self, data: pd.DataFrame, batch_id: Optional[str]

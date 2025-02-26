@@ -136,6 +136,85 @@ def run_demo():
     results_manager.save_file(temp_path, "visualizations")
     temp_path.unlink()  # Clean up temp file
 
+    # Generate material flow Sankey diagram using results_manager
+    print("Generating material flow Sankey diagram...")
+    temp_path = Path(temp_dir) / "material_flow_sankey.png"
+    analyzer.generate_material_flow_sankey(save_path=temp_path)
+    results_manager.save_file(temp_path, "visualizations")
+    temp_path.unlink()  # Clean up temp file
+
+    # Generate efficiency metrics heatmap using results_manager
+    print("Generating efficiency metrics heatmap...")
+    temp_path = Path(temp_dir) / "efficiency_heatmap.png"
+    analyzer.generate_efficiency_heatmap(save_path=temp_path)
+    results_manager.save_file(temp_path, "visualizations")
+    temp_path.unlink()  # Clean up temp file
+
+    # Generate enhanced dashboard using results_manager
+    print("Generating enhanced dashboard...")
+    temp_path = Path(temp_dir) / "enhanced_dashboard.png"
+    analyzer.generate_enhanced_dashboard(save_path=temp_path)
+    results_manager.save_file(temp_path, "visualizations")
+    temp_path.unlink()  # Clean up temp file
+
+    # Generate process-specific visualization
+    print("Generating process-specific visualization...")
+    temp_path = Path(temp_dir) / "manufacturing_processes.png"
+    analyzer.generate_process_visualization(save_path=temp_path)
+    results_manager.save_file(temp_path, "visualizations")
+    temp_path.unlink()  # Clean up temp file
+
+    # Save initial state for comparison
+    initial_state = analyzer.digital_twin.get_current_state()
+
+    # Run simulation with different parameters
+    print("\nRunning manufacturing simulation with different parameters...")
+    new_parameters = {
+        "production_line": {
+            "temperature": 30.0,  # Higher temperature
+            "production_rate": 120.0,  # Higher production rate
+            "energy_consumption": 80.0,  # Lower energy consumption
+            "status": "running",
+        },
+        "materials": {
+            "silicon_wafer": {"inventory": 900, "quality": 0.97},
+            "solar_glass": {"inventory": 450, "quality": 0.99},
+        },
+    }
+    simulation_result = analyzer.simulate_manufacturing_scenario(
+        steps=30, parameters=new_parameters
+    )
+    print(f"Simulation completed with {len(simulation_result)} states")
+
+    # Generate state comparison visualization
+    print("Generating state comparison visualization...")
+    temp_path = Path(temp_dir) / "state_comparison.png"
+    analyzer.compare_digital_twin_states(
+        state1=initial_state,
+        state2=analyzer.digital_twin.get_current_state(),
+        labels=("Initial State", "Optimized State"),
+        save_path=temp_path,
+    )
+    results_manager.save_file(temp_path, "visualizations")
+    temp_path.unlink()  # Clean up temp file
+
+    # Generate parameter sensitivity analysis
+    print("Generating parameter sensitivity analysis...")
+    temp_path = Path(temp_dir) / "temperature_sensitivity.png"
+    analyzer.analyze_parameter_sensitivity(
+        parameter="production_line.temperature",
+        min_value=15.0,
+        max_value=35.0,
+        steps=5,
+        target_metrics=[
+            "production_line.production_rate",
+            "production_line.energy_consumption",
+        ],
+        save_path=temp_path,
+    )
+    results_manager.save_file(temp_path, "visualizations")
+    temp_path.unlink()  # Clean up temp file
+
     # Try optimizing using the digital twin
     print("\nOptimizing manufacturing parameters using Digital Twin...")
     current_params = {

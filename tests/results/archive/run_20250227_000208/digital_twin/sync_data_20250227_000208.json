@@ -1,0 +1,48 @@
+{
+  "production": {
+    "production": {
+      "timestamp": "2024-02-09T15:00:00",
+      "batch_id": "BATCH_0033",
+      "stage": "cell_production",
+      "product_type": "Bifacial_72",
+      "production_line": "LINE_C",
+      "input_amount": 99.24995200907289,
+      "output_amount": 92.69217231609592,
+      "energy_used": 157.9829083291616,
+      "cycle_time": 47.793855198126614,
+      "yield_rate": 93.39266210186432,
+      "status": "completed"
+    }
+  },
+  "quality": {
+    "quality": {
+      "batch_id": "BATCH_0066",
+      "timestamp": "2024-01-05T15:00:00",
+      "efficiency": 21.067615493165896,
+      "defect_rate": 1.7484784278285683,
+      "thickness_uniformity": 94.86314390069226,
+      "contamination_level": 0.3733761370861858,
+      "visual_inspection": "pass"
+    }
+  },
+  "material": {
+    "material": {
+      "timestamp": "2024-02-09T15:00:00",
+      "batch_id": "BATCH_0041",
+      "material_type": "Silicon_Wafer",
+      "quantity_used": 1087.013980501784,
+      "waste_generated": 120.82055465365124,
+      "recycled_amount": 97.3542491758155
+    }
+  },
+  "energy": {
+    "energy": {
+      "timestamp": "2024-02-09T15:00:00",
+      "production_line": "LINE_C",
+      "energy_consumption": 52.743150523165696,
+      "energy_source": "grid",
+      "efficiency_rate": 0.9005536566902598
+    }
+  },
+  "timestamp": "2025-02-27T00:02:08.924610"
+}
