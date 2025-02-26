@@ -1,0 +1,35 @@
+{
+    "DIGITAL_TWIN_CONFIG": {
+        "name": "SoliTek_DigitalTwin",
+        "update_frequency": 1.0,
+        "history_length": 1000,
+        "simulation_steps": 10,
+        "data_sources": ["sensors", "manual_input", "manufacturing_system"],
+        "synchronization_mode": "real_time",
+        "log_level": "INFO"
+    },
+    "SIMULATION_PARAMETERS": {
+        "temperature_increment": 0.5,
+        "energy_consumption_increment": 2.0,
+        "production_rate_increment": 0.2,
+        "default_simulation_steps": 10,
+        "target_temperature": 22.5,
+        "temperature_regulation": 0.1,
+        "silicon_wafer_consumption_rate": 0.5,
+        "solar_glass_consumption_rate": 0.2
+    },
+    "SYNCHRONIZATION_CONFIG": {
+        "default_sync_interval": 1.0,
+        "default_sync_mode": "real_time",
+        "retry_interval": 1.0,
+        "timeout": 10.0
+    },
+    "STATE_MANAGEMENT": {
+        "default_history_length": 1000,
+        "validation_level": "standard",
+        "auto_timestamp": true
+    },
+    "SCENARIO_MANAGEMENT": {
+        "max_scenarios": 100
+    }
+}

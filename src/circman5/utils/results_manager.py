@@ -66,6 +66,7 @@ class ResultsManager:
             "lca_results": self.current_run / "lca_results",
             "metrics": self.current_run / "metrics",
             "temp": self.current_run / "temp",
+            "digital_twin": self.current_run / "digital_twin",
         }
 
         for dir in self.run_dirs.values():

@@ -10,6 +10,7 @@ from ..config.impact_factors import ImpactFactorsAdapter
 from ..config.optimization import OptimizationAdapter
 from ..config.visualization import VisualizationAdapter
 from ..config.monitoring import MonitoringAdapter
+from ..config.digital_twin import DigitalTwinAdapter
 
 
 class ConstantsService:
@@ -53,6 +54,7 @@ class ConstantsService:
             self.config_manager.register_adapter(
                 "visualization", VisualizationAdapter()
             )
+            self.config_manager.register_adapter("digital_twin", DigitalTwinAdapter())
             # Add any other adapters here
         except Exception as e:
             self.logger.error(f"Error registering adapters: {str(e)}")
@@ -86,6 +88,10 @@ class ConstantsService:
     def get_monitoring_config(self) -> Dict[str, Any]:
         """Get monitoring configuration"""
         return self.config_manager.get_config("monitoring")
+
+    def get_digital_twin_config(self) -> Dict[str, Any]:
+        """Get digital twin configuration"""
+        return self.config_manager.get_config("digital_twin")
 
     def get_constant(self, adapter: str, key: str) -> Any:
         """

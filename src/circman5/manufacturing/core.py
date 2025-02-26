@@ -1,6 +1,6 @@
 # src/circman5/manufacturing/core.py
 
-from typing import Dict, Optional, List, Union, Mapping
+from typing import Any, Dict, Optional, List, Tuple, Union, Mapping
 from pathlib import Path
 import pandas as pd
 
@@ -18,6 +18,11 @@ from .lifecycle.lca_analyzer import LCAAnalyzer, LifeCycleImpact
 from .lifecycle.visualizer import LCAVisualizer
 from ..utils.results_manager import results_manager
 from circman5.adapters.services.constants_service import ConstantsService
+from .digital_twin.core.twin_core import DigitalTwin, DigitalTwinConfig
+from .digital_twin.core.synchronization import SynchronizationManager, SyncMode
+import json
+import random
+import datetime
 
 
 class SoliTekManufacturingAnalysis:
@@ -64,6 +69,42 @@ class SoliTekManufacturingAnalysis:
             "process_data": pd.DataFrame(),
         }
 
+        # Initialize digital twin system
+        self.digital_twin = None
+        self.sync_manager = None
+        self._initialize_digital_twin()
+
+    def _initialize_digital_twin(self):
+        """Initialize the Digital Twin system."""
+        try:
+            # Get digital twin configuration from constants service
+            self.digital_twin_config = DigitalTwinConfig.from_constants()
+
+            # Initialize the Digital Twin
+            self.digital_twin = DigitalTwin(self.digital_twin_config)
+            self.digital_twin.initialize()
+
+            # Initialize synchronization manager
+            self.sync_manager = SynchronizationManager(self.digital_twin.state_manager)
+
+            # Register data sources for synchronization
+            self.sync_manager.register_data_source(
+                "production", self._get_production_data
+            )
+            self.sync_manager.register_data_source("quality", self._get_quality_data)
+            self.sync_manager.register_data_source("material", self._get_material_data)
+            self.sync_manager.register_data_source("energy", self._get_energy_data)
+
+            # Start synchronization if configured to do so
+            if self.digital_twin_config.synchronization_mode == "real_time":
+                self.sync_manager.start_synchronization()
+
+            self.logger.info("Digital Twin system initialized successfully")
+
+        except Exception as e:
+            self.logger.error(f"Failed to initialize Digital Twin: {str(e)}")
+            # Continue operating without Digital Twin
+
     def load_data(
         self,
         production_path: Optional[str] = None,
@@ -106,9 +147,57 @@ class SoliTekManufacturingAnalysis:
 
             self.logger.info("Successfully loaded all data files")
 
+            # Update digital twin with loaded data
+            self._update_digital_twin_with_loaded_data()
+
         except Exception as e:
             self.logger.error(f"Error loading data: {str(e)}")
             raise DataError(f"Data loading failed: {str(e)}")
+
+    def _update_digital_twin_with_loaded_data(self) -> None:
+        """Update the Digital Twin with the loaded data."""
+        if self.digital_twin is None or self.sync_manager is None:
+            return  # Digital Twin not initialized
+
+        try:
+            # Perform immediate synchronization
+            self.sync_manager.synchronize_now(save_results=True)
+            self.logger.info("Digital Twin updated with loaded data")
+        except Exception as e:
+            self.logger.error(f"Failed to update Digital Twin: {str(e)}")
+
+    def _get_production_data(self) -> Dict[str, Any]:
+        """Get production data for Digital Twin synchronization."""
+        if self.production_data.empty:
+            return {}
+
+        # Return the most recent production data
+        latest_data = self.production_data.iloc[-1].to_dict()
+        return {"production": latest_data}
+
+    def _get_quality_data(self) -> Dict[str, Any]:
+        """Get quality data for Digital Twin synchronization."""
+        if self.quality_data.empty:
+            return {}
+
+        latest_data = self.quality_data.iloc[-1].to_dict()
+        return {"quality": latest_data}
+
+    def _get_material_data(self) -> Dict[str, Any]:
+        """Get material flow data for Digital Twin synchronization."""
+        if self.material_flow.empty:
+            return {}
+
+        latest_data = self.material_flow.iloc[-1].to_dict()
+        return {"material": latest_data}
+
+    def _get_energy_data(self) -> Dict[str, Any]:
+        """Get energy consumption data for Digital Twin synchronization."""
+        if self.energy_data.empty:
+            return {}
+
+        latest_data = self.energy_data.iloc[-1].to_dict()
+        return {"energy": latest_data}
 
     def perform_lifecycle_assessment(
         self, batch_id: Optional[str] = None, output_dir: Optional[Path] = None
@@ -401,6 +490,176 @@ class SoliTekManufacturingAnalysis:
             self.logger.error(f"Error optimizing process parameters: {str(e)}")
             raise
 
+    def simulate_manufacturing_scenario(
+        self, parameters: Optional[Dict[str, Any]] = None, steps: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Simulate a manufacturing scenario using the Digital Twin.
+
+        Args:
+            parameters: Optional parameters to modify for the simulation
+            steps: Number of simulation steps (uses config default if not provided)
+
+        Returns:
+            List of simulated states
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Run simulation with Digital Twin
+            simulated_states = self.digital_twin.simulate(
+                steps=steps, parameters=parameters
+            )
+
+            # Save simulation results using results_manager
+            timestamp_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"simulation_results_{timestamp_str}.json"
+            temp_path = Path(filename)
+
+            with open(temp_path, "w") as f:
+                json.dump(simulated_states, f, indent=2)
+
+            results_manager.save_file(temp_path, "digital_twin")
+            temp_path.unlink()  # Clean up temporary file
+
+            self.logger.info(
+                f"Simulation completed with {len(simulated_states)} states"
+            )
+            return simulated_states
+
+        except Exception as e:
+            self.logger.error(f"Error in manufacturing simulation: {str(e)}")
+            raise ProcessError(f"Simulation failed: {str(e)}")
+
+    def optimize_using_digital_twin(
+        self,
+        current_params: Dict[str, float],
+        constraints: Optional[Dict[str, Union[float, Tuple[float, float]]]] = None,
+        simulation_steps: int = 10,
+    ) -> Dict[str, float]:
+        """
+        Optimize manufacturing parameters using the Digital Twin.
+
+        Args:
+            current_params: Current manufacturing parameters
+            constraints: Optional parameter constraints
+            simulation_steps: Number of simulation steps to run
+
+        Returns:
+            Optimized parameters
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Get current state from Digital Twin
+            current_state = self.digital_twin.get_current_state()
+
+            # Run multiple simulations with parameter variations
+            best_params = current_params.copy()
+            best_performance = self._evaluate_simulation_performance(
+                [self.digital_twin.simulate(steps=1, parameters=current_params)[-1]]
+            )
+
+            # Simple parameter space exploration (could be enhanced with more advanced algorithms)
+            for _ in range(5):  # Try 5 different parameter variations
+                # Create parameter variation within constraints
+                variation = {}
+                for param, value in current_params.items():
+                    if constraints and param in constraints:
+                        constraint = constraints[param]
+                        if isinstance(constraint, tuple) and len(constraint) == 2:
+                            min_val, max_val = constraint
+                            variation[param] = min_val + random.random() * (
+                                max_val - min_val
+                            )
+                        else:
+                            # Use constraint as target value with ±10% variation
+                            variation[param] = float(constraint) * (
+                                0.9 + 0.2 * random.random()
+                            )
+                    else:
+                        # Default ±15% variation
+                        variation[param] = value * (0.85 + 0.3 * random.random())
+
+                # Simulate with these parameters
+                simulated_states = self.digital_twin.simulate(
+                    steps=simulation_steps, parameters=variation
+                )
+
+                # Evaluate performance
+                performance = self._evaluate_simulation_performance(simulated_states)
+
+                if performance > best_performance:
+                    best_performance = performance
+                    best_params = variation
+
+            self.logger.info(
+                f"Digital Twin optimization completed with performance score: {best_performance:.2f}"
+            )
+            return best_params
+
+        except Exception as e:
+            self.logger.error(f"Error in Digital Twin optimization: {str(e)}")
+            raise ProcessError(f"Digital Twin optimization failed: {str(e)}")
+
+    def _evaluate_simulation_performance(
+        self, simulated_states: List[Dict[str, Any]]
+    ) -> float:
+        """
+        Evaluate the performance of a simulation.
+
+        Args:
+            simulated_states: List of simulated states
+
+        Returns:
+            Performance score (higher is better)
+        """
+        if not simulated_states:
+            return 0.0
+
+        # Get the final state
+        final_state = simulated_states[-1]
+
+        # Initialize score
+        score = 0.0
+
+        # Production line performance
+        if "production_line" in final_state:
+            prod_line = final_state["production_line"]
+
+            # Production rate
+            if "production_rate" in prod_line:
+                score += prod_line["production_rate"] * 0.5
+
+            # Energy efficiency
+            if (
+                "energy_consumption" in prod_line
+                and prod_line["energy_consumption"] > 0
+            ):
+                if "production_rate" in prod_line:
+                    energy_efficiency = (
+                        prod_line["production_rate"] / prod_line["energy_consumption"]
+                    )
+                    score += energy_efficiency * 50.0
+
+            # Temperature optimization (penalize if outside optimal range)
+            if "temperature" in prod_line:
+                temp = prod_line["temperature"]
+                if temp < 20 or temp > 25:
+                    # Penalize temperatures outside optimal range
+                    score -= abs(temp - 22.5) * 0.2
+
+        # Material efficiency
+        if "materials" in final_state:
+            materials = final_state["materials"]
+            for material_name, material_data in materials.items():
+                if "quality" in material_data:
+                    score += material_data["quality"] * 10.0
+
+        return score
+
     def predict_batch_outcomes(
         self, process_params: Dict[str, float]
     ) -> PredictionDict:
@@ -529,6 +788,81 @@ class SoliTekManufacturingAnalysis:
         except Exception as e:
             self.logger.error(f"Error loading production data: {str(e)}")
             raise DataError(f"Production data loading failed: {str(e)}")
+
+    def save_digital_twin_state(
+        self, file_path: Optional[Union[str, Path]] = None
+    ) -> bool:
+        """
+        Save the current Digital Twin state.
+
+        Args:
+            file_path: Optional path to save the state
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            return self.digital_twin.save_state(file_path)
+        except Exception as e:
+            self.logger.error(f"Failed to save Digital Twin state: {str(e)}")
+            return False
+
+    def load_digital_twin_state(self, file_path: Union[str, Path]) -> bool:
+        """
+        Load a Digital Twin state from a file.
+
+        Args:
+            file_path: Path to the state file
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            return self.digital_twin.load_state(file_path)
+        except Exception as e:
+            self.logger.error(f"Failed to load Digital Twin state: {str(e)}")
+            return False
+
+    def verify_digital_twin_integration(self) -> Dict[str, Any]:
+        """
+        Verify Digital Twin integration and return status.
+
+        Returns:
+            Dict with digital twin status information
+        """
+        status = {
+            "initialized": self.digital_twin is not None,
+            "synchronization_active": False,
+            "current_state": None,
+            "history_length": 0,
+        }
+
+        if self.digital_twin:
+            # Get synchronization status
+            if self.sync_manager:
+                status["synchronization_active"] = self.sync_manager.is_running
+
+            # Get current state summary
+            current_state = self.digital_twin.get_current_state()
+            if current_state:
+                status["current_state"] = {
+                    "timestamp": current_state.get("timestamp", "N/A"),
+                    "system_status": current_state.get("system_status", "N/A"),
+                    "components": list(current_state.keys()),
+                }
+
+            # Get history length
+            status["history_length"] = len(
+                self.digital_twin.state_manager.state_history
+            )
+
+        return status
 
     def export_analysis_report(
         self, output_path: Optional[Union[str, Path]] = None

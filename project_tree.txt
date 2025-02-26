@@ -1,0 +1,273 @@
+.
+├── LICENSE
+├── README.md
+├── data
+│   ├── processed
+│   │   └── test_file.txt
+│   ├── raw
+│   │   └── test_file.txt
+│   └── synthetic
+│       └── test_file.txt
+├── docs
+│   ├── api
+│   │   └── API_documentation.md
+│   ├── diagrams
+│   │   └── architecture.md
+│   └── guides
+│       ├── development_roadmap.md
+│       ├── implementation_details.md
+│       ├── system_analysis.md
+│       └── system_documentation.md
+├── examples
+│   ├── complete_demo.py
+│   ├── demo_analysis.py
+│   ├── demo_script.py
+│   ├── test_runner.py
+│   └── visualize_optimization.py
+├── notebooks
+│   └── requirements.txt
+├── poetry.lock
+├── project_tree.txt
+├── pyproject.toml
+├── pyrightconfig.json
+├── pytest.ini
+├── scripts
+│   ├── backup
+│   │   ├── __init__.py
+│   │   └── backup_project.py
+│   ├── cleanup.py
+│   ├── fix_imports.py
+│   ├── fix_project_structure.py
+│   ├── maintenance
+│   │   ├── __init__.py
+│   │   ├── log_cleanup.py
+│   │   └── run_maintenance.py
+│   ├── reorganize_tests.sh
+│   ├── standardize_timestamp.py
+│   └── verify_structure.py
+├── setup.py
+├── src
+│   ├── __init__.py
+│   ├── circman5
+│   │   ├── __init__.py
+│   │   ├── adapters
+│   │   │   ├── __init__.py
+│   │   │   ├── base
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── adapter_base.py
+│   │   │   │   └── config_manager.py
+│   │   │   ├── config
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── digital_twin.py
+│   │   │   │   ├── impact_factors.py
+│   │   │   │   ├── json
+│   │   │   │   │   ├── digital_twin.json
+│   │   │   │   │   ├── impact_factors.json
+│   │   │   │   │   ├── manufacturing.json
+│   │   │   │   │   ├── monitoring.json
+│   │   │   │   │   ├── optimization.json
+│   │   │   │   │   └── visualization.json
+│   │   │   │   ├── manufacturing.py
+│   │   │   │   ├── monitoring.py
+│   │   │   │   ├── optimization.py
+│   │   │   │   └── visualization.py
+│   │   │   └── services
+│   │   │       ├── __init__.py
+│   │   │       └── constants_service.py
+│   │   ├── config
+│   │   │   ├── __init__.py
+│   │   │   ├── constants.py
+│   │   │   └── project_paths.py
+│   │   ├── constants.py
+│   │   ├── manufacturing
+│   │   │   ├── __init__.py
+│   │   │   ├── analyzers
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── efficiency.py
+│   │   │   │   ├── quality.py
+│   │   │   │   └── sustainability.py
+│   │   │   ├── core.py
+│   │   │   ├── data_loader.py
+│   │   │   ├── digital_twin
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── core
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── state_manager.py
+│   │   │   │   │   ├── synchronization.py
+│   │   │   │   │   └── twin_core.py
+│   │   │   │   ├── simulation
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── process_models.py
+│   │   │   │   │   ├── scenario_manager.py
+│   │   │   │   │   └── simulation_engine.py
+│   │   │   │   └── visualization
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── dashboard.py
+│   │   │   │       └── twin_visualizer.py
+│   │   │   ├── lifecycle
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── impact_factors.py
+│   │   │   │   ├── lca_analyzer.py
+│   │   │   │   └── visualizer.py
+│   │   │   ├── optimization
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── model.py
+│   │   │   │   ├── optimizer.py
+│   │   │   │   └── types.py
+│   │   │   ├── reporting
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── optimization_visualizer.py
+│   │   │   │   ├── reports.py
+│   │   │   │   ├── visualization_paths.py
+│   │   │   │   └── visualizations.py
+│   │   │   ├── schemas.py
+│   │   │   └── visualization_utils.py
+│   │   ├── monitoring.py
+│   │   ├── test_data_generator.py
+│   │   ├── test_framework.py
+│   │   └── utils
+│   │       ├── __init__.py
+│   │       ├── cleanup.py
+│   │       ├── data_types.py
+│   │       ├── errors.py
+│   │       ├── logging_config.py
+│   │       └── results_manager.py
+│   └── circman5_backup
+│       ├── __init__.py
+│       ├── ai
+│       │   ├── __init__.py
+│       │   ├── optimization_base.py
+│       │   ├── optimization_base.py.bak
+│       │   ├── optimization_core.py
+│       │   ├── optimization_prediction.py
+│       │   ├── optimization_training.py
+│       │   └── optimization_types.py
+│       ├── analysis
+│       │   ├── __init__.py
+│       │   ├── efficiency.py
+│       │   ├── lca
+│       │   │   ├── core.py
+│       │   │   ├── impact_factors.py
+│       │   │   └── init.py
+│       │   ├── quality.py
+│       │   └── sustainability.py
+│       ├── config
+│       │   ├── __init__.py
+│       │   ├── constants.py
+│       │   └── project_paths.py
+│       ├── lca
+│       │   └── __init__.py
+│       ├── manufacturing
+│       │   ├── __init__.py
+│       │   ├── analyzers
+│       │   │   ├── __init__.py
+│       │   │   ├── efficiency.py
+│       │   │   ├── quality.py
+│       │   │   └── sustainability.py
+│       │   ├── core.py
+│       │   ├── core.py.bak
+│       │   ├── data_loader.py
+│       │   ├── data_loader.py.bak
+│       │   ├── lifecycle
+│       │   └── reporting
+│       │       └── __init__.py
+│       ├── monitoring.py
+│       ├── solitek_manufacturing.py.backup
+│       ├── test_data_generator.py
+│       ├── test_framework.py
+│       ├── utils
+│       │   ├── __init__.py
+│       │   ├── data_types.py
+│       │   ├── errors.py
+│       │   └── logging_config.py
+│       └── visualization
+│           ├── __init__.py
+│           ├── lca_visualizer.py
+│           └── manufacturing_visualizer.py
+└── tests
+    ├── README.md
+    ├── __init__.py
+    ├── integration
+    │   ├── __init__.py
+    │   ├── conftest.py
+    │   ├── system
+    │   │   ├── __init__.py
+    │   │   ├── test_helpers.py
+    │   │   └── test_script.py
+    │   ├── test_data_pipeline.py
+    │   ├── test_data_saving.py
+    │   ├── test_digital_twin_integration.py
+    │   └── test_system_integration.py
+    ├── performance
+    │   ├── __init__.py
+    │   └── test_performance.py
+    ├── results
+    │   ├── __init__.py
+    │   ├── archive
+    │   ├── latest
+    │   └── runs
+    └── unit
+        ├── __init__.py
+        ├── adapters
+        │   ├── __init__.py
+        │   ├── base
+        │   │   ├── __init__.py
+        │   │   ├── test_adapter_base.py
+        │   │   └── test_config_manager.py
+        │   ├── config
+        │   │   ├── __init__.py
+        │   │   ├── test_impact_factors.py
+        │   │   ├── test_manufacturing.py
+        │   │   ├── test_monitoring.py
+        │   │   ├── test_optimization.py
+        │   │   └── test_visualization.py
+        │   └── services
+        │       ├── __init__.py
+        │       └── test_constants_service.py
+        ├── manufacturing
+        │   ├── __init__.py
+        │   ├── analyzers
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_efficiency.py
+        │   │   ├── test_quality.py
+        │   │   └── test_sustainability.py
+        │   ├── digital_twin
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_process_models.py
+        │   │   ├── test_results_integration.py
+        │   │   ├── test_scenario_manager.py
+        │   │   ├── test_simulation_engine.py
+        │   │   ├── test_state_manager.py
+        │   │   ├── test_synchronization.py
+        │   │   └── test_twin_core.py
+        │   ├── lifecycle
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_lca_core.py
+        │   │   └── test_lca_integration.py
+        │   ├── optimization
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_model.py
+        │   │   └── test_optimizer.py
+        │   ├── reporting
+        │   │   ├── __init__.py
+        │   │   ├── conftest.py
+        │   │   ├── test_optimization_visualizer.py
+        │   │   ├── test_reports.py
+        │   │   ├── test_visualization_paths.py
+        │   │   └── test_visualizations.py
+        │   ├── test_core.py
+        │   ├── test_monitoring.py
+        │   ├── test_production_data.py
+        │   └── test_project_imports.py
+        └── utils
+            ├── __init__.py
+            ├── test_data_generator.py
+            ├── test_lca_data_generator.py
+            ├── test_logging_config.py
+            └── test_results_manager.py
+
+64 directories, 207 files
