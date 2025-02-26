@@ -15,6 +15,8 @@ import json
 import threading
 from enum import Enum
 
+import pandas as pd
+
 from ....utils.logging_config import setup_logger
 from ....utils.results_manager import results_manager
 from circman5.adapters.services.constants_service import ConstantsService
@@ -310,29 +312,46 @@ class SynchronizationManager:
     def _save_sync_results(
         self, sync_data: Dict[str, Any], timestamp: datetime.datetime
     ) -> None:
-        """
-        Save synchronization results using results_manager.
-
-        Args:
-            sync_data: Synchronization data to save
-            timestamp: Timestamp of the synchronization
-        """
+        """Save synchronization results using results_manager."""
         try:
+            # Convert data to JSON-serializable format
+            serializable_data = self._make_json_serializable(sync_data)
+
             # Create filename with timestamp
             timestamp_str = timestamp.strftime("%Y%m%d_%H%M%S")
             filename = f"sync_data_{timestamp_str}.json"
-            temp_path = Path(filename)
+
+            # Get temp directory from results_manager
+            temp_dir = results_manager.get_path("temp")
+            temp_path = temp_dir / filename
 
             # Save to temporary file
             with open(temp_path, "w") as f:
-                json.dump(sync_data, f, indent=2)
+                json.dump(serializable_data, f, indent=2)
 
             # Save file using results_manager
             results_manager.save_file(temp_path, "digital_twin")
 
             # Clean up temporary file
-            temp_path.unlink()
+            if temp_path.exists():
+                temp_path.unlink()
+
             self.logger.debug(f"Synchronization data saved to {filename}")
 
         except Exception as e:
             self.logger.error(f"Failed to save synchronization results: {str(e)}")
+
+    def _make_json_serializable(self, obj: Any) -> Any:
+        """Convert an object to a JSON-serializable format."""
+        if isinstance(obj, dict):
+            return {k: self._make_json_serializable(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self._make_json_serializable(item) for item in obj]
+        elif isinstance(obj, pd.Timestamp):
+            return obj.isoformat()
+        elif hasattr(obj, "isoformat") and callable(obj.isoformat):
+            return obj.isoformat()
+        elif pd.isna(obj):
+            return None
+        else:
+            return obj

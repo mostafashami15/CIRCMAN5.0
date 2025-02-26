@@ -6,11 +6,13 @@ This module implements the core simulation capabilities for the digital twin sys
 providing physics-based modeling of manufacturing processes.
 """
 
+import random
 from typing import Dict, Any, List, Optional, Union, Tuple
 import numpy as np
 import datetime
 from pathlib import Path
 import json
+import copy
 
 from ....utils.logging_config import setup_logger
 from ....utils.results_manager import results_manager
@@ -120,17 +122,9 @@ class SimulationEngine:
                 state[key] = value
 
     def _simulate_next_state(self, current_state: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Simulate the next state based on physics-based models.
-
-        Args:
-            current_state: Current state to base simulation on
-
-        Returns:
-            Dict[str, Any]: Next simulated state
-        """
-        # Create a copy of the current state
-        next_state = current_state.copy()
+        """Simulate the next state based on physics-based models."""
+        # Create a deep copy of the current state
+        next_state = copy.deepcopy(current_state)
 
         # Update timestamp
         if "timestamp" in next_state:
@@ -138,60 +132,123 @@ class SimulationEngine:
             next_time = current_time + datetime.timedelta(seconds=1)
             next_state["timestamp"] = next_time.isoformat()
 
-        # Apply physics-based models for different components
-        self._simulate_production_line(next_state)
-        self._simulate_materials(next_state)
-        self._simulate_environment(next_state)
+        # Initialize production line if not present
+        if "production_line" not in next_state:
+            next_state["production_line"] = {
+                "status": "idle",
+                "temperature": 22.5,
+                "energy_consumption": 0.0,
+                "production_rate": 0.0,
+            }
+
+        # Randomly change status occasionally (10% chance)
+        if random.random() < 0.1:
+            current_status = next_state["production_line"].get("status", "idle")
+            next_state["production_line"]["status"] = (
+                "running" if current_status == "idle" else "idle"
+            )
+
+        # Add realistic behavior based on status
+        if next_state["production_line"].get("status") == "running":
+            # When running, show significant activity
+            next_state["production_line"]["production_rate"] = random.uniform(80, 150)
+            next_state["production_line"]["energy_consumption"] = random.uniform(
+                50, 120
+            )
+            next_state["production_line"]["temperature"] += random.uniform(-0.5, 1.0)
+
+            # Consume materials when running
+            if "materials" in next_state:
+                for material_name, material_data in next_state["materials"].items():
+                    if isinstance(material_data, dict) and "inventory" in material_data:
+                        # Consume material based on production rate
+                        consumption = (
+                            next_state["production_line"]["production_rate"] * 0.01
+                        )
+                        material_data["inventory"] = max(
+                            0, material_data["inventory"] - consumption
+                        )
+        else:
+            # When idle, show minimal activity
+            next_state["production_line"]["production_rate"] = 0.0
+            next_state["production_line"]["energy_consumption"] = random.uniform(0, 5)
+            # Temperature gradually returns to ambient
+            ambient = 22.0
+            if "temperature" in next_state["production_line"]:
+                next_state["production_line"]["temperature"] += (
+                    ambient - next_state["production_line"]["temperature"]
+                ) * 0.1
+
+        # Add environmental variations
+        if "environment" in next_state:
+            next_state["environment"]["temperature"] += random.uniform(-0.2, 0.2)
+            next_state["environment"]["humidity"] += random.uniform(-1.0, 1.0)
+            # Keep humidity in reasonable range
+            if "humidity" in next_state["environment"]:
+                next_state["environment"]["humidity"] = max(
+                    0, min(100, next_state["environment"]["humidity"])
+                )
 
         return next_state
 
     def _simulate_production_line(self, state: Dict[str, Any]) -> None:
-        """
-        Simulate production line behavior with guaranteed changes.
-
-        Args:
-            state: State to update with simulation results
-        """
         if "production_line" not in state:
             return
 
         prod_line = state["production_line"]
 
-        # Only apply changes if production line is running
+        # Apply changes based on production line status
         if prod_line.get("status") == "running":
-            # Use larger increments to ensure visible changes
-            temp_increment = self.simulation_config.get("temperature_increment", 0.5)
-            energy_increment = self.simulation_config.get(
-                "energy_consumption_increment", 2.0
-            )
-            prod_rate_increment = self.simulation_config.get(
-                "production_rate_increment", 0.2
-            )
-
-            # Ensure we always have non-zero increments
-            temp_increment = max(0.5, temp_increment)
-            energy_increment = max(2.0, energy_increment)
-            prod_rate_increment = max(0.2, prod_rate_increment)
-
-            # Update temperature with significant randomness
+            # Temperature gradually approaches target with some fluctuation
+            target_temp = self.simulation_config.get("target_temperature", 22.5)
             if "temperature" in prod_line:
-                # Add more randomness to temperature changes
-                random_factor = 0.5 + np.random.random()  # Between 0.5 and 1.5
-                prod_line["temperature"] += temp_increment * random_factor
+                regulation = self.simulation_config.get("temperature_regulation", 0.1)
+                random_fluctuation = (random.random() - 0.5) * 0.5
+                prod_line["temperature"] += (
+                    target_temp - prod_line["temperature"]
+                ) * regulation + random_fluctuation
 
-            # Update energy consumption
+            # Energy consumption increases during operation with some variation
             if "energy_consumption" in prod_line:
-                prod_line["energy_consumption"] += energy_increment * np.random.normal(
-                    1.0, 0.3
+                base_increment = self.simulation_config.get(
+                    "energy_consumption_increment", 2.0
+                )
+                variation = random.normalvariate(1.0, 0.2)  # Mean 1.0, stddev 0.2
+                prod_line["energy_consumption"] += base_increment * variation
+
+            # Production rate varies based on system conditions
+            if "production_rate" in prod_line:
+                if "temperature" in prod_line:
+                    # Production rate depends on how close temperature is to optimal
+                    temp_impact = (
+                        1.0 - abs(prod_line["temperature"] - target_temp) / 5.0
+                    )
+                    temp_impact = max(0.5, min(1.2, temp_impact))
+
+                    base_change = self.simulation_config.get(
+                        "production_rate_increment", 0.2
+                    )
+                    prod_line["production_rate"] *= 1.0 + (
+                        base_change * temp_impact - 0.1
+                    ) * random.normalvariate(1.0, 0.2)
+                    # Ensure production rate stays positive and reasonable
+                    prod_line["production_rate"] = max(
+                        0.1, prod_line["production_rate"]
+                    )
+        else:
+            # System is idle - energy consumption decreases, temperature normalizes
+            if "energy_consumption" in prod_line:
+                # Gradual energy decrease during idle time
+                prod_line["energy_consumption"] *= 0.95
+                prod_line["energy_consumption"] = max(
+                    1.0, prod_line["energy_consumption"]
                 )
 
-            # Update production rate with guaranteed change
+            # Production rate drops to zero during idle time
             if "production_rate" in prod_line:
-                # Force a more significant change to ensure test passes
-                change_direction = 1 if np.random.random() > 0.5 else -1
-                prod_line["production_rate"] += (
-                    prod_rate_increment * change_direction * 3.0
-                )
+                prod_line["production_rate"] *= 0.8
+                if prod_line["production_rate"] < 0.1:
+                    prod_line["production_rate"] = 0.0
 
     def _simulate_materials(self, state: Dict[str, Any]) -> None:
         """

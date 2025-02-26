@@ -493,16 +493,7 @@ class SoliTekManufacturingAnalysis:
     def simulate_manufacturing_scenario(
         self, parameters: Optional[Dict[str, Any]] = None, steps: Optional[int] = None
     ) -> List[Dict[str, Any]]:
-        """
-        Simulate a manufacturing scenario using the Digital Twin.
-
-        Args:
-            parameters: Optional parameters to modify for the simulation
-            steps: Number of simulation steps (uses config default if not provided)
-
-        Returns:
-            List of simulated states
-        """
+        """Simulate a manufacturing scenario using the Digital Twin."""
         if self.digital_twin is None:
             raise ValueError("Digital Twin not initialized")
 
@@ -512,16 +503,29 @@ class SoliTekManufacturingAnalysis:
                 steps=steps, parameters=parameters
             )
 
+            # Convert states to JSON-serializable format
+            serializable_states = []
+            for state in simulated_states:
+                serializable_state = self._make_json_serializable(state)
+                serializable_states.append(serializable_state)
+
             # Save simulation results using results_manager
             timestamp_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"simulation_results_{timestamp_str}.json"
-            temp_path = Path(filename)
+
+            # Use results_manager to get the temp directory
+            temp_dir = results_manager.get_path("temp")
+            temp_path = temp_dir / filename
 
             with open(temp_path, "w") as f:
-                json.dump(simulated_states, f, indent=2)
+                json.dump(serializable_states, f, indent=2)
 
+            # Save to digital_twin directory
             results_manager.save_file(temp_path, "digital_twin")
-            temp_path.unlink()  # Clean up temporary file
+
+            # Clean up temporary file
+            if temp_path.exists():
+                temp_path.unlink()
 
             self.logger.info(
                 f"Simulation completed with {len(simulated_states)} states"
@@ -531,6 +535,21 @@ class SoliTekManufacturingAnalysis:
         except Exception as e:
             self.logger.error(f"Error in manufacturing simulation: {str(e)}")
             raise ProcessError(f"Simulation failed: {str(e)}")
+
+    def _make_json_serializable(self, obj: Any) -> Any:
+        """Convert an object to a JSON-serializable format."""
+        if isinstance(obj, dict):
+            return {k: self._make_json_serializable(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self._make_json_serializable(item) for item in obj]
+        elif isinstance(obj, pd.Timestamp):
+            return obj.isoformat()
+        elif hasattr(obj, "isoformat") and callable(obj.isoformat):
+            return obj.isoformat()
+        elif pd.isna(obj):
+            return None
+        else:
+            return obj
 
     def optimize_using_digital_twin(
         self,
@@ -945,3 +964,109 @@ class SoliTekManufacturingAnalysis:
         except Exception as e:
             self.logger.error(f"Error generating comprehensive report: {str(e)}")
             raise ProcessError(f"Report generation failed: {str(e)}")
+
+    def generate_digital_twin_visualization(
+        self, save_path: Optional[Union[str, Path]] = None
+    ) -> bool:
+        """
+        Generate a visualization of the current digital twin state.
+
+        Args:
+            save_path: Optional path to save the visualization
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinVisualizer
+            from .digital_twin.visualization.twin_visualizer import TwinVisualizer
+
+            # Create visualizer with the state manager
+            visualizer = TwinVisualizer(self.digital_twin.state_manager)
+
+            # Generate visualization
+            visualizer.visualize_current_state(save_path)
+
+            self.logger.info("Generated Digital Twin visualization")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error generating Digital Twin visualization: {str(e)}")
+            return False
+
+    def generate_digital_twin_dashboard(
+        self, save_path: Optional[Union[str, Path]] = None
+    ) -> bool:
+        """
+        Generate a comprehensive dashboard for the digital twin.
+
+        Args:
+            save_path: Optional path to save the dashboard
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinDashboard
+            from .digital_twin.visualization.dashboard import TwinDashboard
+
+            # Create dashboard with the state manager
+            dashboard = TwinDashboard(self.digital_twin.state_manager)
+
+            # Generate dashboard
+            dashboard.generate_dashboard(save_path)
+
+            self.logger.info("Generated Digital Twin dashboard")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error generating Digital Twin dashboard: {str(e)}")
+            return False
+
+    def visualize_digital_twin_history(
+        self,
+        metrics: List[str] = [
+            "production_line.production_rate",
+            "production_line.energy_consumption",
+        ],
+        limit: int = 20,
+        save_path: Optional[Union[str, Path]] = None,
+    ) -> bool:
+        """
+        Visualize historical data from the digital twin.
+
+        Args:
+            metrics: List of metric paths to visualize
+            limit: Maximum number of historical states to include
+            save_path: Optional path to save the visualization
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if self.digital_twin is None:
+            raise ValueError("Digital Twin not initialized")
+
+        try:
+            # Import the TwinVisualizer
+            from .digital_twin.visualization.twin_visualizer import TwinVisualizer
+
+            # Create visualizer with the state manager
+            visualizer = TwinVisualizer(self.digital_twin.state_manager)
+
+            # Generate visualization
+            visualizer.visualize_historical_states(metrics, limit, save_path)
+
+            self.logger.info("Generated Digital Twin historical visualization")
+            return True
+
+        except Exception as e:
+            self.logger.error(
+                f"Error generating Digital Twin historical visualization: {str(e)}"
+            )
+            return False

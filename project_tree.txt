@@ -22,6 +22,7 @@
 │   ├── complete_demo.py
 │   ├── demo_analysis.py
 │   ├── demo_script.py
+│   ├── digital_twin_demo.py
 │   ├── test_runner.py
 │   └── visualize_optimization.py
 ├── notebooks
@@ -197,6 +198,7 @@
     │   ├── test_data_pipeline.py
     │   ├── test_data_saving.py
     │   ├── test_digital_twin_integration.py
+    │   ├── test_digital_twin_visualization.py
     │   └── test_system_integration.py
     ├── performance
     │   ├── __init__.py
@@ -204,8 +206,28 @@
     ├── results
     │   ├── __init__.py
     │   ├── archive
-    │   ├── latest
+    │   ├── latest -> /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250226_173630
     │   └── runs
+    │       └── run_20250226_173630
+    │           ├── digital_twin
+    │           │   ├── simulation_results_20250226_173631.json
+    │           │   ├── sync_data_20250226_173630.json
+    │           │   └── sync_data_20250226_173631.json
+    │           ├── input_data
+    │           │   ├── energy_data.csv
+    │           │   ├── material_data.csv
+    │           │   ├── production_data.csv
+    │           │   └── quality_data.csv
+    │           ├── lca_results
+    │           ├── metrics
+    │           ├── reports
+    │           ├── temp
+    │           └── visualizations
+    │               ├── historical_metrics.png
+    │               ├── initial_dashboard.png
+    │               ├── initial_state.png
+    │               ├── simulation_dashboard.png
+    │               └── simulation_state.png
     └── unit
         ├── __init__.py
         ├── adapters
@@ -270,4 +292,4 @@
             ├── test_logging_config.py
             └── test_results_manager.py
 
-64 directories, 207 files
+72 directories, 221 files

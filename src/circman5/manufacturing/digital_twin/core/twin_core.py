@@ -203,7 +203,12 @@ class DigitalTwin:
             simulated_states.append(next_state)
             current_sim_state = next_state
 
-        self.logger.info(f"Simulation completed with {len(simulated_states)} states")
+        if simulated_states:
+            # Update the state manager with the final state from simulation
+            self.state_manager.set_state(simulated_states[-1])
+            self.logger.info(
+                f"Simulation completed with {len(simulated_states)} states"
+            )
         return simulated_states
 
     def get_current_state(self) -> Dict[str, Any]:
