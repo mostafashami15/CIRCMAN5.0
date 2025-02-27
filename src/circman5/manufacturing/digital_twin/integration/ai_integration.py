@@ -41,7 +41,7 @@ class AIIntegration:
 
     def __init__(
         self,
-        digital_twin: DigitalTwin,
+        digital_twin: "DigitalTwin",  # Use string literal for forward reference
         model: Optional[ManufacturingModel] = None,
         optimizer: Optional[ProcessOptimizer] = None,
     ):

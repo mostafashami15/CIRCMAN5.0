@@ -9,7 +9,10 @@ and its digital representation.
 """
 
 from pathlib import Path
-from typing import Dict, Any, Optional, List, Union, Tuple
+from typing import Dict, Any, List, Optional, Union, Tuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..integration.lca_integration import LCAIntegration
 import logging
 import json
 import datetime
@@ -19,6 +22,11 @@ from .state_manager import StateManager
 from ....utils.logging_config import setup_logger
 from ....utils.results_manager import results_manager
 from circman5.adapters.services.constants_service import ConstantsService
+
+from ..event_notification.event_types import EventSeverity, EventCategory
+from ..event_notification.publishers import DigitalTwinPublisher
+
+from ..configuration.config_manager import config_manager
 
 
 @dataclass
@@ -96,6 +104,24 @@ class DigitalTwin:
         self.is_running = False
         self._last_update = datetime.datetime.now()
 
+        self._init_integrations()
+
+        # Initialize configuration manager
+        self.config_manager = config_manager
+
+        # Initialize event publisher
+        self.event_publisher = DigitalTwinPublisher()
+
+        # Add parameter thresholds from configuration
+        self.parameter_thresholds = self.dt_config.get("PARAMETER_THRESHOLDS", {})
+
+    def _init_integrations(self):
+        """Initialize integrations with other systems."""
+        # Import locally to avoid circular references
+        from ..integration.lca_integration import LCAIntegration
+
+        self.lca_integration = LCAIntegration(self)
+
     def initialize(self) -> bool:
         """
         Initialize the digital twin with initial state and connections.
@@ -125,6 +151,9 @@ class DigitalTwin:
             bool: True if update was successful, False otherwise
         """
         try:
+            # Store previous state for comparison
+            previous_state = self.state_manager.get_current_state().copy()
+
             self.logger.debug("Updating Digital Twin state...")
 
             # Record update timestamp
@@ -134,6 +163,9 @@ class DigitalTwin:
 
             # Get current state
             current_state = self.state_manager.get_current_state()
+
+            # Apply configuration parameters to state
+            current_state = self.config_manager.apply_parameters_to_state(current_state)
 
             # Collect data from configured sources
             sensor_data = (
@@ -160,13 +192,90 @@ class DigitalTwin:
             updated_state = self._update_state(current_state, new_data)
             self.state_manager.set_state(updated_state)
 
+            # Publish state update event
+            self.event_publisher.publish_state_update(previous_state, updated_state)
+
+            # Check thresholds
+            self._check_parameter_thresholds(updated_state)
+
             self.logger.debug(
                 f"Digital Twin state updated: {len(updated_state)} parameters"
             )
             return True
+
         except Exception as e:
             self.logger.error(f"Failed to update Digital Twin: {str(e)}")
+            # Publish error event
+            self.event_publisher.publish_error_event(
+                error_type="UpdateError",
+                error_message=str(e),
+                severity=EventSeverity.ERROR,
+            )
             return False
+
+    # parameter threshold checking method
+    def _check_parameter_thresholds(self, state: Dict[str, Any]) -> None:
+        """
+        Check parameters against defined thresholds.
+
+        Args:
+            state: Current state to check
+        """
+        try:
+            for path, threshold_config in self.parameter_thresholds.items():
+                # Extract parameter value from path
+                parts = path.split(".")
+                value = state
+                param_exists = True
+
+                for part in parts:
+                    if part in value:
+                        value = value[part]
+                    else:
+                        param_exists = False
+                        break
+
+                if not param_exists or not isinstance(value, (int, float)):
+                    continue
+
+                # Get threshold values
+                threshold = threshold_config.get("value", 0)
+                comparison = threshold_config.get("comparison", "greater_than")
+
+                # Check threshold
+                threshold_breached = False
+
+                if comparison == "greater_than" and value > threshold:
+                    threshold_breached = True
+                elif comparison == "less_than" and value < threshold:
+                    threshold_breached = True
+                elif comparison == "equal" and value == threshold:
+                    threshold_breached = True
+                elif comparison == "not_equal" and value != threshold:
+                    threshold_breached = True
+
+                if threshold_breached:
+                    # Get severity from config
+                    severity_str = threshold_config.get("severity", "warning").upper()
+                    severity = EventSeverity.WARNING
+
+                    try:
+                        severity = EventSeverity[severity_str]
+                    except (KeyError, ValueError):
+                        pass
+
+                    # Publish threshold event
+                    param_name = threshold_config.get("name", path)
+                    self.event_publisher.publish_parameter_threshold_event(
+                        parameter_path=path,
+                        parameter_name=param_name,
+                        threshold=threshold,
+                        actual_value=value,
+                        state=state,
+                        severity=severity,
+                    )
+        except Exception as e:
+            self.logger.error(f"Error checking parameter thresholds: {str(e)}")
 
     def simulate(
         self, steps: Optional[int] = None, parameters: Optional[Dict[str, Any]] = None
@@ -209,6 +318,39 @@ class DigitalTwin:
             self.logger.info(
                 f"Simulation completed with {len(simulated_states)} states"
             )
+        if simulated_states:
+            # Generate simulation ID
+            import uuid
+
+            simulation_id = str(uuid.uuid4())
+
+            # Calculate improvements if applicable
+            improvement = None
+            if parameters and simulated_states[-1].get("production_line", {}).get(
+                "production_rate"
+            ):
+                initial_rate = (
+                    simulated_states[0]
+                    .get("production_line", {})
+                    .get("production_rate", 0)
+                )
+                final_rate = (
+                    simulated_states[-1]
+                    .get("production_line", {})
+                    .get("production_rate", 0)
+                )
+
+                if initial_rate > 0:
+                    improvement = (final_rate - initial_rate) / initial_rate * 100
+
+            # Publish simulation result
+            self.event_publisher.publish_simulation_result(
+                simulation_id=simulation_id,
+                parameters=parameters or {},
+                results={"final_state": simulated_states[-1]},
+                improvement=improvement,
+            )
+
         return simulated_states
 
     def get_current_state(self) -> Dict[str, Any]:

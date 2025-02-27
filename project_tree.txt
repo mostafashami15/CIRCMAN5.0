@@ -22,7 +22,9 @@
 │   ├── complete_demo.py
 │   ├── demo_analysis.py
 │   ├── demo_script.py
+│   ├── digital_twin_ai_integration_demo.py
 │   ├── digital_twin_demo.py
+│   ├── enhanced_optimization_demo.py
 │   ├── test_runner.py
 │   └── visualize_optimization.py
 ├── notebooks
@@ -91,11 +93,27 @@
 │   │   │   ├── data_loader.py
 │   │   │   ├── digital_twin
 │   │   │   │   ├── __init__.py
+│   │   │   │   ├── configuration
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── config_api.py
+│   │   │   │   │   ├── config_manager.py
+│   │   │   │   │   └── parameter_definition.py
 │   │   │   │   ├── core
 │   │   │   │   │   ├── __init__.py
 │   │   │   │   │   ├── state_manager.py
 │   │   │   │   │   ├── synchronization.py
 │   │   │   │   │   └── twin_core.py
+│   │   │   │   ├── event_notification
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── event_manager.py
+│   │   │   │   │   ├── event_persistence.py
+│   │   │   │   │   ├── event_types.py
+│   │   │   │   │   ├── publishers.py
+│   │   │   │   │   └── subscribers.py
+│   │   │   │   ├── integration
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── ai_integration.py
+│   │   │   │   │   └── lca_integration.py
 │   │   │   │   ├── simulation
 │   │   │   │   │   ├── __init__.py
 │   │   │   │   │   ├── process_models.py
@@ -104,6 +122,7 @@
 │   │   │   │   └── visualization
 │   │   │   │       ├── __init__.py
 │   │   │   │       ├── dashboard.py
+│   │   │   │       ├── process_visualizer.py
 │   │   │   │       └── twin_visualizer.py
 │   │   │   ├── lifecycle
 │   │   │   │   ├── __init__.py
@@ -197,6 +216,7 @@
     │   │   └── test_script.py
     │   ├── test_data_pipeline.py
     │   ├── test_data_saving.py
+    │   ├── test_digital_twin_events.py
     │   ├── test_digital_twin_integration.py
     │   ├── test_digital_twin_visualization.py
     │   └── test_system_integration.py
@@ -206,28 +226,8 @@
     ├── results
     │   ├── __init__.py
     │   ├── archive
-    │   ├── latest -> /Users/mostafashami/Desktop/PV_Project/CIRCMAN5.0/tests/results/runs/run_20250226_173630
+    │   ├── latest
     │   └── runs
-    │       └── run_20250226_173630
-    │           ├── digital_twin
-    │           │   ├── simulation_results_20250226_173631.json
-    │           │   ├── sync_data_20250226_173630.json
-    │           │   └── sync_data_20250226_173631.json
-    │           ├── input_data
-    │           │   ├── energy_data.csv
-    │           │   ├── material_data.csv
-    │           │   ├── production_data.csv
-    │           │   └── quality_data.csv
-    │           ├── lca_results
-    │           ├── metrics
-    │           ├── reports
-    │           ├── temp
-    │           └── visualizations
-    │               ├── historical_metrics.png
-    │               ├── initial_dashboard.png
-    │               ├── initial_state.png
-    │               ├── simulation_dashboard.png
-    │               └── simulation_state.png
     └── unit
         ├── __init__.py
         ├── adapters
@@ -256,7 +256,18 @@
         │   │   └── test_sustainability.py
         │   ├── digital_twin
         │   │   ├── __init__.py
+        │   │   ├── configuration
+        │   │   │   ├── test_config_manager.py
+        │   │   │   └── test_parameter_definition.py
         │   │   ├── conftest.py
+        │   │   ├── event_notification
+        │   │   │   ├── test_event_manager.py
+        │   │   │   ├── test_event_persistence.py
+        │   │   │   ├── test_event_types.py
+        │   │   │   ├── test_publishers.py
+        │   │   │   └── test_subscribers.py
+        │   │   ├── test_ai_integration.py
+        │   │   ├── test_lca_integration.py
         │   │   ├── test_process_models.py
         │   │   ├── test_results_integration.py
         │   │   ├── test_scenario_manager.py
@@ -292,4 +303,4 @@
             ├── test_logging_config.py
             └── test_results_manager.py
 
-72 directories, 221 files
+69 directories, 235 files

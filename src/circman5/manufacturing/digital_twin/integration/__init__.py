@@ -1,11 +1,13 @@
 # src/circman5/manufacturing/digital_twin/integration/__init__.py
-"""
-Integration components for the CIRCMAN5.0 Digital Twin.
 
-This package provides integration capabilities for connecting the digital twin
-with other subsystems like AI optimization, LCA analysis, and more.
-"""
+"""Integration modules for the Digital Twin system."""
 
-from .ai_integration import AIIntegration
+from typing import TYPE_CHECKING
 
-__all__ = ["AIIntegration"]
+if TYPE_CHECKING:
+    from .ai_integration import AIIntegration
+    from .lca_integration import LCAIntegration
+
+# These imports will only be used when explicitly imported by other modules
+# to avoid circular imports during module initialization
+__all__ = ["AIIntegration", "LCAIntegration"]

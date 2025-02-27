@@ -32,6 +32,135 @@
     "SCENARIO_MANAGEMENT": {
         "max_scenarios": 100
     },
+    "EVENT_NOTIFICATION": {
+        "persistence_enabled": true,
+        "max_events": 1000,
+        "default_alert_severity": "warning",
+        "publish_state_changes": true,
+        "publish_threshold_breaches": true,
+        "publish_simulation_results": true
+    },
+    "PARAMETERS": {
+        "PARAMETER_GROUPS": [
+            {
+                "name": "Process Control",
+                "description": "Manufacturing process control parameters",
+                "category": "process",
+                "parameters": [
+                    {
+                        "name": "target_temperature",
+                        "description": "Target temperature for manufacturing process",
+                        "type": "float",
+                        "default_value": 22.5,
+                        "path": "production_line.temperature",
+                        "min_value": 18.0,
+                        "max_value": 30.0,
+                        "units": "°C",
+                        "tags": ["temperature", "control"]
+                    },
+                    {
+                        "name": "energy_limit",
+                        "description": "Maximum energy consumption allowed",
+                        "type": "float",
+                        "default_value": 200.0,
+                        "path": "production_line.energy_limit",
+                        "min_value": 50.0,
+                        "max_value": 500.0,
+                        "units": "kWh",
+                        "tags": ["energy", "limit"]
+                    },
+                    {
+                        "name": "production_rate",
+                        "description": "Target production rate",
+                        "type": "float",
+                        "default_value": 5.0,
+                        "path": "production_line.production_rate",
+                        "min_value": 1.0,
+                        "max_value": 10.0,
+                        "units": "units/hour",
+                        "tags": ["production", "rate"]
+                    }
+                ]
+            },
+            {
+                "name": "Quality Control",
+                "description": "Quality control parameters",
+                "category": "quality",
+                "parameters": [
+                    {
+                        "name": "defect_threshold",
+                        "description": "Maximum allowed defect rate",
+                        "type": "float",
+                        "default_value": 0.05,
+                        "path": "production_line.defect_threshold",
+                        "min_value": 0.01,
+                        "max_value": 0.1,
+                        "units": "",
+                        "tags": ["quality", "threshold"]
+                    },
+                    {
+                        "name": "inspection_frequency",
+                        "description": "Frequency of quality inspections",
+                        "type": "integer",
+                        "default_value": 10,
+                        "path": "production_line.inspection_frequency",
+                        "min_value": 1,
+                        "max_value": 100,
+                        "units": "units",
+                        "tags": ["quality", "inspection"]
+                    }
+                ]
+            },
+            {
+                "name": "System Settings",
+                "description": "General system settings",
+                "category": "system",
+                "parameters": [
+                    {
+                        "name": "update_frequency",
+                        "description": "Digital twin update frequency",
+                        "type": "float",
+                        "default_value": 1.0,
+                        "path": "",
+                        "min_value": 0.1,
+                        "max_value": 10.0,
+                        "units": "Hz",
+                        "tags": ["system", "performance"],
+                        "requires_restart": true
+                    },
+                    {
+                        "name": "log_level",
+                        "description": "Logging level",
+                        "type": "enum",
+                        "default_value": "INFO",
+                        "path": "",
+                        "enum_values": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+                        "tags": ["system", "logging"]
+                    }
+                ]
+            }
+        ]
+    },
+    "PARAMETER_THRESHOLDS": {
+        "production_line.temperature": {
+            "name": "Production Line Temperature",
+            "value": 25.0,
+            "comparison": "greater_than",
+            "severity": "WARNING"
+        },
+        "production_line.energy_consumption": {
+            "name": "Energy Consumption",
+            "value": 200.0,
+            "comparison": "greater_than",
+            "severity": "WARNING"
+        },
+        "production_line.defect_rate": {
+            "name": "Defect Rate",
+            "value": 0.1,
+            "comparison": "greater_than",
+            "severity": "ERROR"
+        }
+    },
     "AI_INTEGRATION": {
         "DEFAULT_PARAMETERS": {
             "input_amount": 100.0,

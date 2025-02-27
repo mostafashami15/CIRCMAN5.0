@@ -32,6 +32,8 @@ from circman5.manufacturing.digital_twin.simulation.process_models import (
     SiliconPurificationModel,
     WaferProductionModel,
 )
+from circman5.manufacturing.lifecycle.lca_analyzer import LCAAnalyzer
+from circman5.manufacturing.lifecycle.visualizer import LCAVisualizer
 
 
 @pytest.fixture
@@ -141,3 +143,51 @@ def process_model_silicon() -> SiliconPurificationModel:
 def process_model_wafer() -> WaferProductionModel:
     """Wafer production model fixture for testing."""
     return WaferProductionModel()
+
+
+@pytest.fixture
+def lca_analyzer():
+    """Return an LCAAnalyzer instance for testing."""
+    return LCAAnalyzer()
+
+
+@pytest.fixture
+def lca_visualizer():
+    """Return an LCAVisualizer instance for testing."""
+    return LCAVisualizer()
+
+
+@pytest.fixture
+def sample_lca_state():
+    """Sample state with detailed material and energy data for LCA testing."""
+    return {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "batch_id": "test_batch_001",
+        "system_status": "running",
+        "production_line": {
+            "status": "running",
+            "temperature": 25.0,
+            "energy_consumption": 1000.0,
+            "production_rate": 100.0,
+            "energy_source": "grid_electricity",
+        },
+        "materials": {
+            "silicon_wafer": {"inventory": 100.0, "quality": 0.95},
+            "solar_glass": {"inventory": 150.0, "quality": 0.98},
+            "eva_sheet": {"inventory": 50.0, "quality": 0.9},
+            "backsheet": {"inventory": 30.0, "quality": 0.92},
+            "aluminum_frame": {"inventory": 80.0, "quality": 0.97},
+        },
+        "environment": {"temperature": 22.0, "humidity": 45.0},
+    }
+
+
+@pytest.fixture
+def lca_integration(initialized_twin):
+    """Return an LCAIntegration instance for testing."""
+    # Import inside the fixture to avoid circular imports
+    from circman5.manufacturing.digital_twin.integration.lca_integration import (
+        LCAIntegration,
+    )
+
+    return LCAIntegration(digital_twin=initialized_twin)
