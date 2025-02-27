@@ -132,11 +132,11 @@ class DigitalTwinAdapter(ConfigAdapterBase):
                 "temperature_increment": 0.5,
                 "energy_consumption_increment": 2.0,
                 "production_rate_increment": 0.2,
+                "default_simulation_steps": 10,
                 "target_temperature": 22.5,
                 "temperature_regulation": 0.1,
                 "silicon_wafer_consumption_rate": 0.5,
                 "solar_glass_consumption_rate": 0.2,
-                "default_simulation_steps": 10,
             },
             "SYNCHRONIZATION_CONFIG": {
                 "default_sync_interval": 1.0,
@@ -150,4 +150,25 @@ class DigitalTwinAdapter(ConfigAdapterBase):
                 "auto_timestamp": True,
             },
             "SCENARIO_MANAGEMENT": {"max_scenarios": 100},
+            "AI_INTEGRATION": {
+                "DEFAULT_PARAMETERS": {
+                    "input_amount": 100.0,
+                    "energy_used": 50.0,
+                    "cycle_time": 30.0,
+                    "efficiency": 0.9,
+                    "defect_rate": 0.05,
+                    "thickness_uniformity": 95.0,
+                },
+                "PARAMETER_MAPPING": {
+                    "production_rate": "output_amount",
+                    "energy_consumption": "energy_used",
+                    "temperature": "temperature",
+                    "cycle_time": "cycle_time",
+                },
+                "OPTIMIZATION_CONSTRAINTS": {
+                    "energy_used": [10.0, 100.0],
+                    "cycle_time": [20.0, 60.0],
+                    "defect_rate": [0.01, 0.1],
+                },
+            },
         }

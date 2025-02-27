@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from typing import Dict, Optional, List, Union, TYPE_CHECKING, cast
+from typing import Dict, Optional, List, Tuple, Union, TYPE_CHECKING, cast
 from scipy.optimize import minimize
 
 from .types import OptimizationResults
@@ -30,9 +30,18 @@ class ProcessOptimizer:
     def optimize_process_parameters(
         self,
         current_params: Dict[str, float],
-        constraints: Optional[Dict[str, float]] = None,
+        constraints: Optional[Dict[str, Union[float, Tuple[float, float]]]] = None,
     ) -> Dict[str, float]:
-        """Optimize manufacturing process parameters."""
+        """
+        Optimize manufacturing process parameters.
+
+        Args:
+            current_params: Current parameters dictionary
+            constraints: Optional constraints, either as single values or (min, max) tuples
+
+        Returns:
+            Dict[str, float]: Optimized parameters
+        """
         try:
             # Validate parameters before adding engineered features
             if not current_params:
@@ -57,7 +66,7 @@ class ProcessOptimizer:
             param_names = list(current_params.keys())
             initial_params = np.array([current_params[k] for k in param_names])
 
-            # Create bounds list
+            # Create bounds list with better defaults
             bounds: List[tuple[float, float]] = []
             for param in param_names:
                 if constraints and param in constraints:
@@ -66,40 +75,82 @@ class ProcessOptimizer:
                     if isinstance(target, tuple) and len(target) == 2:
                         bound_min, bound_max = target
                     else:
-                        # Create bounds as ±10% of target value
-                        bound_min = max(0.0, float(target) * 0.9)
-                        bound_max = float(target) * 1.1
+                        # Create bounds as ±20% of target value (wider range)
+                        bound_min = max(0.0, float(target) * 0.8)
+                        bound_max = float(target) * 1.2
                     bounds.append((bound_min, bound_max))
                 else:
-                    # Default bounds if no constraint provided
-                    bounds.append((0.0, float("inf")))
+                    # Improved default bounds if no constraint provided
+                    if param == "input_amount":
+                        bounds.append(
+                            (
+                                max(1.0, current_params[param] * 0.7),
+                                current_params[param] * 1.3,
+                            )
+                        )
+                    elif param == "energy_used":
+                        bounds.append(
+                            (
+                                max(0.1, current_params[param] * 0.7),
+                                current_params[param] * 1.3,
+                            )
+                        )
+                    elif param == "cycle_time":
+                        bounds.append(
+                            (
+                                max(5.0, current_params[param] * 0.7),
+                                current_params[param] * 1.3,
+                            )
+                        )
+                    elif param == "defect_rate":
+                        bounds.append((0.01, min(0.1, current_params[param] * 1.5)))
+                    else:
+                        # Default bounds if no specific rule
+                        bounds.append(
+                            (
+                                max(0.1, current_params[param] * 0.7),
+                                current_params[param] * 1.3,
+                            )
+                        )
 
             # Validate inputs
             self._validate_inputs(current_params)
 
             # Define objective function for scipy.optimize
             def objective(x):
+                # Create parameters dictionary
                 params = dict(zip(param_names, x))
+                # Add safeguard for zero energy_used
+                if params.get("energy_used", 0) == 0:
+                    params["energy_used"] = 0.1
+                # Make prediction
                 prediction = self.model.predict_batch_outcomes(params)
                 return -prediction["predicted_output"]  # Negative because we maximize
 
-            # Run optimization
+            # Run optimization with increased iterations and better tolerance
             result = minimize(
                 objective,
                 initial_params,
                 method="L-BFGS-B",
                 bounds=bounds,
-                options={"maxiter": 1000},
+                options={"maxiter": 2000, "ftol": 1e-6, "gtol": 1e-5},
             )
 
             # Convert result back to dictionary
             optimized_params = dict(zip(param_names, result.x))
 
-            # Calculate improvements
-            improvements = {
-                k: ((optimized_params[k] - current_params[k]) / current_params[k] * 100)
-                for k in current_params
-            }
+            # Calculate improvements with zero protection
+            improvements = {}
+            for k in current_params:
+                if k in optimized_params:
+                    current_val = current_params[k]
+                    new_val = optimized_params[k]
+                    if abs(current_val) > 1e-10:  # Protect against division by zero
+                        pct_change = ((new_val - current_val) / current_val) * 100
+                        improvements[k] = pct_change
+                    else:
+                        # For near-zero values, use absolute change instead
+                        improvements[k] = new_val - current_val
 
             # Save detailed results
             results = {
@@ -120,7 +171,8 @@ class ProcessOptimizer:
 
             self.logger.info(
                 f"Parameter optimization completed successfully. "
-                f"Objective value: {-result.fun:.2f}"
+                f"Objective value: {-result.fun:.2f}, "
+                f"Iterations: {result.nit}"
             )
             return optimized_params
 
@@ -167,9 +219,11 @@ class ProcessOptimizer:
             }
 
             # Use means as target values for constraints
-            constraints = {
-                param: float(value) for param, value in current_params.items()
-            }
+            # Cast the constraints to the required type
+            constraints = cast(
+                Dict[str, Union[float, Tuple[float, float]]],
+                {param: float(value) for param, value in current_params.items()},
+            )
 
             # Get optimized parameters
             optimized_params = self.optimize_process_parameters(

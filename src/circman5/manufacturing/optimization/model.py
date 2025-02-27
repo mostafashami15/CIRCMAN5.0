@@ -206,7 +206,13 @@ class ManufacturingModel:
                 ],
             )
             df["efficiency_rate"] = df["output_amount"] / df["input_amount"]
-            df["energy_efficiency"] = df["output_amount"] / df["energy_used"]
+            # Avoid division by zero
+            df["energy_efficiency"] = df.apply(
+                lambda row: row["output_amount"] / row["energy_used"]
+                if row["energy_used"] > 0
+                else 0.0,
+                axis=1,
+            )
             df["efficiency_quality"] = df["efficiency"] * (1 - df["defect_rate"])
             return df
         else:
@@ -223,9 +229,14 @@ class ManufacturingModel:
             params_dict["output_amount"] = output_amount
 
             params_dict["efficiency_rate"] = output_amount / params_dict["input_amount"]
-            params_dict["energy_efficiency"] = (
-                output_amount / params_dict["energy_used"]
-            )
+
+            # Avoid division by zero
+            energy_used = params_dict["energy_used"]
+            if energy_used > 0:
+                params_dict["energy_efficiency"] = output_amount / energy_used
+            else:
+                params_dict["energy_efficiency"] = 0.0
+
             params_dict["efficiency_quality"] = params_dict["efficiency"] * (
                 1 - params_dict["defect_rate"]
             )
