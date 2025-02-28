@@ -124,6 +124,45 @@
 │   │   │   │       ├── dashboard.py
 │   │   │   │       ├── process_visualizer.py
 │   │   │   │       └── twin_visualizer.py
+│   │   │   ├── human_interface
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── adapters
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── config_adapter.py
+│   │   │   │   │   ├── digital_twin_adapter.py
+│   │   │   │   │   └── event_adapter.py
+│   │   │   │   ├── components
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── alerts
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   ├── alert_panel.py
+│   │   │   │   │   │   ├── event_subscriber.py
+│   │   │   │   │   │   └── notification_manager.py
+│   │   │   │   │   ├── controls
+│   │   │   │   │   │   ├── __init__.py
+│   │   │   │   │   │   ├── parameter_control.py
+│   │   │   │   │   │   ├── process_control.py
+│   │   │   │   │   │   └── scenario_control.py
+│   │   │   │   │   └── dashboard
+│   │   │   │   │       ├── __init__.py
+│   │   │   │   │       ├── kpi_panel.py
+│   │   │   │   │       ├── main_dashboard.py
+│   │   │   │   │       ├── process_panel.py
+│   │   │   │   │       └── status_panel.py
+│   │   │   │   ├── core
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── dashboard_manager.py
+│   │   │   │   │   ├── interface_manager.py
+│   │   │   │   │   └── interface_state.py
+│   │   │   │   ├── services
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── command_service.py
+│   │   │   │   │   ├── data_service.py
+│   │   │   │   │   └── update_service.py
+│   │   │   │   └── utils
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── ui_utils.py
+│   │   │   │       └── validation.py
 │   │   │   ├── lifecycle
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── impact_factors.py
@@ -303,4 +342,4 @@
             ├── test_logging_config.py
             └── test_results_manager.py
 
-69 directories, 235 files
+78 directories, 265 files
