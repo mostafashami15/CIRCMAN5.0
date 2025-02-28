@@ -249,6 +249,10 @@
     ├── integration
     │   ├── __init__.py
     │   ├── conftest.py
+    │   ├── human_interface
+    │   │   ├── conftest.py
+    │   │   ├── test_dashboard_integration.py
+    │   │   └── test_e2e_integration.py
     │   ├── system
     │   │   ├── __init__.py
     │   │   ├── test_helpers.py
@@ -314,6 +318,14 @@
         │   │   ├── test_state_manager.py
         │   │   ├── test_synchronization.py
         │   │   └── test_twin_core.py
+        │   ├── human_interface
+        │   │   ├── adapters
+        │   │   │   └── test_digital_twin_adapter.py
+        │   │   ├── core
+        │   │   │   ├── test_interface_manager.py
+        │   │   │   └── test_interface_state.py
+        │   │   └── services
+        │   │       └── test_command_service.py
         │   ├── lifecycle
         │   │   ├── __init__.py
         │   │   ├── conftest.py
@@ -342,4 +354,4 @@
             ├── test_logging_config.py
             └── test_results_manager.py
 
-78 directories, 265 files
+83 directories, 272 files
