@@ -227,23 +227,40 @@ class ProcessControl:
             Dict[str, Any]: Result with success and error message if applicable
         """
         try:
-            # Create update state
-            update_state: Dict[str, Any] = {}
+            # Print the current state for debugging
+            current_state = self.digital_twin.get_current_state()
+            self.logger.debug(f"Current state before stop: {current_state}")
+
+            # Create very simple update state (no nesting)
+            update_state = {}
 
             if process_id is None or process_id == "main_process":
-                # Stop main production line
+                # Stop main production line with explicit system_status
                 update_state = {
-                    "production_line": {"status": "idle"},
                     "system_status": "idle",
+                    "production_line": {"status": "idle"},
                 }
             else:
                 # Stop specific sub-process
-                # Create the nested structure properly
-                update_state["manufacturing_processes"] = {}
-                update_state["manufacturing_processes"][process_id] = {"status": "idle"}
+                update_state = {
+                    "manufacturing_processes": {process_id: {"status": "idle"}}
+                }
 
             # Update digital twin state
+            self.logger.debug(f"Updating with state: {update_state}")
             self.digital_twin.update(update_state)
+
+            # Verify the update worked
+            updated_state = self.digital_twin.get_current_state()
+            self.logger.debug(f"Current state after stop: {updated_state}")
+
+            # Force set the system status if it's not there (temporary fix)
+            if "system_status" not in updated_state and process_id is None:
+                # Direct access to state manager as a workaround
+                manager_state = self.digital_twin.state_manager.get_current_state()
+                manager_state["system_status"] = "idle"
+                self.digital_twin.state_manager.set_state(manager_state)
+                self.logger.warning("Had to force-set system_status in state manager")
 
             # Invalidate cache
             self._last_update = datetime.datetime.min

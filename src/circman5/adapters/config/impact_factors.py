@@ -51,6 +51,10 @@ class ImpactFactorsAdapter(ConfigAdapterBase):
         Returns:
             bool: True if configuration is valid
         """
+
+        # Log the actual config keys for debugging
+        self.logger.info(f"Validating config with keys: {config.keys()}")
+
         required_factors = {
             "MATERIAL_IMPACT_FACTORS",
             "ENERGY_IMPACT_FACTORS",
@@ -59,6 +63,12 @@ class ImpactFactorsAdapter(ConfigAdapterBase):
             "PROCESS_IMPACT_FACTORS",
             "GRID_CARBON_INTENSITIES",
             "DEGRADATION_RATES",
+            "SUSTAINABILITY_WEIGHTS",
+            "QUALITY_WEIGHTS",
+            "CARBON_INTENSITY_FACTORS",
+            "MONITORING_WEIGHTS",
+            "WATER_FACTOR",
+            "WASTE_FACTOR",
         }
 
         # Check required top-level keys
@@ -136,6 +146,10 @@ class ImpactFactorsAdapter(ConfigAdapterBase):
                 "aluminum": -8.1,
                 "copper": -2.8,
                 "plastic": -1.8,
+                "silicon_wafer": 0.7,
+                "solar_glass": 0.8,
+                "aluminum_frame": 0.9,
+                "copper_wire": 0.85,
             },
             "PROCESS_IMPACT_FACTORS": {
                 "wafer_cutting": 0.8,
@@ -155,4 +169,32 @@ class ImpactFactorsAdapter(ConfigAdapterBase):
                 "thin_film": 0.7,
                 "bifacial": 0.45,
             },
+            "CARBON_INTENSITY_FACTORS": {
+                "grid": 0.5,
+                "solar": 0.0,
+                "wind": 0.0,
+                "electricity": 0.5,
+                "natural_gas": 0.2,
+                "petroleum": 0.25,
+            },
+            "SUSTAINABILITY_WEIGHTS": {
+                "material": 0.4,
+                "recycling": 0.3,
+                "energy": 0.3,
+                "material_efficiency": 0.4,
+                "carbon_footprint": 0.4,
+                "energy_efficiency": 0.3,
+                "recycling_rate": 0.3,
+            },
+            "QUALITY_WEIGHTS": {
+                "defect": 0.4,
+                "efficiency": 0.4,
+                "uniformity": 0.2,
+                "defect_rate": 0.4,
+                "efficiency_score": 0.4,
+                "uniformity_score": 0.2,
+            },
+            "MONITORING_WEIGHTS": {"defect": 0.4, "yield": 0.4, "uniformity": 0.2},
+            "WATER_FACTOR": 0.1,
+            "WASTE_FACTOR": 0.05,
         }

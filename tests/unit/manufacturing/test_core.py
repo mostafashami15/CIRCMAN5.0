@@ -115,8 +115,34 @@ class TestManufacturingCore:
         assert 0 <= quality.get("defect_rate", 0) <= 100
         assert 0 <= quality.get("efficiency_score", 0) <= 100
 
-    def test_lifecycle_assessment(self, analyzer, test_data):
+    def test_lifecycle_assessment(self, analyzer, test_data, mocker):
         """Test lifecycle assessment functionality."""
+        # Create a mock ConstantsService first
+        mock_constants = mocker.Mock()
+
+        # Configure the mock appropriately
+        def mock_get_constant(adapter, key):
+            # Return appropriate mock data based on what key is requested
+            if key == "QUALITY_WEIGHTS":
+                return {"defect": 0.4, "efficiency": 0.4, "uniformity": 0.2}
+            elif key == "RECYCLING_BENEFIT_FACTORS":
+                return {"silicon": -28.4, "glass": -0.7, "aluminum": -8.1}
+            elif key == "MATERIAL_IMPACT_FACTORS":
+                return {"silicon_wafer": 32.8, "solar_glass": 0.9}
+            elif key == "ENERGY_IMPACT_FACTORS":
+                return {"grid_electricity": 0.5, "natural_gas": 0.2}
+            elif key == "TRANSPORT_IMPACT_FACTORS":
+                return {"road": 0.062, "rail": 0.022}
+            else:
+                # Default fallback
+                return {"default": 1.0}
+
+        mock_constants.get_constant.side_effect = mock_get_constant
+
+        # Replace the constants object on the analyzer
+        analyzer.constants = mock_constants
+
+        # Now proceed with the test
         self.initialize_test_data(analyzer, test_data)
         impact = analyzer.perform_lifecycle_assessment()
 

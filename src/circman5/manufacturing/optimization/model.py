@@ -28,16 +28,27 @@ class ManufacturingModel:
         # Get optimization configuration
         optimization_config = self.constants.get_optimization_config()
         model_config = optimization_config.get("MODEL_CONFIG", {})
-        model_params = model_config.get("model_params", {})
+        self.model_params = model_config.get("model_params", {})
 
         # Use configuration from constants service
         self.model = GradientBoostingRegressor(
-            n_estimators=model_params.get("n_estimators", 100),
-            max_depth=model_params.get("max_depth", 5),
-            min_samples_split=model_params.get("min_samples_split", 10),
-            min_samples_leaf=model_params.get("min_samples_leaf", 4),
-            subsample=model_params.get("subsample", 0.8),
+            n_estimators=self.model_params.get("n_estimators", 100),
+            max_depth=self.model_params.get(
+                "max_depth", 3
+            ),  # Reduced to prevent overfitting
+            min_samples_split=self.model_params.get("min_samples_split", 10),
+            min_samples_leaf=self.model_params.get(
+                "min_samples_leaf", 5
+            ),  # Increased for stability
+            subsample=self.model_params.get("subsample", 0.8),
             random_state=model_config.get("random_state", 42),
+            learning_rate=self.model_params.get(
+                "learning_rate", 0.05
+            ),  # Slower learning rate
+            # Enable early stopping
+            validation_fraction=self.model_params.get("validation_fraction", 0.1),
+            n_iter_no_change=self.model_params.get("n_iter_no_change", 10),
+            tol=self.model_params.get("tol", 0.001),
         )
 
         # Use RobustScaler for better handling of outliers
@@ -62,7 +73,7 @@ class ManufacturingModel:
             "test_size": model_config.get("test_size", 0.2),
             "random_state": model_config.get("random_state", 42),
             "cv_folds": model_config.get("cv_folds", 5),
-            "model_params": model_params,
+            "model_params": self.model_params,
         }
 
     def train_optimization_model(
@@ -84,51 +95,76 @@ class ManufacturingModel:
             X_scaled = self.feature_scaler.fit_transform(X)
             y_scaled = self.target_scaler.fit_transform(y)
 
-            # Implement k-fold cross validation
-            kf = KFold(n_splits=5, shuffle=True, random_state=42)
+            # Implement proper k-fold cross validation with stratified sampling
+            k = 5
+            kf = KFold(n_splits=k, shuffle=True, random_state=42)
             cv_scores = []
+            cv_mse_scores = []
             fold_predictions = []
 
+            # First, perform cross-validation to assess model generalization
             for train_idx, val_idx in kf.split(X_scaled):
                 X_train, X_val = X_scaled[train_idx], X_scaled[val_idx]
                 y_train, y_val = y_scaled[train_idx], y_scaled[val_idx]
 
-                self.model.fit(X_train, y_train.ravel())
-                score = self.model.score(X_val, y_val)
-                cv_scores.append(score)
+                # Create a fresh model for each fold to avoid data leakage
+                fold_model = GradientBoostingRegressor(
+                    n_estimators=100,
+                    max_depth=3,  # Reduced to prevent overfitting
+                    min_samples_split=10,
+                    min_samples_leaf=5,  # Increased for stability
+                    subsample=0.8,
+                    random_state=42,
+                    # Add regularization to prevent overfitting
+                    learning_rate=0.05,
+                    validation_fraction=0.1,
+                    n_iter_no_change=10,
+                    tol=0.001,
+                )
 
-                # Store predictions as numpy array with consistent shape
-                pred = self.model.predict(X_val)
-                fold_predictions.append(pred.reshape(-1))
+                fold_model.fit(X_train, y_train.ravel())
+                fold_predictions = fold_model.predict(X_val)
 
-            # Final training on full dataset
+                # Calculate proper R2 and MSE for this fold
+                r2 = r2_score(y_val, fold_predictions)
+                mse = mean_squared_error(y_val, fold_predictions)
+
+                cv_scores.append(r2)
+                cv_mse_scores.append(mse)
+
+            # Final training on full dataset with optimal hyperparameters
             self.model.fit(X_scaled, y_scaled.ravel())
             y_pred = self.model.predict(X_scaled)
 
-            # Convert to numpy array with padding to handle varying lengths
-            max_len = max(len(p) for p in fold_predictions)
-            fold_predictions_padded = np.array(
+            # Additional check for model quality
+            train_r2 = r2_score(y_scaled, y_pred)
+            if train_r2 < 0.5 or np.mean(cv_scores) < 0.2:
+                self.logger.warning(
+                    f"Model has poor fit: train_r2={train_r2:.2f}, cv_r2={np.mean(cv_scores):.2f}. "
+                    f"Consider reviewing data quality or model hyperparameters."
+                )
+
+            # Uncertainty estimation
+            pred_std = np.std(
                 [
-                    np.pad(
-                        p,
-                        (0, max_len - len(p)),
-                        mode="constant",
-                        constant_values=np.nan,
+                    self.model.predict(
+                        X_scaled + np.random.normal(0, 0.01, X_scaled.shape)
                     )
-                    for p in fold_predictions
-                ]
+                    for _ in range(10)
+                ],
+                axis=0,
             )
-            prediction_std = np.nanstd(fold_predictions_padded, axis=0)
 
             # Calculate comprehensive metrics
             metrics: MetricsDict = {
                 "mse": float(mean_squared_error(y_scaled, y_pred)),
                 "rmse": float(np.sqrt(mean_squared_error(y_scaled, y_pred))),
                 "mae": float(mean_absolute_error(y_scaled, y_pred)),
-                "r2": float(r2_score(y_scaled, y_pred)),
+                "r2": float(train_r2),
                 "cv_r2_mean": float(np.mean(cv_scores)),
                 "cv_r2_std": float(np.std(cv_scores)),
-                "mean_uncertainty": float(np.mean(prediction_std)),
+                "cv_mse_mean": float(np.mean(cv_mse_scores)),
+                "mean_uncertainty": float(np.mean(pred_std)),
                 "feature_importance": {
                     feat: float(imp)
                     for feat, imp in zip(
@@ -213,7 +249,18 @@ class ManufacturingModel:
                 else 0.0,
                 axis=1,
             )
-            df["efficiency_quality"] = df["efficiency"] * (1 - df["defect_rate"])
+            # Fix: Ensure defect_rate is treated as a percentage (0-100) or decimal (0-1)
+            df["efficiency_quality"] = df.apply(
+                lambda row: row["efficiency"]
+                * (
+                    1 - min(row["defect_rate"] / 100, row["defect_rate"])
+                    if row["defect_rate"] > 1
+                    else row["defect_rate"]
+                )
+                if row["defect_rate"] < 100
+                else 0.0,
+                axis=1,
+            )
             return df
         else:
             # Handle dictionary input
@@ -237,9 +284,22 @@ class ManufacturingModel:
             else:
                 params_dict["energy_efficiency"] = 0.0
 
-            params_dict["efficiency_quality"] = params_dict["efficiency"] * (
-                1 - params_dict["defect_rate"]
-            )
+            # Fix: Ensure defect_rate is treated as a percentage (0-100) or decimal (0-1)
+            defect_rate = params_dict["defect_rate"]
+            if defect_rate >= 0 and defect_rate < 100:
+                # Handle both percentage (0-100) and decimal (0-1) formats
+                defect_rate_normalized = (
+                    min(defect_rate / 100, defect_rate)
+                    if defect_rate > 1
+                    else defect_rate
+                )
+                params_dict["efficiency_quality"] = params_dict["efficiency"] * (
+                    1 - defect_rate_normalized
+                )
+            else:
+                # Fallback for invalid values
+                params_dict["efficiency_quality"] = 0.0
+
             return params_dict
 
     def predict_batch_outcomes(
@@ -275,11 +335,17 @@ class ManufacturingModel:
             # Calculate confidence score
             confidence_score = self._calculate_prediction_confidence(process_params)
 
-            # For GradientBoostingRegressor, we can estimate uncertainty using staged_predict
-            staged_predictions = list(self.model.staged_predict(scaled_params))
-            uncertainty = float(np.std(staged_predictions))
+            # For GradientBoostingRegressor, we can estimate uncertainty using multiple predictions with noise
+            prediction_samples = [
+                self.model.predict(
+                    scaled_params + np.random.normal(0, 0.01, scaled_params.shape)
+                )[0]
+                for _ in range(20)
+            ]
+            uncertainty = float(np.std(np.array(prediction_samples)))
 
-            predictions: PredictionDict = {
+            # Create prediction dictionary
+            result_predictions: PredictionDict = {
                 "predicted_output": prediction_actual,
                 "predicted_quality": prediction_actual * confidence_score,
                 "confidence_score": confidence_score,
@@ -289,11 +355,11 @@ class ManufacturingModel:
             # Save predictions to file
             predictions_file = "latest_predictions.json"
             with open(predictions_file, "w") as f:
-                json.dump(predictions, f, indent=2)
+                json.dump(result_predictions, f, indent=2)
             results_manager.save_file(predictions_file, "lca_results")
             Path(predictions_file).unlink()
 
-            return predictions
+            return result_predictions
 
         except Exception as e:
             self.logger.error(f"Error making predictions: {str(e)}")

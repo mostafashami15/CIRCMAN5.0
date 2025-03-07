@@ -11,6 +11,24 @@ from ....utils.results_manager import results_manager
 from .event_types import Event, EventCategory, EventSeverity
 
 
+# Custom JSON encoder for handling Timestamp objects and other non-serializable types
+class CustomEncoder(json.JSONEncoder):
+    """JSON encoder that handles Timestamp objects and other non-serializable types."""
+
+    def default(self, o):
+        # Handle pandas Timestamp
+        if hasattr(o, "__class__") and o.__class__.__name__ == "Timestamp":
+            return str(o)
+        # Handle datetime objects
+        elif isinstance(o, (datetime.datetime, datetime.date)):
+            return o.isoformat()
+        # Handle other pandas/numpy types
+        elif hasattr(o, "dtype") or hasattr(o, "iloc"):
+            return str(o)
+        # Let the base encoder handle it or raise TypeError
+        return super().default(o)
+
+
 class EventPersistence:
     """
     Handles persistence of events using results_manager.
@@ -116,9 +134,9 @@ class EventPersistence:
             # Convert event to dict
             event_dict = event.to_dict()
 
-            # Append to file
+            # Append to file - Using CustomEncoder for Timestamp objects
             with open(file_path, "a") as f:
-                f.write(json.dumps(event_dict) + "\n")
+                f.write(json.dumps(event_dict, cls=CustomEncoder) + "\n")
 
         except Exception as e:
             self.logger.error(f"Error saving event to file: {str(e)}")

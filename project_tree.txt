@@ -102,7 +102,8 @@
 │   │   │   │   │   ├── __init__.py
 │   │   │   │   │   ├── state_manager.py
 │   │   │   │   │   ├── synchronization.py
-│   │   │   │   │   └── twin_core.py
+│   │   │   │   │   ├── twin_core.py
+│   │   │   │   │   └── twin_core.py.backup
 │   │   │   │   ├── event_notification
 │   │   │   │   │   ├── __init__.py
 │   │   │   │   │   ├── event_manager.py
@@ -153,7 +154,8 @@
 │   │   │   │   │   ├── __init__.py
 │   │   │   │   │   ├── dashboard_manager.py
 │   │   │   │   │   ├── interface_manager.py
-│   │   │   │   │   └── interface_state.py
+│   │   │   │   │   ├── interface_state.py
+│   │   │   │   │   └── panel_registry.py
 │   │   │   │   ├── services
 │   │   │   │   │   ├── __init__.py
 │   │   │   │   │   ├── command_service.py
@@ -252,106 +254,127 @@
     │   ├── human_interface
     │   │   ├── conftest.py
     │   │   ├── test_dashboard_integration.py
-    │   │   └── test_e2e_integration.py
+    │   │   ├── test_e2e_integration.py
+    │   │   ├── test_event_notification.py
+    │   │   ├── test_hmi_digital_twin_integration.py
+    │   │   ├── test_process_control.py
+    │   │   ├── test_process_control_diagnostic.py
+    │   │   ├── test_process_control_shared.py
+    │   │   ├── test_simple_integration.py
+    │   │   └── test_user_workflows.py
     │   ├── system
     │   │   ├── __init__.py
     │   │   ├── test_helpers.py
     │   │   └── test_script.py
     │   ├── test_data_pipeline.py
     │   ├── test_data_saving.py
+    │   ├── test_digital_twin_ai_integration.py
     │   ├── test_digital_twin_events.py
     │   ├── test_digital_twin_integration.py
     │   ├── test_digital_twin_visualization.py
     │   └── test_system_integration.py
     ├── performance
     │   ├── __init__.py
+    │   ├── conftest.py
+    │   ├── test_digital_twin_performance.py
+    │   ├── test_event_latency.py
+    │   ├── test_hmi_performance.py
     │   └── test_performance.py
     ├── results
     │   ├── __init__.py
     │   ├── archive
     │   ├── latest
     │   └── runs
-    └── unit
+    ├── unit
+    │   ├── __init__.py
+    │   ├── adapters
+    │   │   ├── __init__.py
+    │   │   ├── base
+    │   │   │   ├── __init__.py
+    │   │   │   ├── test_adapter_base.py
+    │   │   │   └── test_config_manager.py
+    │   │   ├── config
+    │   │   │   ├── __init__.py
+    │   │   │   ├── test_impact_factors.py
+    │   │   │   ├── test_manufacturing.py
+    │   │   │   ├── test_monitoring.py
+    │   │   │   ├── test_optimization.py
+    │   │   │   └── test_visualization.py
+    │   │   └── services
+    │   │       ├── __init__.py
+    │   │       └── test_constants_service.py
+    │   ├── conftest.py
+    │   ├── manufacturing
+    │   │   ├── __init__.py
+    │   │   ├── analyzers
+    │   │   │   ├── __init__.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── test_efficiency.py
+    │   │   │   ├── test_quality.py
+    │   │   │   └── test_sustainability.py
+    │   │   ├── digital_twin
+    │   │   │   ├── __init__.py
+    │   │   │   ├── configuration
+    │   │   │   │   ├── test_config_manager.py
+    │   │   │   │   └── test_parameter_definition.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── event_notification
+    │   │   │   │   ├── test_event_manager.py
+    │   │   │   │   ├── test_event_persistence.py
+    │   │   │   │   ├── test_event_types.py
+    │   │   │   │   ├── test_publishers.py
+    │   │   │   │   └── test_subscribers.py
+    │   │   │   ├── test_ai_integration.py
+    │   │   │   ├── test_lca_integration.py
+    │   │   │   ├── test_process_models.py
+    │   │   │   ├── test_results_integration.py
+    │   │   │   ├── test_scenario_manager.py
+    │   │   │   ├── test_simulation_engine.py
+    │   │   │   ├── test_singleton.py
+    │   │   │   ├── test_state_manager.py
+    │   │   │   ├── test_synchronization.py
+    │   │   │   └── test_twin_core.py
+    │   │   ├── human_interface
+    │   │   │   ├── adapters
+    │   │   │   │   └── test_digital_twin_adapter.py
+    │   │   │   ├── core
+    │   │   │   │   ├── test_interface_manager.py
+    │   │   │   │   └── test_interface_state.py
+    │   │   │   └── services
+    │   │   │       └── test_command_service.py
+    │   │   ├── lifecycle
+    │   │   │   ├── __init__.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── test_lca_core.py
+    │   │   │   └── test_lca_integration.py
+    │   │   ├── optimization
+    │   │   │   ├── __init__.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── test_model.py
+    │   │   │   └── test_optimizer.py
+    │   │   ├── reporting
+    │   │   │   ├── __init__.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── test_optimization_visualizer.py
+    │   │   │   ├── test_reports.py
+    │   │   │   ├── test_visualization_paths.py
+    │   │   │   └── test_visualizations.py
+    │   │   ├── test_core.py
+    │   │   ├── test_monitoring.py
+    │   │   ├── test_production_data.py
+    │   │   └── test_project_imports.py
+    │   └── utils
+    │       ├── __init__.py
+    │       ├── test_data_generator.py
+    │       ├── test_lca_data_generator.py
+    │       ├── test_logging_config.py
+    │       └── test_results_manager.py
+    └── validation
         ├── __init__.py
-        ├── adapters
-        │   ├── __init__.py
-        │   ├── base
-        │   │   ├── __init__.py
-        │   │   ├── test_adapter_base.py
-        │   │   └── test_config_manager.py
-        │   ├── config
-        │   │   ├── __init__.py
-        │   │   ├── test_impact_factors.py
-        │   │   ├── test_manufacturing.py
-        │   │   ├── test_monitoring.py
-        │   │   ├── test_optimization.py
-        │   │   └── test_visualization.py
-        │   └── services
-        │       ├── __init__.py
-        │       └── test_constants_service.py
-        ├── manufacturing
-        │   ├── __init__.py
-        │   ├── analyzers
-        │   │   ├── __init__.py
-        │   │   ├── conftest.py
-        │   │   ├── test_efficiency.py
-        │   │   ├── test_quality.py
-        │   │   └── test_sustainability.py
-        │   ├── digital_twin
-        │   │   ├── __init__.py
-        │   │   ├── configuration
-        │   │   │   ├── test_config_manager.py
-        │   │   │   └── test_parameter_definition.py
-        │   │   ├── conftest.py
-        │   │   ├── event_notification
-        │   │   │   ├── test_event_manager.py
-        │   │   │   ├── test_event_persistence.py
-        │   │   │   ├── test_event_types.py
-        │   │   │   ├── test_publishers.py
-        │   │   │   └── test_subscribers.py
-        │   │   ├── test_ai_integration.py
-        │   │   ├── test_lca_integration.py
-        │   │   ├── test_process_models.py
-        │   │   ├── test_results_integration.py
-        │   │   ├── test_scenario_manager.py
-        │   │   ├── test_simulation_engine.py
-        │   │   ├── test_state_manager.py
-        │   │   ├── test_synchronization.py
-        │   │   └── test_twin_core.py
-        │   ├── human_interface
-        │   │   ├── adapters
-        │   │   │   └── test_digital_twin_adapter.py
-        │   │   ├── core
-        │   │   │   ├── test_interface_manager.py
-        │   │   │   └── test_interface_state.py
-        │   │   └── services
-        │   │       └── test_command_service.py
-        │   ├── lifecycle
-        │   │   ├── __init__.py
-        │   │   ├── conftest.py
-        │   │   ├── test_lca_core.py
-        │   │   └── test_lca_integration.py
-        │   ├── optimization
-        │   │   ├── __init__.py
-        │   │   ├── conftest.py
-        │   │   ├── test_model.py
-        │   │   └── test_optimizer.py
-        │   ├── reporting
-        │   │   ├── __init__.py
-        │   │   ├── conftest.py
-        │   │   ├── test_optimization_visualizer.py
-        │   │   ├── test_reports.py
-        │   │   ├── test_visualization_paths.py
-        │   │   └── test_visualizations.py
-        │   ├── test_core.py
-        │   ├── test_monitoring.py
-        │   ├── test_production_data.py
-        │   └── test_project_imports.py
-        └── utils
-            ├── __init__.py
-            ├── test_data_generator.py
-            ├── test_lca_data_generator.py
-            ├── test_logging_config.py
-            └── test_results_manager.py
+        ├── conftest.py
+        ├── test_digital_twin_validation.py
+        ├── test_hmi_validation.py
+        ├── test_system_validation.py
+        └── validation_framework.py
 
-83 directories, 272 files
+84 directories, 294 files

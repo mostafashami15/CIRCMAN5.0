@@ -191,3 +191,29 @@ def lca_integration(initialized_twin):
     )
 
     return LCAIntegration(digital_twin=initialized_twin)
+
+
+@pytest.fixture(autouse=True)
+def reset_singletons():
+    """Reset all singleton classes before each test."""
+    # Reset StateManager first since DigitalTwin depends on it
+    if hasattr(StateManager, "_reset"):
+        StateManager._reset()
+
+    # Reset DigitalTwin
+    if hasattr(DigitalTwin, "_reset"):
+        DigitalTwin._reset()
+
+    # Reset SynchronizationManager if implemented as singleton
+    if hasattr(SynchronizationManager, "_reset"):
+        SynchronizationManager._reset()
+
+    yield  # This allows the test to run
+
+    # Optionally reset after test as well
+    if hasattr(StateManager, "_reset"):
+        StateManager._reset()
+    if hasattr(DigitalTwin, "_reset"):
+        DigitalTwin._reset()
+    if hasattr(SynchronizationManager, "_reset"):
+        SynchronizationManager._reset()

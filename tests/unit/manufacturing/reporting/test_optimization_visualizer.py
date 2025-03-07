@@ -59,20 +59,23 @@ def sample_optimization_results() -> OptimizationResults:
 
 @pytest.fixture
 def sample_metrics() -> MetricsDict:
-    return MetricsDict(
-        mse=0.02,
-        rmse=0.14,
-        mae=0.12,
-        r2=0.95,
-        cv_r2_mean=0.94,
-        cv_r2_std=0.02,
-        feature_importance={
+    # Include all required fields for MetricsDict
+    return {
+        "mse": 0.02,
+        "rmse": 0.14,
+        "mae": 0.12,
+        "r2": 0.95,
+        "cv_r2_mean": 0.94,
+        "cv_r2_std": 0.02,
+        "cv_mse_mean": 0.03,
+        "mean_uncertainty": 0.05,
+        "feature_importance": {
             "input_amount": 0.35,
             "energy_used": 0.25,
             "cycle_time": 0.20,
             "efficiency": 0.20,
         },
-    )
+    }
 
 
 def test_plot_optimization_impact(visualizer, sample_optimization_results):

@@ -18,6 +18,7 @@ from ...core.dashboard_manager import dashboard_manager
 from ...core.interface_state import interface_state
 from ...adapters.event_adapter import EventAdapter
 from ....digital_twin.core.twin_core import DigitalTwin
+from ...core.panel_registry import register_panel_renderer
 
 
 class StatusPanel:
@@ -192,6 +193,21 @@ class StatusPanel:
 
         # Not a status panel command
         return {"handled": False}
+
+
+def render_status_panel(config, digital_twin_state):
+    """Render status panel data from digital twin state."""
+    return {
+        "type": "status_panel",
+        "title": config.get("title", "System Status"),
+        "timestamp": digital_twin_state.get("timestamp", ""),
+        "system_status": digital_twin_state.get("system_status", "unknown"),
+        "production_line": digital_twin_state.get("production_line", {}),
+    }
+
+
+# Register the renderer function
+register_panel_renderer("status_panel", render_status_panel)
 
 
 # Create global instance

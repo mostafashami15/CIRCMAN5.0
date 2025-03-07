@@ -88,6 +88,7 @@ class SustainabilityAnalyzer:
             + energy_efficiency * weights["energy"]
         )
 
+        self.logger.debug(f"Sustainability weights: {weights}")
         self.logger.info(f"Sustainability score calculated: {score}")
         return score
 

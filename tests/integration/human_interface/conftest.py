@@ -6,6 +6,65 @@ import os
 import sys
 from pathlib import Path
 
+from circman5.manufacturing.human_interface.core.interface_manager import (
+    interface_manager,
+)
+from circman5.manufacturing.human_interface.adapters.digital_twin_adapter import (
+    digital_twin_adapter,
+)
+from circman5.manufacturing.digital_twin.core.twin_core import DigitalTwin
+from circman5.manufacturing.digital_twin.core.state_manager import StateManager
+from circman5.utils.results_manager import results_manager
+
+
+@pytest.fixture
+def setup_test_environment():
+    """Set up a clean test environment with initialized components."""
+    # Create test directories
+    test_dir = results_manager.get_path("temp")
+
+    # Initialize core components with test configuration
+    state_manager = StateManager()
+    digital_twin = DigitalTwin()
+
+    # Initialize interface components
+    interface_manager.initialize()
+
+    # Return initialized components for testing
+    return {
+        "interface_manager": interface_manager,
+        "digital_twin_adapter": digital_twin_adapter,
+        "digital_twin": digital_twin,
+        "state_manager": state_manager,
+        "test_dir": test_dir,
+    }
+
+
+@pytest.fixture
+def sample_manufacturing_state():
+    """Provide a sample manufacturing state for testing."""
+    return {
+        "system_status": "running",
+        "timestamp": "2025-02-28T10:15:30",
+        "production_line": {
+            "status": "running",
+            "temperature": 85.2,
+            "energy_consumption": 120.5,
+            "production_rate": 42.3,
+            "defect_rate": 0.8,
+        },
+        "manufacturing_processes": {
+            "material_preparation": {
+                "status": "active",
+                "metrics": {"yield_rate": 99.2, "throughput": 45.6},
+            },
+            "cell_assembly": {
+                "status": "active",
+                "metrics": {"yield_rate": 98.7, "throughput": 43.1},
+            },
+        },
+    }
+
 
 @pytest.fixture
 def mock_digital_twin():

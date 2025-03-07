@@ -29,7 +29,11 @@
         "glass": -0.7,
         "aluminum": -8.1,
         "copper": -2.8,
-        "plastic": -1.8
+        "plastic": -1.8,
+        "silicon_wafer": 0.7,
+        "solar_glass": 0.8,
+        "aluminum_frame": 0.9,
+        "copper_wire": 0.85
     },
     "PROCESS_IMPACT_FACTORS": {
         "wafer_cutting": 0.8,
@@ -52,17 +56,27 @@
     "CARBON_INTENSITY_FACTORS": {
         "grid": 0.5,
         "solar": 0.0,
-        "wind": 0.0
+        "wind": 0.0,
+        "electricity": 0.5,
+        "natural_gas": 0.2,
+        "petroleum": 0.25
     },
     "SUSTAINABILITY_WEIGHTS": {
         "material": 0.4,
         "recycling": 0.3,
-        "energy": 0.3
+        "energy": 0.3,
+        "material_efficiency": 0.4,
+        "carbon_footprint": 0.4,
+        "energy_efficiency": 0.3,
+        "recycling_rate": 0.3
     },
     "QUALITY_WEIGHTS": {
         "defect": 0.4,
         "efficiency": 0.4,
-        "uniformity": 0.2
+        "uniformity": 0.2,
+        "defect_rate": 0.4,
+        "efficiency_score": 0.4,
+        "uniformity_score": 0.2
     },
     "MONITORING_WEIGHTS": {
         "defect": 0.4,

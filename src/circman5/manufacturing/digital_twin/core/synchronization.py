@@ -48,9 +48,22 @@ class SynchronizationManager:
         logger: Logger instance for this class
     """
 
+    # Singleton pattern implementation
+    _instance = None
+    _initialized = False
+    _init_lock = threading.RLock()
+
+    def __new__(cls, *args, **kwargs):
+        """Ensure only one instance is created."""
+        if cls._instance is None:
+            with cls._init_lock:
+                if cls._instance is None:
+                    cls._instance = super(SynchronizationManager, cls).__new__(cls)
+        return cls._instance
+
     def __init__(
         self,
-        state_manager: StateManager,
+        state_manager: Optional[StateManager] = None,
         sync_mode: Optional[SyncMode] = None,
         sync_interval: Optional[float] = None,
     ):
@@ -62,44 +75,60 @@ class SynchronizationManager:
             sync_mode: Optional synchronization mode to use
             sync_interval: Optional interval for periodic synchronization in seconds
         """
-        self.state_manager = state_manager
+        # Skip initialization if already done
+        with self._init_lock:
+            if SynchronizationManager._initialized:
+                # Update parameters if provided and different from current
+                if sync_mode is not None and sync_mode != self.sync_mode:
+                    self.set_sync_mode(sync_mode)
+                if sync_interval is not None and sync_interval != self.sync_interval:
+                    self.set_sync_interval(sync_interval)
+                return
 
-        # Load configuration from constants service
-        self.constants = ConstantsService()
-        self.dt_config = self.constants.get_digital_twin_config()
-        self.sync_config = self.dt_config.get("SYNCHRONIZATION_CONFIG", {})
+            # Get StateManager singleton if not provided
+            self.state_manager = state_manager or StateManager()
 
-        # Set sync mode from parameter or config
-        if sync_mode:
-            self.sync_mode = sync_mode
-        else:
-            config_mode = self.sync_config.get("default_sync_mode", "real_time").lower()
-            if config_mode == "real_time":
-                self.sync_mode = SyncMode.REAL_TIME
-            elif config_mode == "batch":
-                self.sync_mode = SyncMode.BATCH
-            elif config_mode == "manual":
-                self.sync_mode = SyncMode.MANUAL
-            elif config_mode == "event":
-                self.sync_mode = SyncMode.EVENT_DRIVEN
+            # Load configuration from constants service
+            self.constants = ConstantsService()
+            self.dt_config = self.constants.get_digital_twin_config()
+            self.sync_config = self.dt_config.get("SYNCHRONIZATION_CONFIG", {})
+
+            # Set sync mode from parameter or config
+            if sync_mode:
+                self.sync_mode = sync_mode
             else:
-                self.sync_mode = SyncMode.REAL_TIME
+                config_mode = self.sync_config.get(
+                    "default_sync_mode", "real_time"
+                ).lower()
+                if config_mode == "real_time":
+                    self.sync_mode = SyncMode.REAL_TIME
+                elif config_mode == "batch":
+                    self.sync_mode = SyncMode.BATCH
+                elif config_mode == "manual":
+                    self.sync_mode = SyncMode.MANUAL
+                elif config_mode == "event":
+                    self.sync_mode = SyncMode.EVENT_DRIVEN
+                else:
+                    self.sync_mode = SyncMode.REAL_TIME
 
-        # Set sync interval from parameter or config
-        self.sync_interval = sync_interval or self.sync_config.get(
-            "default_sync_interval", 1.0
-        )
+            # Set sync interval from parameter or config
+            self.sync_interval = sync_interval or self.sync_config.get(
+                "default_sync_interval", 1.0
+            )
 
-        # Initialize other attributes
-        self.data_sources: Dict[str, Callable[[], Dict[str, Any]]] = {}
-        self.logger = setup_logger("synchronization_manager")
-        self.is_running = False
-        self._sync_thread: Optional[threading.Thread] = None
-        self._stop_event = threading.Event()
+            # Initialize other attributes
+            self.data_sources: Dict[str, Callable[[], Dict[str, Any]]] = {}
+            self.logger = setup_logger("synchronization_manager")
+            self.is_running = False
+            self._sync_thread: Optional[threading.Thread] = None
+            self._stop_event = threading.Event()
 
-        self.logger.info(
-            f"SynchronizationManager initialized with mode {self.sync_mode.value}"
-        )
+            self.logger.info(
+                f"SynchronizationManager initialized with mode {self.sync_mode.value}"
+            )
+
+            # Mark as initialized
+            SynchronizationManager._initialized = True
 
     def register_data_source(
         self, name: str, collector_func: Callable[[], Dict[str, Any]]
@@ -355,3 +384,12 @@ class SynchronizationManager:
             return None
         else:
             return obj
+
+    @classmethod
+    def _reset(cls):
+        """Reset the singleton state (for testing only)."""
+        with cls._init_lock:
+            if cls._instance is not None and cls._instance.is_running:
+                cls._instance.stop_synchronization()
+            cls._instance = None
+            cls._initialized = False

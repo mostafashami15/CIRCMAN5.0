@@ -40,6 +40,11 @@ class ConstantsService:
 
         self._initialized = True
 
+    @classmethod
+    def _reset_instance(cls):
+        """Reset the singleton instance - FOR TESTING ONLY."""
+        cls._instance = None
+
     def _register_adapters(self) -> None:
         """Register all configuration adapters."""
         try:
@@ -108,7 +113,11 @@ class ConstantsService:
             KeyError: If key not found
         """
         config = self.config_manager.get_config(adapter)
+        self.logger.debug(
+            f"Looking for key '{key}' in {adapter} config with keys: {list(config.keys())}"
+        )
         if key not in config:
+            self.logger.error(f"Key not found: '{key}' in {adapter} config")
             raise KeyError(f"Key not found in {adapter} config: {key}")
         return config[key]
 

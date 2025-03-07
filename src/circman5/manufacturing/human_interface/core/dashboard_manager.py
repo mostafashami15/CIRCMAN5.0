@@ -18,6 +18,8 @@ from ....utils.results_manager import results_manager
 from circman5.adapters.services.constants_service import ConstantsService
 from .interface_state import interface_state
 from .interface_manager import interface_manager
+from ..core.panel_registry import render_panel
+from ....manufacturing.digital_twin.core.twin_core import DigitalTwin
 
 
 class DashboardLayout:
@@ -308,6 +310,10 @@ class DashboardManager:
         # Set this as the active layout
         self.current_layout = layout
 
+        # Get current digital twin state for panel rendering
+        digital_twin = DigitalTwin()
+        digital_twin_state = digital_twin.get_current_state()
+
         # Prepare dashboard data structure
         dashboard_data = {
             "layout": layout.to_dict(),
@@ -318,31 +324,9 @@ class DashboardManager:
         # Render each panel in the layout
         for panel_id, panel_config in layout.panels.items():
             panel_type = panel_config.get("type", "unknown")
-
-            # Check if we have a component for this panel type
-            if panel_type in self.components:
-                try:
-                    # Get the component and render the panel
-                    component = self.components[panel_type]
-                    if hasattr(component, "render_panel"):
-                        panel_data = component.render_panel(panel_config)
-                        dashboard_data["panels"][panel_id] = panel_data
-                    else:
-                        dashboard_data["panels"][panel_id] = {
-                            "error": f"Component {panel_type} has no render_panel method",
-                            "config": panel_config,
-                        }
-                except Exception as e:
-                    self.logger.error(f"Error rendering panel {panel_id}: {str(e)}")
-                    dashboard_data["panels"][panel_id] = {
-                        "error": f"Rendering error: {str(e)}",
-                        "config": panel_config,
-                    }
-            else:
-                dashboard_data["panels"][panel_id] = {
-                    "error": f"Unknown panel type: {panel_type}",
-                    "config": panel_config,
-                }
+            dashboard_data["panels"][panel_id] = render_panel(
+                panel_type, panel_config, digital_twin_state
+            )
 
         return dashboard_data
 

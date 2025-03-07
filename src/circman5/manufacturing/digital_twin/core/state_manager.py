@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple, Union
 import copy
 import datetime
+import threading
 from collections import deque
 import json
 
@@ -33,6 +34,19 @@ class StateManager:
         logger: Logger instance for this class
     """
 
+    # Singleton pattern implementation
+    _instance = None
+    _initialized = False
+    _init_lock = threading.RLock()
+
+    def __new__(cls, *args, **kwargs):
+        """Ensure only one instance is created."""
+        if cls._instance is None:
+            with cls._init_lock:
+                if cls._instance is None:
+                    cls._instance = super(StateManager, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self, history_length: Optional[int] = None):
         """
         Initialize the StateManager.
@@ -40,26 +54,44 @@ class StateManager:
         Args:
             history_length: Maximum number of historical states to keep
         """
-        # Load configuration from constants service
-        self.constants = ConstantsService()
-        self.dt_config = self.constants.get_digital_twin_config()
-        self.state_config = self.dt_config.get("STATE_MANAGEMENT", {})
+        # Skip initialization if already done
+        with self._init_lock:
+            if StateManager._initialized:
+                # If a new history_length is provided and differs from current, update it
+                if history_length is not None and history_length != self.history_length:
+                    self.logger.info(
+                        f"Updating history length from {self.history_length} to {history_length}"
+                    )
+                    self.history_length = history_length
+                    self.state_history = deque(
+                        list(self.state_history), maxlen=history_length
+                    )
+                return
 
-        # Use provided history length or get from config
-        self.history_length = history_length or self.state_config.get(
-            "default_history_length", 1000
-        )
+            # Load configuration from constants service
+            self.constants = ConstantsService()
+            self.dt_config = self.constants.get_digital_twin_config()
+            self.state_config = self.dt_config.get("STATE_MANAGEMENT", {})
 
-        # Initialize state containers
-        self.current_state: Dict[str, Any] = {}
-        self.state_history: deque = deque(maxlen=self.history_length)
+            # Use provided history length or get from config
+            self.history_length = history_length or self.state_config.get(
+                "default_history_length", 1000
+            )
 
-        # Setup logging
-        self.logger = setup_logger("state_manager")
-        self.logger.info(
-            f"StateManager initialized with history length {self.history_length}"
-        )
+            # Initialize state containers
+            self.current_state: Dict[str, Any] = {}
+            self.state_history: deque = deque(maxlen=self.history_length)
 
+            # Setup logging
+            self.logger = setup_logger("state_manager")
+            self.logger.info(
+                f"StateManager initialized with history length {self.history_length}"
+            )
+
+            # Mark as initialized
+            StateManager._initialized = True
+
+    # The rest of your methods remain unchanged
     def set_state(self, state: Dict[str, Any]) -> None:
         """
         Set the current state and add to history.
@@ -283,3 +315,10 @@ class StateManager:
                 # Direct update for non-dictionary values or new keys
                 d[k] = v
         return d
+
+    @classmethod
+    def _reset(cls):
+        """Reset the singleton state (for testing only)."""
+        with cls._init_lock:
+            cls._instance = None
+            cls._initialized = False

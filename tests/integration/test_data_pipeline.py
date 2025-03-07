@@ -42,6 +42,28 @@ def test_run_dir():
     return run_dir
 
 
+@pytest.fixture(scope="module")
+def test_data():
+    """Generate synthetic test data for analysis pipeline tests."""
+    # Create a data generator with specific initialization parameters
+    generator = ManufacturingDataGenerator(
+        start_date="2023-01-01",
+        days=50,  # This replaces the n_batches/n_periods parameters
+    )
+
+    # Generate different types of test data
+    return {
+        "production": generator.generate_production_data(),
+        "quality": generator.generate_quality_data(),
+        "energy": generator.generate_energy_data(),
+        "material": generator.generate_material_flow_data(),  # Note: changed from generate_material_data
+        "lca": {
+            "material_flow": generator.generate_lca_material_data(),
+            "energy_consumption": generator.generate_lca_energy_data(),
+        },
+    }
+
+
 def test_efficiency_analysis(analysis_pipeline, test_data):
     """Test efficiency analysis pipeline."""
     efficiency = analysis_pipeline["efficiency"]

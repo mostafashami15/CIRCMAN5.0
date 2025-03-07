@@ -103,16 +103,23 @@ class DigitalTwinAdapter:
     def update_state(self, updates: Dict[str, Any]) -> bool:
         """
         Update the digital twin state.
-
-        Args:
-            updates: Dictionary of state updates
-
-        Returns:
-            bool: True if update was successful
         """
         try:
-            self.digital_twin.update(updates)
-            return True
+            # Make sure digital twin is initialized
+            if (
+                not hasattr(self.digital_twin, "is_running")
+                or not self.digital_twin.is_running
+            ):
+                self.digital_twin.initialize()
+
+            # Then update state
+            result = self.digital_twin.update(updates)
+
+            # Verify update was applied (debug)
+            current = self.digital_twin.get_current_state()
+            self.logger.debug(f"Updated state: {current}")
+
+            return result
         except Exception as e:
             self.logger.error(f"Error updating state: {str(e)}")
             return False
