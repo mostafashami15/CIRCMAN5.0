@@ -35,11 +35,20 @@ This directory contains the complete API documentation for the CIRCMAN5.0 projec
 - `ResourceTracker` - Resource monitoring API
 - `CircularityMetrics` - Circularity analysis API
 
+## Detailed API Documentation
+
+For detailed API specifications and usage guides, see the following resources:
+
+- [Digital Twin API Reference](api/dt_api_reference.md) - Complete Digital Twin API specification
+- [Event System API Reference](api/dt_event_system_api.md) - Event notification system documentation
+- [Human Interface API Reference](api/dt_human_interface_api.md) - User interface integration API
+- [AI Integration API Reference](api/dt_ai_integration_api.md) - AI and LCA integration APIs
+
 ## Usage Examples
 See the `examples/` directory for implementation examples and usage patterns.
 
 ## Integration Guidelines
-For system integration details, refer to `docs/guides/implementation_details.md`.
+For system integration details, refer to [Implementation Guide](implementation/dt_implementation_guide.md).
 
 ## API Versioning
 Current API version: 1.0.0

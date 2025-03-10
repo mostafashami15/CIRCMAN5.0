@@ -43,7 +43,7 @@ Manufacturing System
     └── Sustainability
 ```
 
-### Digital Twin
+### Digital Twin System
 ```plaintext
 Digital Twin System
 ├── State Management
@@ -60,7 +60,7 @@ Digital Twin System
     └── Interactive Controls
 ```
 
-### Human Interface
+### Human Interface System
 ```plaintext
 Human Interface System
 ├── Operator Dashboard
@@ -158,3 +158,11 @@ Deployment Structure
     ├── Security
     └── Logging
 ```
+
+## Detailed Architecture Documentation
+
+For detailed architectural information, see the following resources:
+
+- [System Architecture Overview](architecture/dt_system_architecture.md)
+- [Component Interaction Diagrams](architecture/dt_component_interaction.md)
+- [State Management Architecture](architecture/dt_state_management.md)

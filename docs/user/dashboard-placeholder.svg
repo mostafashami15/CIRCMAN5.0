@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540">
+  <!-- Background -->
+  <rect width="960" height="540" fill="#f0f2f5" />
+
+  <!-- Header Section -->
+  <rect x="0" y="0" width="960" height="60" fill="#2c3e50" />
+  <text x="20" y="38" font-family="Arial" font-size="24" fill="white">CIRCMAN5.0 Digital Twin Dashboard</text>
+
+  <!-- Status indicators -->
+  <circle cx="860" cy="30" r="10" fill="#4CAF50" />
+  <text x="880" y="35" font-family="Arial" font-size="14" fill="white">Connected</text>
+
+  <!-- Sidebar Navigation -->
+  <rect x="0" y="60" width="200" height="480" fill="#34495e" />
+  <rect x="10" y="80" width="180" height="40" rx="5" fill="#3498db" />
+  <text x="25" y="105" font-family="Arial" font-size="16" fill="white">Dashboard</text>
+
+  <rect x="10" y="130" width="180" height="40" rx="5" fill="#2c3e50" />
+  <text x="25" y="155" font-family="Arial" font-size="16" fill="white">Process Monitor</text>
+
+  <rect x="10" y="180" width="180" height="40" rx="5" fill="#2c3e50" />
+  <text x="25" y="205" font-family="Arial" font-size="16" fill="white">Control Panel</text>
+
+  <rect x="10" y="230" width="180" height="40" rx="5" fill="#2c3e50" />
+  <text x="25" y="255" font-family="Arial" font-size="16" fill="white">Quality Monitor</text>
+
+  <rect x="10" y="280" width="180" height="40" rx="5" fill="#2c3e50" />
+  <text x="25" y="305" font-family="Arial" font-size="16" fill="white">Simulation</text>
+
+  <rect x="10" y="330" width="180" height="40" rx="5" fill="#2c3e50" />
+  <text x="25" y="355" font-family="Arial" font-size="16" fill="white">Reports</text>
+
+  <!-- Main Content Area -->
+  <!-- Process status panel -->
+  <rect x="220" y="80" width="350" height="200" rx="5" fill="white" stroke="#ddd" stroke-width="1" />
+  <rect x="220" y="80" width="350" height="40" rx="5" fill="#3498db" />
+  <text x="240" y="105" font-family="Arial" font-size="16" fill="white">Process Status</text>
+
+  <!-- Process indicators -->
+  <rect x="240" y="140" width="150" height="30" rx="3" fill="#ecf0f1" />
+  <text x="250" y="160" font-family="Arial" font-size="14" fill="#333">Silicon Wafer</text>
+  <rect x="400" y="140" width="20" height="30" rx="3" fill="#4CAF50" />
+
+  <rect x="240" y="180" width="150" height="30" rx="3" fill="#ecf0f1" />
+  <text x="250" y="200" font-family="Arial" font-size="14" fill="#333">Cell Assembly</text>
+  <rect x="400" y="180" width="20" height="30" rx="3" fill="#4CAF50" />
+
+  <rect x="240" y="220" width="150" height="30" rx="3" fill="#ecf0f1" />
+  <text x="250" y="240" font-family="Arial" font-size="14" fill="#333">Lamination</text>
+  <rect x="400" y="220" width="20" height="30" rx="3" fill="#F39C12" />
+
+  <!-- KPI panel -->
+  <rect x="590" y="80" width="350" height="200" rx="5" fill="white" stroke="#ddd" stroke-width="1" />
+  <rect x="590" y="80" width="350" height="40" rx="5" fill="#3498db" />
+  <text x="610" y="105" font-family="Arial" font-size="16" fill="white">Key Performance Indicators</text>
+
+  <!-- KPI gauges -->
+  <!-- Efficiency -->
+  <circle cx="670" cy="160" r="50" fill="none" stroke="#ddd" stroke-width="10" />
+  <path d="M 670 160 L 670 110 A 50 50 0 0 1 713 177 Z" fill="#4CAF50" />
+  <text x="670" y="170" font-family="Arial" font-size="18" fill="#333" text-anchor="middle">92%</text>
+  <text x="670" y="190" font-family="Arial" font-size="14" fill="#777" text-anchor="middle">Efficiency</text>
+
+  <!-- Energy -->
+  <circle cx="790" cy="160" r="50" fill="none" stroke="#ddd" stroke-width="10" />
+  <path d="M 790 160 L 790 110 A 50 50 0 0 1 833 177 Z" fill="#3498db" />
+  <text x="790" y="170" font-family="Arial" font-size="18" fill="#333" text-anchor="middle">87%</text>
+  <text x="790" y="190" font-family="Arial" font-size="14" fill="#777" text-anchor="middle">Energy</text>
+
+  <!-- Quality -->
+  <circle cx="910" cy="160" r="50" fill="none" stroke="#ddd" stroke-width="10" />
+  <path d="M 910 160 L 910 110 A 50 50 0 0 1 953 177 Z" fill="#27AE60" />
+  <text x="910" y="170" font-family="Arial" font-size="18" fill="#333" text-anchor="middle">95%</text>
+  <text x="910" y="190" font-family="Arial" font-size="14" fill="#777" text-anchor="middle">Quality</text>
+
+  <!-- Alert panel -->
+  <rect x="220" y="300" width="350" height="220" rx="5" fill="white" stroke="#ddd" stroke-width="1" />
+  <rect x="220" y="300" width="350" height="40" rx="5" fill="#3498db" />
+  <text x="240" y="325" font-family="Arial" font-size="16" fill="white">Alerts</text>
+
+  <!-- Alert items -->
+  <rect x="230" y="350" width="330" height="40" rx="3" fill="#FFF3E0" stroke="#FFB74D" stroke-width="1" />
+  <circle cx="250" cy="370" r="10" fill="#FF9800" />
+  <text x="270" y="375" font-family="Arial" font-size="14" fill="#333">Temperature approaching threshold</text>
+
+  <rect x="230" y="400" width="330" height="40" rx="3" fill="#E8F5E9" stroke="#81C784" stroke-width="1" />
+  <circle cx="250" cy="420" r="10" fill="#4CAF50" />
+  <text x="270" y="425" font-family="Arial" font-size="14" fill="#333">Production batch completed</text>
+
+  <rect x="230" y="450" width="330" height="40" rx="3" fill="#FFF3E0" stroke="#FFB74D" stroke-width="1" />
+  <circle cx="250" cy="470" r="10" fill="#FF9800" />
+  <text x="270" y="475" font-family="Arial" font-size="14" fill="#333">Maintenance scheduled (2 days)</text>
+
+  <!-- Production chart -->
+  <rect x="590" y="300" width="350" height="220" rx="5" fill="white" stroke="#ddd" stroke-width="1" />
+  <rect x="590" y="300" width="350" height="40" rx="5" fill="#3498db" />
+  <text x="610" y="325" font-family="Arial" font-size="16" fill="white">Production Rate</text>
+
+  <!-- Simple chart -->
+  <polyline points="610,470 650,450 690,460 730,430 770,420 810,425 850,400 890,390 930,380"
+           fill="none" stroke="#3498db" stroke-width="2" />
+
+  <line x1="610" y1="470" x2="930" y2="470" stroke="#aaa" stroke-width="1" />
+  <line x1="610" y1="470" x2="610" y2="350" stroke="#aaa" stroke-width="1" />
+
+  <text x="610" y="490" font-family="Arial" font-size="12" fill="#777">08:00</text>
+  <text x="770" y="490" font-family="Arial" font-size="12" fill="#777">12:00</text>
+  <text x="930" y="490" font-family="Arial" font-size="12" fill="#777">16:00</text>
+
+  <text x="590" y="470" font-family="Arial" font-size="12" fill="#777" text-anchor="end">0</text>
+  <text x="590" y="410" font-family="Arial" font-size="12" fill="#777" text-anchor="end">50</text>
+  <text x="590" y="350" font-family="Arial" font-size="12" fill="#777" text-anchor="end">100</text>
+</svg>
