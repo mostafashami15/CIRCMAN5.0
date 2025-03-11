@@ -9,6 +9,7 @@ enabling data exchange, optimization, and application of AI results to the digit
 
 from typing import Dict, Any, List, Optional, Union, Tuple
 import pandas as pd
+import numpy as np
 import datetime
 import json
 from pathlib import Path
@@ -82,6 +83,9 @@ class AIIntegration:
         )
 
         self.logger.info("AI Integration initialized")
+
+        self.models = {}  # Dictionary to store models
+        self.adaptive_models = {}  # Dictionary to store adaptive models
 
     def extract_parameters_from_state(
         self, state: Optional[Dict[str, Any]] = None
@@ -591,3 +595,215 @@ class AIIntegration:
         except Exception as e:
             self.logger.error(f"Error training model from digital twin: {str(e)}")
             return False
+
+    def create_advanced_model(self, model_type: str, name: str) -> Any:
+        """
+        Create a new advanced model for optimization.
+
+        Args:
+            model_type: Type of model ('deep_learning' or 'ensemble')
+            name: Unique identifier for the model
+
+        Returns:
+            Created model instance
+        """
+        try:
+            if name in self.models:
+                raise ValueError(f"Model with name '{name}' already exists")
+
+            self.logger.info(
+                f"Creating advanced model of type '{model_type}' with name '{name}'"
+            )
+
+            if model_type == "deep_learning":
+                from ...optimization.advanced_models.deep_learning import (
+                    DeepLearningModel,
+                )
+
+                model = DeepLearningModel()
+            elif model_type == "ensemble":
+                from ...optimization.advanced_models.ensemble import EnsembleModel
+
+                model = EnsembleModel()
+            else:
+                raise ValueError(f"Unknown model type: {model_type}")
+
+            self.models[name] = model
+            return model
+
+        except Exception as e:
+            self.logger.error(f"Error creating advanced model: {str(e)}")
+            raise
+
+    def create_adaptive_model(
+        self, name: str, base_model_type: str = "ensemble"
+    ) -> Any:
+        """
+        Create a new adaptive model for online learning.
+
+        Args:
+            name: Unique identifier for the model
+            base_model_type: Type of base model ('deep_learning' or 'ensemble')
+
+        Returns:
+            Created adaptive model instance
+        """
+        try:
+            if name in self.adaptive_models:
+                raise ValueError(f"Adaptive model with name '{name}' already exists")
+
+            self.logger.info(
+                f"Creating adaptive model with name '{name}' using {base_model_type} base"
+            )
+
+            from ...optimization.online_learning.adaptive_model import AdaptiveModel
+
+            model = AdaptiveModel(base_model_type=base_model_type)
+
+            self.adaptive_models[name] = model
+            return model
+
+        except Exception as e:
+            self.logger.error(f"Error creating adaptive model: {str(e)}")
+            raise
+
+    def start_real_time_learning(self, interval_seconds: int = 10) -> None:
+        """
+        Start real-time model training using Digital Twin data.
+
+        Args:
+            interval_seconds: Seconds between training iterations
+        """
+        try:
+            from ...optimization.online_learning.real_time_trainer import (
+                RealTimeModelTrainer,
+            )
+
+            # Create real-time trainer if not exists
+            if not hasattr(self, "real_time_trainer"):
+                self.real_time_trainer = RealTimeModelTrainer(
+                    data_source_callback=self._get_digital_twin_data
+                )
+
+            # Start training
+            self.real_time_trainer.start(interval_seconds)
+            self.logger.info(
+                f"Started real-time learning with {interval_seconds}s interval"
+            )
+
+        except Exception as e:
+            self.logger.error(f"Error starting real-time learning: {str(e)}")
+            raise
+
+    def stop_real_time_learning(self) -> None:
+        """Stop real-time model training."""
+        try:
+            if hasattr(self, "real_time_trainer"):
+                self.real_time_trainer.stop()
+                self.logger.info("Stopped real-time learning")
+            else:
+                self.logger.warning("Real-time learning not started")
+
+        except Exception as e:
+            self.logger.error(f"Error stopping real-time learning: {str(e)}")
+            raise
+
+    def validate_model(
+        self, model_name: str, X: np.ndarray, y: np.ndarray
+    ) -> Dict[str, Any]:
+        """
+        Validate a model using cross-validation.
+
+        Args:
+            model_name: Name of the model to validate
+            X: Validation features
+            y: Validation targets
+
+        Returns:
+            Dictionary of validation results
+        """
+        try:
+            model = self.get_model(model_name)
+
+            from ...optimization.validation.cross_validator import CrossValidator
+
+            validator = CrossValidator()
+
+            results = validator.validate(model, X, y)
+            self.logger.info(f"Validated model '{model_name}' with cross-validation")
+
+            return results
+
+        except Exception as e:
+            self.logger.error(f"Error validating model: {str(e)}")
+            raise
+
+    def quantify_prediction_uncertainty(
+        self, model_name: str, X: np.ndarray
+    ) -> Dict[str, np.ndarray]:
+        """
+        Quantify uncertainty in model predictions.
+
+        Args:
+            model_name: Name of the model
+            X: Input features
+
+        Returns:
+            Dictionary of uncertainty metrics
+        """
+        try:
+            model = self.get_model(model_name)
+
+            from ...optimization.validation.uncertainty import UncertaintyQuantifier
+
+            quantifier = UncertaintyQuantifier()
+
+            results = quantifier.quantify_uncertainty(model, X)
+            self.logger.info(
+                f"Quantified prediction uncertainty for model '{model_name}'"
+            )
+
+            return results
+
+        except Exception as e:
+            self.logger.error(f"Error quantifying prediction uncertainty: {str(e)}")
+            raise
+
+    def get_model(self, name: str) -> Any:
+        """
+        Get model by name.
+
+        Args:
+            name: Model name
+
+        Returns:
+            Any: Model instance
+        """
+        if name in self.models:
+            return self.models[name]
+        elif name in self.adaptive_models:
+            return self.adaptive_models[name]
+        else:
+            raise ValueError(f"Model not found: {name}")
+
+    def _get_digital_twin_data(self) -> Optional[Tuple[np.ndarray, np.ndarray]]:
+        """
+        Get current data from Digital Twin for real-time training.
+
+        Returns:
+            Optional[Tuple[np.ndarray, np.ndarray]]: Features and targets if available
+        """
+        if self.digital_twin is None:
+            return None
+
+        try:
+            # In actual implementation, would get current state
+            # state = self.digital_twin.state_manager.get_current_state()
+            # features = self._extract_features(state)
+            # targets = self._extract_targets(state)
+
+            # For placeholder, return None
+            return None
+        except Exception as e:
+            self.logger.error(f"Error getting Digital Twin data: {str(e)}")
+            return None

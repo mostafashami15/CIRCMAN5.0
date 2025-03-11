@@ -295,6 +295,57 @@ class ManufacturingDataGenerator:  # Renamed class to remove "Test" prefix
         except Exception as e:
             raise IOError(f"Error saving test data: {str(e)}")
 
+    def generate_time_series_data(self, days=30, interval_minutes=15):
+        """Generate time series manufacturing data."""
+        total_points = int((days * 24 * 60) / interval_minutes)
+        timestamps = [
+            self.start_date + timedelta(minutes=i * interval_minutes)
+            for i in range(total_points)
+        ]
+
+        # Create base patterns with daily cycles
+        base_pattern = np.sin(np.linspace(0, days * 2 * np.pi, total_points))
+
+        # Add noise and trends
+        noise = np.random.normal(0, 0.1, total_points)
+        trend = np.linspace(0, 0.5, total_points)
+
+        # Create data with realistic patterns
+        data = {
+            "timestamp": timestamps,
+            "input_amount": 100 + 10 * base_pattern + 5 * noise + trend * 10,
+            "energy_used": 150 + 15 * base_pattern + 8 * noise + trend * 5,
+            "cycle_time": 45
+            + 5 * np.sin(np.linspace(0, days * 4 * np.pi, total_points))
+            + 2 * noise,
+            "temperature": 175
+            + 15 * np.sin(np.linspace(0, days * 1 * np.pi, total_points))
+            + 3 * noise,
+        }
+
+        # Add derived metrics with realistic relationships
+        df = pd.DataFrame(data)
+        df["efficiency"] = (
+            18
+            + 0.02 * (df["temperature"] - 175)
+            - 0.003 * df["energy_used"]
+            + np.random.normal(0, 0.5, total_points)
+        )
+        df["defect_rate"] = (
+            5
+            - 0.01 * df["efficiency"]
+            + 0.02 * np.abs(df["temperature"] - 175)
+            + np.random.normal(0, 0.3, total_points)
+        )
+        df["output_amount"] = df["input_amount"] * (
+            1 - df["defect_rate"] / 100
+        ) + np.random.normal(0, 1, total_points)
+
+        # Add batch IDs
+        df["batch_id"] = [f"BATCH_{i//4:04d}" for i in range(total_points)]
+
+        return df
+
 
 # For backwards compatibility
 TestDataGenerator = ManufacturingDataGenerator  # Alias for existing code

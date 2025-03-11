@@ -58,6 +58,36 @@ class OptimizationAdapter(ConfigAdapterBase):
             "TRAINING_PARAMETERS",
         }
 
+        # Add validation for new sections if they exist
+        if "ADVANCED_MODELS" in config:
+            advanced_models = config.get("ADVANCED_MODELS", {})
+            if not all(
+                model in advanced_models for model in ["deep_learning", "ensemble"]
+            ):
+                self.logger.warning("Missing required advanced model configurations")
+                # Don't fail validation, just warn
+
+        if "ONLINE_LEARNING" in config:
+            online_learning = config.get("ONLINE_LEARNING", {})
+            required_online_params = {
+                "window_size",
+                "learning_rate",
+                "update_frequency",
+                "forgetting_factor",
+            }
+            if not all(param in online_learning for param in required_online_params):
+                self.logger.warning("Missing required online learning parameters")
+                # Don't fail validation, just warn
+
+        if "VALIDATION" in config:
+            validation = config.get("VALIDATION", {})
+            required_validation_sections = {"cross_validation", "uncertainty"}
+            if not all(
+                section in validation for section in required_validation_sections
+            ):
+                self.logger.warning("Missing required validation sections")
+                # Don't fail validation, just warn
+
         # Check required top-level sections
         if not all(section in config for section in required_sections):
             self.logger.error(
@@ -168,5 +198,52 @@ class OptimizationAdapter(ConfigAdapterBase):
                 "validation_fraction": 0.1,
                 "n_iter_no_change": 10,
                 "tol": 1e-4,
+            },
+            "ADVANCED_MODELS": {
+                "deep_learning": {
+                    "model_type": "lstm",
+                    "hidden_layers": [64, 32],
+                    "activation": "relu",
+                    "dropout_rate": 0.2,
+                    "l2_regularization": 0.001,
+                    "batch_size": 32,
+                    "epochs": 100,
+                    "early_stopping_patience": 10,
+                },
+                "ensemble": {
+                    "base_models": [
+                        "random_forest",
+                        "gradient_boosting",
+                        "extra_trees",
+                    ],
+                    "meta_model": "linear",
+                    "cv_folds": 5,
+                    "use_probabilities": True,
+                    "voting_strategy": "soft",
+                },
+            },
+            "ONLINE_LEARNING": {
+                "window_size": 100,
+                "learning_rate": 0.01,
+                "update_frequency": 10,
+                "regularization": 0.001,
+                "forgetting_factor": 0.95,
+                "max_model_age": 24,
+                "model_persistence_interval": 60,
+            },
+            "VALIDATION": {
+                "cross_validation": {
+                    "method": "stratified_kfold",
+                    "n_splits": 5,
+                    "shuffle": True,
+                    "random_state": 42,
+                    "metrics": ["accuracy", "precision", "recall", "f1", "r2", "mse"],
+                },
+                "uncertainty": {
+                    "method": "monte_carlo_dropout",
+                    "samples": 30,
+                    "confidence_level": 0.95,
+                    "calibration_method": "temperature_scaling",
+                },
             },
         }
