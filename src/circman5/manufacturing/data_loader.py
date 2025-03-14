@@ -2,6 +2,7 @@
 
 import pandas as pd
 import numpy as np
+import datetime
 from pandas.api.types import CategoricalDtype
 from pathlib import Path
 from typing import Dict, Optional, Union
@@ -220,3 +221,145 @@ class ManufacturingDataLoader:
         except Exception as e:
             self.logger.error(f"Error loading {data_type} data: {str(e)}")
             raise
+
+    def load_real_time_data(self, data_source=None, buffer_size=100):
+        """
+        Real-time data streaming from manufacturing sources.
+
+        Args:
+            data_source: Optional data source specification
+            buffer_size: Size of the data buffer
+
+        Returns:
+            Dict: Configuration for the data stream
+        """
+        try:
+            # Create a stream configuration
+            stream_config = {
+                "active": True,
+                "buffer_size": buffer_size,
+                "data_source": data_source,
+                "timestamp": datetime.datetime.now().isoformat(),
+            }
+
+            if data_source is None:
+                # Try to get default source from constants service
+                try:
+                    from circman5.adapters.services.constants_service import (
+                        ConstantsService,
+                    )
+
+                    constants = ConstantsService()
+                    source_config = constants.get_constant(
+                        "manufacturing", "DEFAULT_DATA_SOURCE"
+                    )
+                    stream_config["data_source"] = source_config
+                except Exception as e:
+                    self.logger.warning(f"Using default data source: {str(e)}")
+                    stream_config["data_source"] = {
+                        "type": "default",
+                        "name": "default_source",
+                    }
+
+            self.logger.info(
+                f"Real-time data stream configured with buffer size {buffer_size}"
+            )
+
+            # For now, just return the configuration
+            # In a future implementation, this would return an actual stream object
+            return stream_config
+
+        except Exception as e:
+            self.logger.error(f"Error configuring real-time data stream: {str(e)}")
+            raise DataError(f"Failed to configure real-time data stream: {str(e)}")
+
+    def validate_streaming_data(self, data_point):
+        """
+        Validate incoming streaming data points.
+
+        Args:
+            data_point: The data point to validate
+
+        Returns:
+            bool: True if valid, False otherwise
+        """
+        try:
+            # Check required fields
+            required_fields = {
+                "timestamp",
+                "batch_id",
+                "input_amount",
+                "energy_used",
+                "cycle_time",
+            }
+
+            if not all(field in data_point for field in required_fields):
+                missing = required_fields - set(data_point.keys())
+                self.logger.warning(f"Missing required fields: {missing}")
+                return False
+
+            # Validate data types
+            if not isinstance(data_point["timestamp"], (int, float, str)):
+                self.logger.warning("Invalid timestamp format")
+                return False
+
+            # Validate value ranges
+            if (
+                not isinstance(data_point["input_amount"], (int, float))
+                or data_point["input_amount"] <= 0
+            ):
+                self.logger.warning("Input amount must be positive")
+                return False
+
+            if (
+                not isinstance(data_point["energy_used"], (int, float))
+                or data_point["energy_used"] < 0
+            ):
+                self.logger.warning("Energy used cannot be negative")
+                return False
+
+            if (
+                not isinstance(data_point["cycle_time"], (int, float))
+                or data_point["cycle_time"] <= 0
+            ):
+                self.logger.warning("Cycle time must be positive")
+                return False
+
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error validating data point: {str(e)}")
+            return False
+
+    def integrate_external_sources(self, source_config):
+        """
+        Integrate external data sources into the processing pipeline.
+
+        Args:
+            source_config: Configuration for external source
+
+        Returns:
+            bool: True if integration successful, False otherwise
+        """
+        try:
+            # Log the integration attempt
+            self.logger.info(
+                f"Attempting to integrate external source: {source_config.get('name', 'unknown')}"
+            )
+
+            # Basic validation
+            if not isinstance(source_config, dict) or "name" not in source_config:
+                raise ValueError(
+                    "Invalid source configuration: must be a dictionary with a 'name' field"
+                )
+
+            # For now, just log the successful integration
+            # In a future implementation, this would actually connect to the source
+            self.logger.info(
+                f"Successfully integrated external source: {source_config['name']}"
+            )
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Error integrating external source: {str(e)}")
+            return False

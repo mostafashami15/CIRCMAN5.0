@@ -309,3 +309,83 @@ class DeepLearningModel:
         except Exception as e:
             self.logger.error(f"Error loading model: {str(e)}")
             raise
+
+    def _add_engineered_features(
+        self, params: Union[Dict[str, float], pd.DataFrame]
+    ) -> Union[Dict[str, float], pd.DataFrame]:
+        """Add engineered features to parameters.
+        This implementation matches the one in ManufacturingModel to ensure compatibility.
+        """
+        if isinstance(params, pd.DataFrame):
+            df = params.copy()
+
+            # Calculate efficiency_rate if we have both output_amount and input_amount
+            if "output_amount" in df.columns and "input_amount" in df.columns:
+                df["efficiency_rate"] = df["output_amount"] / df["input_amount"]
+
+            # Calculate energy_efficiency if we have both output_amount and energy_used
+            if "output_amount" in df.columns and "energy_used" in df.columns:
+                # Avoid division by zero
+                df["energy_efficiency"] = df.apply(
+                    lambda row: row["output_amount"] / row["energy_used"]
+                    if row["energy_used"] > 0
+                    else 0.0,
+                    axis=1,
+                )
+
+            # Calculate efficiency_quality if we have both efficiency and defect_rate
+            if "efficiency" in df.columns and "defect_rate" in df.columns:
+                df["efficiency_quality"] = df.apply(
+                    lambda row: row["efficiency"]
+                    * (
+                        1 - min(row["defect_rate"] / 100, row["defect_rate"])
+                        if row["defect_rate"] > 1
+                        else row["defect_rate"]
+                    )
+                    if row["defect_rate"] < 100
+                    else 0.0,
+                    axis=1,
+                )
+            return df
+        else:
+            # Handle dictionary input
+            params_dict = params.copy()
+
+            # Ensure output_amount exists
+            if "output_amount" not in params_dict and "input_amount" in params_dict:
+                params_dict["output_amount"] = 0.9 * params_dict["input_amount"]
+
+            # Calculate efficiency_rate
+            if "input_amount" in params_dict:
+                params_dict["efficiency_rate"] = (
+                    params_dict["output_amount"] / params_dict["input_amount"]
+                )
+
+            # Calculate energy_efficiency
+            if "energy_used" in params_dict:
+                energy_used = params_dict["energy_used"]
+                if energy_used > 0:
+                    params_dict["energy_efficiency"] = (
+                        params_dict["output_amount"] / energy_used
+                    )
+                else:
+                    params_dict["energy_efficiency"] = 0.0
+
+            # Calculate efficiency_quality
+            if "efficiency" in params_dict and "defect_rate" in params_dict:
+                defect_rate = params_dict["defect_rate"]
+                if defect_rate >= 0 and defect_rate < 100:
+                    # Handle both percentage (0-100) and decimal (0-1) formats
+                    defect_rate_normalized = (
+                        min(defect_rate / 100, defect_rate)
+                        if defect_rate > 1
+                        else defect_rate
+                    )
+                    params_dict["efficiency_quality"] = params_dict["efficiency"] * (
+                        1 - defect_rate_normalized
+                    )
+                else:
+                    # Fallback for invalid values
+                    params_dict["efficiency_quality"] = 0.0
+
+            return params_dict

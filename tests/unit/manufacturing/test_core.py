@@ -345,3 +345,91 @@ class TestManufacturingCore:
         # Verify consistency
         assert performance["efficiency"]["yield_rate"] == efficiency["yield_rate"]
         assert performance["quality"]["avg_defect_rate"] == quality["avg_defect_rate"]
+
+    def test_analyze_real_time_performance(self, analyzer, mocker):
+        """Test real-time performance analysis."""
+        # Mock digital twin
+        mock_dt = mocker.MagicMock()
+        mock_dt.get_current_state.return_value = {
+            "production_line": {
+                "production_rate": 100.0,
+                "energy_consumption": 50.0,
+                "cycle_time": 30.0,
+                "defect_rate": 0.05,
+                "efficiency": 0.9,
+            }
+        }
+        analyzer.digital_twin = mock_dt
+
+        # Test analysis
+        metrics = analyzer.analyze_real_time_performance()
+
+        # Verify results
+        assert isinstance(metrics, dict)
+        assert "production" in metrics
+        assert "quality" in metrics
+        assert "energy" in metrics
+
+        # Check specific metrics
+        assert metrics["production"]["rate"] == 100.0
+        assert metrics["quality"]["defect_rate"] == 0.05
+        assert metrics["quality"]["efficiency"] == 0.9
+
+    def test_optimize_process_parameters_online(self, analyzer, mocker):
+        """Test online parameter optimization."""
+        # Mock digital twin
+        mock_dt = mocker.MagicMock()
+        mock_dt.get_current_state.return_value = {
+            "production_line": {
+                "production_rate": 100.0,
+                "energy_consumption": 50.0,
+                "cycle_time": 30.0,
+                "defect_rate": 0.05,
+                "efficiency": 0.9,
+            },
+            "materials": {
+                "silicon_wafer": {"inventory": 200, "quality": 0.95},
+                "solar_glass": {"inventory": 100, "quality": 0.98},
+            },
+        }
+        analyzer.digital_twin = mock_dt
+
+        # Mock optimize_process_parameters method
+        expected_result = {
+            "input_amount": 120.0,
+            "energy_used": 45.0,
+            "cycle_time": 28.0,
+        }
+        analyzer.optimize_process_parameters = mocker.MagicMock(
+            return_value=expected_result
+        )
+
+        # Mock constants service
+        mocker.patch.object(
+            analyzer.constants,
+            "get_constant",
+            return_value={"min_yield_rate": 92.0, "min_energy_efficiency": 0.7},
+        )
+
+        # Test optimization
+        params = analyzer.optimize_process_parameters_online()
+
+        # Verify results
+        assert params == expected_result
+        assert analyzer.optimize_process_parameters.called
+
+    def test_integrate_digital_twin(self, analyzer, mocker):
+        """Test digital twin integration."""
+        # Mock digital twin
+        mock_dt = mocker.MagicMock()
+        analyzer.digital_twin = mock_dt
+
+        # Mock Timer
+        mock_timer = mocker.patch("threading.Timer")
+
+        # Test integration
+        result = analyzer.integrate_digital_twin()
+
+        # Verify results
+        assert result is True
+        assert mock_timer.called
