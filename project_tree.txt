@@ -7,38 +7,80 @@
 │   ├── raw
 │   │   └── test_file.txt
 │   └── synthetic
-│       └── test_file.txt
+│       ├── edge_cases.csv
+│       ├── production_data.csv
+│       ├── quality_data.csv
+│       ├── test_file.txt
+│       └── time_series_data.csv
 ├── docs
+│   ├── CONTRIBUTING.md
+│   ├── README.md
 │   ├── api
 │   │   ├── API_documentation.md
+│   │   ├── adapter_api_reference.md
+│   │   ├── ai_ml_api_reference.md
+│   │   ├── data_schemas_reference.md
 │   │   ├── dt_ai_integration_api.md
 │   │   ├── dt_api_reference.md
 │   │   ├── dt_event_system_api.md
-│   │   └── dt_human_interface_api.md
+│   │   ├── dt_human_interface_api.md
+│   │   ├── human_interface_api_reference.md
+│   │   ├── lifecycle_assessment_api_reference.md
+│   │   ├── monitoring_api_reference.md
+│   │   └── utilities_api_reference.md
 │   ├── architecture
+│   │   ├── adapter_system_architecture.md
+│   │   ├── circular_economy_architecture.md
 │   │   ├── dt_component_interaction.md
 │   │   ├── dt_state_management.md
-│   │   └── dt_system_architecture.md
+│   │   ├── dt_system_architecture.md
+│   │   ├── human_interface_architecture.md
+│   │   └── lifecycle_assessment_architecture.md
 │   ├── diagrams
 │   │   └── architecture.md
 │   ├── guides
+│   │   ├── circular_economy_integration_guide.md
+│   │   ├── configuration_guide.md
+│   │   ├── deployment_guide.md
+│   │   ├── developer_guide.md
 │   │   ├── development_roadmap.md
 │   │   ├── implementation_details.md
+│   │   ├── installation_guide.md
+│   │   ├── monitoring_guide.md
+│   │   ├── optimization_guide.md
+│   │   ├── performance_benchmarks.md
 │   │   ├── system_analysis.md
-│   │   └── system_documentation.md
+│   │   ├── system_documentation.md
+│   │   ├── system_integration_guide.md
+│   │   └── validation_procedures.md
 │   ├── implementation
+│   │   ├── ai_ml_implementation_guide.md
+│   │   ├── circular_economy_implementation_guide.md
+│   │   ├── data_processing_implementation_guide.md
 │   │   ├── dt_implementation_guide.md
-│   │   └── dt_integration_guide.md
+│   │   ├── dt_integration_guide.md
+│   │   ├── human_interface_integration_guide.md
+│   │   ├── lifecycle_assessment_implementation_guide.md
+│   │   ├── manufacturing_analytics_implementation_guide.md
+│   │   ├── reporting_implementation_guide.md
+│   │   ├── solitek_integration_guide.md
+│   │   └── validation_framework_implementation.md
 │   ├── mathematical
+│   │   ├── ai_ml_mathematical_foundations.md
 │   │   ├── dt_simulation_foundations.md
-│   │   └── dt_state_modeling.md
+│   │   ├── dt_state_modeling.md
+│   │   └── lifecycle_assessment_mathematical_foundations.md
+│   ├── thesis_outline.md
 │   ├── troubleshooting
+│   │   ├── ai_ml_troubleshooting_guide.md
 │   │   └── dt_troubleshooting_guide.md
 │   └── user
+│       ├── ai_ml_operator_manual.md
 │       ├── dashboard-placeholder.svg
 │       ├── dt_operator_manual.md
 │       ├── dt_technical_manual.md
-│       └── dt_user_manual.md
+│       ├── dt_user_manual.md
+│       └── validation_system_user_guide.md
 ├── examples
 │   ├── complete_demo.py
 │   ├── demo_analysis.py
@@ -46,8 +88,10 @@
 │   ├── digital_twin_ai_integration_demo.py
 │   ├── digital_twin_demo.py
 │   ├── enhanced_optimization_demo.py
+│   ├── manufacturing_optimization_demo.py
 │   ├── test_runner.py
 │   └── visualize_optimization.py
+├── file_list.txt
 ├── notebooks
 │   └── requirements.txt
 ├── poetry.lock
@@ -62,6 +106,7 @@
 │   ├── cleanup.py
 │   ├── fix_imports.py
 │   ├── fix_project_structure.py
+│   ├── list_files.py
 │   ├── maintenance
 │   │   ├── __init__.py
 │   │   ├── log_cleanup.py
@@ -72,173 +117,36 @@
 ├── setup.py
 ├── src
 │   ├── __init__.py
-│   ├── circman5
-│   │   ├── __init__.py
-│   │   ├── adapters
-│   │   │   ├── __init__.py
-│   │   │   ├── base
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── adapter_base.py
-│   │   │   │   └── config_manager.py
-│   │   │   ├── config
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── digital_twin.py
-│   │   │   │   ├── impact_factors.py
-│   │   │   │   ├── json
-│   │   │   │   │   ├── digital_twin.json
-│   │   │   │   │   ├── impact_factors.json
-│   │   │   │   │   ├── manufacturing.json
-│   │   │   │   │   ├── monitoring.json
-│   │   │   │   │   ├── optimization.json
-│   │   │   │   │   └── visualization.json
-│   │   │   │   ├── manufacturing.py
-│   │   │   │   ├── monitoring.py
-│   │   │   │   ├── optimization.py
-│   │   │   │   └── visualization.py
-│   │   │   └── services
-│   │   │       ├── __init__.py
-│   │   │       └── constants_service.py
-│   │   ├── config
-│   │   │   ├── __init__.py
-│   │   │   ├── constants.py
-│   │   │   └── project_paths.py
-│   │   ├── constants.py
-│   │   ├── manufacturing
-│   │   │   ├── __init__.py
-│   │   │   ├── analyzers
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── efficiency.py
-│   │   │   │   ├── quality.py
-│   │   │   │   └── sustainability.py
-│   │   │   ├── core.py
-│   │   │   ├── data_loader.py
-│   │   │   ├── digital_twin
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── configuration
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── config_api.py
-│   │   │   │   │   ├── config_manager.py
-│   │   │   │   │   └── parameter_definition.py
-│   │   │   │   ├── core
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── state_manager.py
-│   │   │   │   │   ├── synchronization.py
-│   │   │   │   │   ├── twin_core.py
-│   │   │   │   │   └── twin_core.py.backup
-│   │   │   │   ├── event_notification
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── event_manager.py
-│   │   │   │   │   ├── event_persistence.py
-│   │   │   │   │   ├── event_types.py
-│   │   │   │   │   ├── publishers.py
-│   │   │   │   │   └── subscribers.py
-│   │   │   │   ├── integration
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── ai_integration.py
-│   │   │   │   │   └── lca_integration.py
-│   │   │   │   ├── simulation
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── process_models.py
-│   │   │   │   │   ├── scenario_manager.py
-│   │   │   │   │   └── simulation_engine.py
-│   │   │   │   └── visualization
-│   │   │   │       ├── __init__.py
-│   │   │   │       ├── dashboard.py
-│   │   │   │       ├── process_visualizer.py
-│   │   │   │       └── twin_visualizer.py
-│   │   │   ├── human_interface
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── adapters
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── config_adapter.py
-│   │   │   │   │   ├── digital_twin_adapter.py
-│   │   │   │   │   └── event_adapter.py
-│   │   │   │   ├── components
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── alerts
-│   │   │   │   │   │   ├── __init__.py
-│   │   │   │   │   │   ├── alert_panel.py
-│   │   │   │   │   │   ├── event_subscriber.py
-│   │   │   │   │   │   └── notification_manager.py
-│   │   │   │   │   ├── controls
-│   │   │   │   │   │   ├── __init__.py
-│   │   │   │   │   │   ├── parameter_control.py
-│   │   │   │   │   │   ├── process_control.py
-│   │   │   │   │   │   └── scenario_control.py
-│   │   │   │   │   └── dashboard
-│   │   │   │   │       ├── __init__.py
-│   │   │   │   │       ├── kpi_panel.py
-│   │   │   │   │       ├── main_dashboard.py
-│   │   │   │   │       ├── process_panel.py
-│   │   │   │   │       └── status_panel.py
-│   │   │   │   ├── core
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── dashboard_manager.py
-│   │   │   │   │   ├── interface_manager.py
-│   │   │   │   │   ├── interface_state.py
-│   │   │   │   │   └── panel_registry.py
-│   │   │   │   ├── services
-│   │   │   │   │   ├── __init__.py
-│   │   │   │   │   ├── command_service.py
-│   │   │   │   │   ├── data_service.py
-│   │   │   │   │   └── update_service.py
-│   │   │   │   └── utils
-│   │   │   │       ├── __init__.py
-│   │   │   │       ├── ui_utils.py
-│   │   │   │       └── validation.py
-│   │   │   ├── lifecycle
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── impact_factors.py
-│   │   │   │   ├── lca_analyzer.py
-│   │   │   │   └── visualizer.py
-│   │   │   ├── optimization
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── model.py
-│   │   │   │   ├── optimizer.py
-│   │   │   │   └── types.py
-│   │   │   ├── reporting
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── optimization_visualizer.py
-│   │   │   │   ├── reports.py
-│   │   │   │   ├── visualization_paths.py
-│   │   │   │   └── visualizations.py
-│   │   │   ├── schemas.py
-│   │   │   └── visualization_utils.py
-│   │   ├── monitoring.py
-│   │   ├── test_data_generator.py
-│   │   ├── test_framework.py
-│   │   └── utils
-│   │       ├── __init__.py
-│   │       ├── cleanup.py
-│   │       ├── data_types.py
-│   │       ├── errors.py
-│   │       ├── logging_config.py
-│   │       └── results_manager.py
-│   └── circman5_backup
+│   └── circman5
 │       ├── __init__.py
-│       ├── ai
+│       ├── adapters
 │       │   ├── __init__.py
-│       │   ├── optimization_base.py
-│       │   ├── optimization_base.py.bak
-│       │   ├── optimization_core.py
-│       │   ├── optimization_prediction.py
-│       │   ├── optimization_training.py
-│       │   └── optimization_types.py
-│       ├── analysis
-│       │   ├── __init__.py
-│       │   ├── efficiency.py
-│       │   ├── lca
-│       │   │   ├── core.py
+│       │   ├── base
+│       │   │   ├── __init__.py
+│       │   │   ├── adapter_base.py
+│       │   │   └── config_manager.py
+│       │   ├── config
+│       │   │   ├── __init__.py
+│       │   │   ├── digital_twin.py
 │       │   │   ├── impact_factors.py
-│       │   │   └── init.py
-│       │   ├── quality.py
-│       │   └── sustainability.py
+│       │   │   ├── json
+│       │   │   │   ├── digital_twin.json
+│       │   │   │   ├── impact_factors.json
+│       │   │   │   ├── manufacturing.json
+│       │   │   │   ├── monitoring.json
+│       │   │   │   ├── optimization.json
+│       │   │   │   └── visualization.json
+│       │   │   ├── manufacturing.py
+│       │   │   ├── monitoring.py
+│       │   │   ├── optimization.py
+│       │   │   └── visualization.py
+│       │   └── services
+│       │       ├── __init__.py
+│       │       └── constants_service.py
 │       ├── config
 │       │   ├── __init__.py
-│       │   ├── constants.py
 │       │   └── project_paths.py
-│       ├── lca
-│       │   └── __init__.py
+│       ├── constants.py
 │       ├── manufacturing
 │       │   ├── __init__.py
 │       │   ├── analyzers
@@ -247,156 +155,264 @@
 │       │   │   ├── quality.py
 │       │   │   └── sustainability.py
 │       │   ├── core.py
-│       │   ├── core.py.bak
 │       │   ├── data_loader.py
-│       │   ├── data_loader.py.bak
+│       │   ├── digital_twin
+│       │   │   ├── __init__.py
+│       │   │   ├── configuration
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── config_api.py
+│       │   │   │   ├── config_manager.py
+│       │   │   │   └── parameter_definition.py
+│       │   │   ├── core
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── state_manager.py
+│       │   │   │   ├── synchronization.py
+│       │   │   │   ├── twin_core.py
+│       │   │   │   └── twin_core.py.backup
+│       │   │   ├── event_notification
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── event_manager.py
+│       │   │   │   ├── event_persistence.py
+│       │   │   │   ├── event_types.py
+│       │   │   │   ├── publishers.py
+│       │   │   │   └── subscribers.py
+│       │   │   ├── integration
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── ai_integration.py
+│       │   │   │   └── lca_integration.py
+│       │   │   ├── simulation
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── process_models.py
+│       │   │   │   ├── scenario_manager.py
+│       │   │   │   └── simulation_engine.py
+│       │   │   └── visualization
+│       │   │       ├── __init__.py
+│       │   │       ├── dashboard.py
+│       │   │       ├── process_visualizer.py
+│       │   │       └── twin_visualizer.py
+│       │   ├── human_interface
+│       │   │   ├── __init__.py
+│       │   │   ├── adapters
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── config_adapter.py
+│       │   │   │   ├── digital_twin_adapter.py
+│       │   │   │   └── event_adapter.py
+│       │   │   ├── components
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── alerts
+│       │   │   │   │   ├── __init__.py
+│       │   │   │   │   ├── alert_panel.py
+│       │   │   │   │   ├── event_subscriber.py
+│       │   │   │   │   └── notification_manager.py
+│       │   │   │   ├── controls
+│       │   │   │   │   ├── __init__.py
+│       │   │   │   │   ├── parameter_control.py
+│       │   │   │   │   ├── process_control.py
+│       │   │   │   │   └── scenario_control.py
+│       │   │   │   └── dashboard
+│       │   │   │       ├── __init__.py
+│       │   │   │       ├── kpi_panel.py
+│       │   │   │       ├── main_dashboard.py
+│       │   │   │       ├── process_panel.py
+│       │   │   │       └── status_panel.py
+│       │   │   ├── core
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── dashboard_manager.py
+│       │   │   │   ├── interface_manager.py
+│       │   │   │   ├── interface_state.py
+│       │   │   │   └── panel_registry.py
+│       │   │   ├── services
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── command_service.py
+│       │   │   │   ├── data_service.py
+│       │   │   │   └── update_service.py
+│       │   │   └── utils
+│       │   │       ├── __init__.py
+│       │   │       ├── ui_utils.py
+│       │   │       └── validation.py
 │       │   ├── lifecycle
-│       │   └── reporting
-│       │       └── __init__.py
+│       │   │   ├── __init__.py
+│       │   │   ├── impact_factors.py
+│       │   │   ├── lca_analyzer.py
+│       │   │   └── visualizer.py
+│       │   ├── optimization
+│       │   │   ├── __init__.py
+│       │   │   ├── advanced_models
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── deep_learning.py
+│       │   │   │   └── ensemble.py
+│       │   │   ├── model.py
+│       │   │   ├── online_learning
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── adaptive_model.py
+│       │   │   │   └── real_time_trainer.py
+│       │   │   ├── optimizer.py
+│       │   │   ├── types.py
+│       │   │   └── validation
+│       │   │       ├── __init__.py
+│       │   │       ├── cross_validator.py
+│       │   │       └── uncertainty.py
+│       │   ├── reporting
+│       │   │   ├── __init__.py
+│       │   │   ├── optimization_visualizer.py
+│       │   │   ├── reports.py
+│       │   │   ├── visualization_paths.py
+│       │   │   └── visualizations.py
+│       │   ├── schemas.py
+│       │   └── visualization_utils.py
 │       ├── monitoring.py
-│       ├── solitek_manufacturing.py.backup
 │       ├── test_data_generator.py
 │       ├── test_framework.py
-│       ├── utils
-│       │   ├── __init__.py
-│       │   ├── data_types.py
-│       │   ├── errors.py
-│       │   └── logging_config.py
-│       └── visualization
+│       └── utils
 │           ├── __init__.py
-│           ├── lca_visualizer.py
-│           └── manufacturing_visualizer.py
-├── tests
-│   ├── README.md
-│   ├── __init__.py
-│   ├── integration
-│   │   ├── __init__.py
-│   │   ├── conftest.py
-│   │   ├── human_interface
-│   │   │   ├── conftest.py
-│   │   │   ├── test_dashboard_integration.py
-│   │   │   ├── test_e2e_integration.py
-│   │   │   ├── test_event_notification.py
-│   │   │   ├── test_hmi_digital_twin_integration.py
-│   │   │   ├── test_process_control.py
-│   │   │   ├── test_process_control_diagnostic.py
-│   │   │   ├── test_process_control_shared.py
-│   │   │   ├── test_simple_integration.py
-│   │   │   └── test_user_workflows.py
-│   │   ├── system
-│   │   │   ├── __init__.py
-│   │   │   ├── test_helpers.py
-│   │   │   └── test_script.py
-│   │   ├── test_data_pipeline.py
-│   │   ├── test_data_saving.py
-│   │   ├── test_digital_twin_ai_integration.py
-│   │   ├── test_digital_twin_events.py
-│   │   ├── test_digital_twin_integration.py
-│   │   ├── test_digital_twin_visualization.py
-│   │   └── test_system_integration.py
-│   ├── performance
-│   │   ├── __init__.py
-│   │   ├── conftest.py
-│   │   ├── test_digital_twin_performance.py
-│   │   ├── test_event_latency.py
-│   │   ├── test_hmi_performance.py
-│   │   └── test_performance.py
-│   ├── results
-│   │   ├── __init__.py
-│   │   ├── archive
-│   │   ├── latest
-│   │   └── runs
-│   ├── unit
-│   │   ├── __init__.py
-│   │   ├── adapters
-│   │   │   ├── __init__.py
-│   │   │   ├── base
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── test_adapter_base.py
-│   │   │   │   └── test_config_manager.py
-│   │   │   ├── config
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── test_impact_factors.py
-│   │   │   │   ├── test_manufacturing.py
-│   │   │   │   ├── test_monitoring.py
-│   │   │   │   ├── test_optimization.py
-│   │   │   │   └── test_visualization.py
-│   │   │   └── services
-│   │   │       ├── __init__.py
-│   │   │       └── test_constants_service.py
-│   │   ├── conftest.py
-│   │   ├── manufacturing
-│   │   │   ├── __init__.py
-│   │   │   ├── analyzers
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── conftest.py
-│   │   │   │   ├── test_efficiency.py
-│   │   │   │   ├── test_quality.py
-│   │   │   │   └── test_sustainability.py
-│   │   │   ├── digital_twin
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── configuration
-│   │   │   │   │   ├── test_config_manager.py
-│   │   │   │   │   └── test_parameter_definition.py
-│   │   │   │   ├── conftest.py
-│   │   │   │   ├── event_notification
-│   │   │   │   │   ├── test_event_manager.py
-│   │   │   │   │   ├── test_event_persistence.py
-│   │   │   │   │   ├── test_event_types.py
-│   │   │   │   │   ├── test_publishers.py
-│   │   │   │   │   └── test_subscribers.py
-│   │   │   │   ├── test_ai_integration.py
-│   │   │   │   ├── test_lca_integration.py
-│   │   │   │   ├── test_process_models.py
-│   │   │   │   ├── test_results_integration.py
-│   │   │   │   ├── test_scenario_manager.py
-│   │   │   │   ├── test_simulation_engine.py
-│   │   │   │   ├── test_singleton.py
-│   │   │   │   ├── test_state_manager.py
-│   │   │   │   ├── test_synchronization.py
-│   │   │   │   └── test_twin_core.py
-│   │   │   ├── human_interface
-│   │   │   │   ├── adapters
-│   │   │   │   │   └── test_digital_twin_adapter.py
-│   │   │   │   ├── core
-│   │   │   │   │   ├── test_interface_manager.py
-│   │   │   │   │   └── test_interface_state.py
-│   │   │   │   └── services
-│   │   │   │       └── test_command_service.py
-│   │   │   ├── lifecycle
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── conftest.py
-│   │   │   │   ├── test_lca_core.py
-│   │   │   │   └── test_lca_integration.py
-│   │   │   ├── optimization
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── conftest.py
-│   │   │   │   ├── test_model.py
-│   │   │   │   └── test_optimizer.py
-│   │   │   ├── reporting
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── conftest.py
-│   │   │   │   ├── test_optimization_visualizer.py
-│   │   │   │   ├── test_reports.py
-│   │   │   │   ├── test_visualization_paths.py
-│   │   │   │   └── test_visualizations.py
-│   │   │   ├── test_core.py
-│   │   │   ├── test_monitoring.py
-│   │   │   ├── test_production_data.py
-│   │   │   └── test_project_imports.py
-│   │   └── utils
-│   │       ├── __init__.py
-│   │       ├── test_data_generator.py
-│   │       ├── test_lca_data_generator.py
-│   │       ├── test_logging_config.py
-│   │       └── test_results_manager.py
-│   └── validation
-│       ├── __init__.py
-│       ├── conftest.py
-│       ├── test_digital_twin_validation.py
-│       ├── test_hmi_validation.py
-│       ├── test_system_validation.py
-│       └── validation_framework.py
-└── thesis_outline.md
+│           ├── cleanup.py
+│           ├── data_types.py
+│           ├── errors.py
+│           ├── logging_config.py
+│           └── results_manager.py
+└── tests
+    ├── README.md
+    ├── __init__.py
+    ├── integration
+    │   ├── __init__.py
+    │   ├── conftest.py
+    │   ├── human_interface
+    │   │   ├── conftest.py
+    │   │   ├── test_dashboard_integration.py
+    │   │   ├── test_e2e_integration.py
+    │   │   ├── test_event_notification.py
+    │   │   ├── test_hmi_digital_twin_integration.py
+    │   │   ├── test_process_control.py
+    │   │   ├── test_process_control_diagnostic.py
+    │   │   ├── test_process_control_shared.py
+    │   │   ├── test_simple_integration.py
+    │   │   └── test_user_workflows.py
+    │   ├── system
+    │   │   ├── __init__.py
+    │   │   ├── test_helpers.py
+    │   │   └── test_script.py
+    │   ├── test_advanced_models_integration.py
+    │   ├── test_data_pipeline.py
+    │   ├── test_data_saving.py
+    │   ├── test_digital_twin_ai_enhanced.py
+    │   ├── test_digital_twin_ai_integration.py
+    │   ├── test_digital_twin_events.py
+    │   ├── test_digital_twin_integration.py
+    │   ├── test_digital_twin_visualization.py
+    │   ├── test_online_learning_integration.py
+    │   └── test_system_integration.py
+    ├── performance
+    │   ├── __init__.py
+    │   ├── conftest.py
+    │   ├── test_digital_twin_performance.py
+    │   ├── test_event_latency.py
+    │   ├── test_hmi_performance.py
+    │   └── test_performance.py
+    ├── results
+    │   ├── __init__.py
+    │   ├── archive
+    │   ├── latest
+    │   └── runs
+    ├── unit
+    │   ├── __init__.py
+    │   ├── adapters
+    │   │   ├── __init__.py
+    │   │   ├── base
+    │   │   │   ├── __init__.py
+    │   │   │   ├── test_adapter_base.py
+    │   │   │   └── test_config_manager.py
+    │   │   ├── config
+    │   │   │   ├── __init__.py
+    │   │   │   ├── test_impact_factors.py
+    │   │   │   ├── test_manufacturing.py
+    │   │   │   ├── test_monitoring.py
+    │   │   │   ├── test_optimization.py
+    │   │   │   └── test_visualization.py
+    │   │   └── services
+    │   │       ├── __init__.py
+    │   │       └── test_constants_service.py
+    │   ├── conftest.py
+    │   ├── manufacturing
+    │   │   ├── __init__.py
+    │   │   ├── analyzers
+    │   │   │   ├── __init__.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── test_efficiency.py
+    │   │   │   ├── test_quality.py
+    │   │   │   └── test_sustainability.py
+    │   │   ├── digital_twin
+    │   │   │   ├── __init__.py
+    │   │   │   ├── configuration
+    │   │   │   │   ├── test_config_manager.py
+    │   │   │   │   └── test_parameter_definition.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── event_notification
+    │   │   │   │   ├── test_event_manager.py
+    │   │   │   │   ├── test_event_persistence.py
+    │   │   │   │   ├── test_event_types.py
+    │   │   │   │   ├── test_publishers.py
+    │   │   │   │   └── test_subscribers.py
+    │   │   │   ├── test_ai_integration.py
+    │   │   │   ├── test_lca_integration.py
+    │   │   │   ├── test_process_models.py
+    │   │   │   ├── test_results_integration.py
+    │   │   │   ├── test_scenario_manager.py
+    │   │   │   ├── test_simulation_engine.py
+    │   │   │   ├── test_singleton.py
+    │   │   │   ├── test_state_manager.py
+    │   │   │   ├── test_synchronization.py
+    │   │   │   └── test_twin_core.py
+    │   │   ├── human_interface
+    │   │   │   ├── adapters
+    │   │   │   │   └── test_digital_twin_adapter.py
+    │   │   │   ├── core
+    │   │   │   │   ├── test_interface_manager.py
+    │   │   │   │   └── test_interface_state.py
+    │   │   │   └── services
+    │   │   │       └── test_command_service.py
+    │   │   ├── lifecycle
+    │   │   │   ├── __init__.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── test_lca_core.py
+    │   │   │   └── test_lca_integration.py
+    │   │   ├── optimization
+    │   │   │   ├── __init__.py
+    │   │   │   ├── advanced_models
+    │   │   │   │   ├── test_deep_learning.py
+    │   │   │   │   └── test_ensemble.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── online_learning
+    │   │   │   │   ├── test_adaptive_model.py
+    │   │   │   │   └── test_real_time_trainer.py
+    │   │   │   ├── test_model.py
+    │   │   │   ├── test_optimizer.py
+    │   │   │   └── validation
+    │   │   │       ├── test_cross_validator.py
+    │   │   │       └── test_uncertainty.py
+    │   │   ├── reporting
+    │   │   │   ├── __init__.py
+    │   │   │   ├── conftest.py
+    │   │   │   ├── test_optimization_visualizer.py
+    │   │   │   ├── test_reports.py
+    │   │   │   ├── test_visualization_paths.py
+    │   │   │   └── test_visualizations.py
+    │   │   ├── test_core.py
+    │   │   ├── test_data_loader.py
+    │   │   ├── test_monitoring.py
+    │   │   ├── test_production_data.py
+    │   │   └── test_project_imports.py
+    │   └── utils
+    │       ├── __init__.py
+    │       ├── test_data_generator.py
+    │       ├── test_lca_data_generator.py
+    │       ├── test_logging_config.py
+    │       └── test_results_manager.py
+    └── validation
+        ├── __init__.py
+        ├── conftest.py
+        ├── test_digital_twin_validation.py
+        ├── test_hmi_validation.py
+        ├── test_system_validation.py
+        └── validation_framework.py
 
-89 directories, 311 files
+83 directories, 333 files
